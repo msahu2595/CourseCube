@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "712761607011",
+    "project_id": "course-cube-app",
+    "storage_bucket": "course-cube-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712761607011:android:571029fa68837ace4a4956",
+        "android_client_info": {
+          "package_name": "com.coursecube"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "712761607011-t0l5kv40gfcpnejk7c0cqv51kb2d49n3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.coursecube",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "712761607011-pen5ucovsnc3pm7uf6hgic9k63s3bq6a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbyfaaPzd5a8PxuM7DxWIMEjlKKel5Udk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "712761607011-pen5ucovsnc3pm7uf6hgic9k63s3bq6a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
