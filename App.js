@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, Button, SafeAreaView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import Icon from 'react-native-vector-icons/FontAwesome';
+const myIcon = <Icon name="rocket" size={30} color="#900" />;
 
 GoogleSignin.configure({
   webClientId:
@@ -56,6 +58,7 @@ function App() {
               )
             }
           />
+          {myIcon}
         </View>
       </SafeAreaView>
     );
