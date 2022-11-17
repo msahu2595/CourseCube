@@ -3,6 +3,8 @@ import {View, Text, Button, SafeAreaView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import tw from './lib/tailwind';
+
 const myIcon = <Icon name="rocket" size={30} color="#900" />;
 
 GoogleSignin.configure({
@@ -48,8 +50,8 @@ function App() {
   if (!user) {
     return (
       <SafeAreaView>
-        <View>
-          <Text>Login</Text>
+        <View style={tw`pt-6 bg-red-100`}>
+          <Text style={tw`font-popBold text-lg`}>Login</Text>
           <Button
             title="Google Sign-In"
             onPress={() =>

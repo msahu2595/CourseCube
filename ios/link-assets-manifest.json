@@ -1,0 +1,41 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/AvertaStdBold.ttf",
+      "sha1": "4d5973afa57124940c33ede5457089011c8d733e"
+    },
+    {
+      "path": "assets/fonts/AvertaStdLight.ttf",
+      "sha1": "41040a3a221ee860f94b3a10e8e601c859c04c88"
+    },
+    {
+      "path": "assets/fonts/AvertaStdRegular.ttf",
+      "sha1": "e75e35cc8501b2717996d2e42763fbe1ef2f06d8"
+    },
+    {
+      "path": "assets/fonts/AvertaStdSemibold.ttf",
+      "sha1": "65ab937099da5272f9349e478561b597c3775cf9"
+    },
+    {
+      "path": "assets/fonts/PoppinsBold.ttf",
+      "sha1": "b9b65c039a1f10a5cb5e0726c6e7e18e98a8e517"
+    },
+    {
+      "path": "assets/fonts/PoppinsLight.ttf",
+      "sha1": "246982f0e815573f4915b4dd6f9861d56f147da2"
+    },
+    {
+      "path": "assets/fonts/PoppinsMedium.ttf",
+      "sha1": "af7058373acbcf383dd114b8f9bbfb9faafd79eb"
+    },
+    {
+      "path": "assets/fonts/PoppinsRegular.ttf",
+      "sha1": "01d319c533f62ea29f03b5df8adfd4d93d2d2a38"
+    },
+    {
+      "path": "assets/fonts/PoppinsSemiBold.ttf",
+      "sha1": "20b39c8b480c946b084d6aa09f12bf10b2ec5aa6"
+    }
+  ]
+}
