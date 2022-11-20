@@ -13,7 +13,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import tw from './lib/tailwind';
 // import Pdf from 'react-native-pdf';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import {
   MenuProvider,
   Menu,
@@ -22,6 +25,7 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
+import FlashMessage, {showMessage} from 'react-native-flash-message';
 
 const colors = ['tomato', 'thistle', 'skyblue', 'teal'];
 
@@ -74,56 +78,71 @@ function App() {
 
   if (!user) {
     return (
-      <SafeAreaProvider>
-        <MenuProvider>
-          <SafeAreaView style={{flex: 1, backgroundColor: 'red'}}>
-            <View style={tw`pt-6 bg-red-100`}>
-              <Text style={tw`font-popBold text-lg`}>Login</Text>
-              <Button
-                title="Google Sign-In"
-                onPress={() =>
-                  onGoogleButtonPress().then(() =>
-                    console.log('Signed in with Google!'),
-                  )
-                }
-              />
-              {myIcon}
-            </View>
-            <LinearGradient
-              colors={['#4c669f', '#3b5998', '#192f6a']}
-              style={styles.linearGradient}>
-              <Text style={styles.buttonText}>Sign in with Facebook</Text>
-            </LinearGradient>
-            <Menu>
-              <MenuTrigger text="Select action" />
-              <MenuOptions>
-                <MenuOption onSelect={() => alert(`Save`)} text="Save" />
-                <MenuOption onSelect={() => alert(`Delete`)}>
-                  <Text style={{color: 'red'}}>Delete</Text>
-                </MenuOption>
-                <MenuOption
-                  onSelect={() => alert(`Not called`)}
-                  disabled={true}
-                  text="Disabled"
+      <>
+        <SafeAreaProvider>
+          <MenuProvider>
+            <SafeAreaView style={{flex: 1, backgroundColor: 'red'}}>
+              <View style={tw`pt-6 bg-red-100`}>
+                <Text style={tw`font-popBold text-lg`}>Login</Text>
+                <Button
+                  title="Google Sign-In"
+                  onPress={() =>
+                    onGoogleButtonPress().then(() =>
+                      console.log('Signed in with Google!'),
+                    )
+                  }
                 />
-              </MenuOptions>
-            </Menu>
-            <View style={styles.container}>
-              <SwiperFlatList
-                autoplay
-                autoplayDelay={2}
-                autoplayLoop
-                index={2}
-                showPagination
-                data={colors}
-                renderItem={({item}) => (
-                  <View style={[styles.child, {backgroundColor: item}]}>
-                    <Text style={styles.text}>{item}</Text>
-                  </View>
-                )}
+                {myIcon}
+              </View>
+              <Button
+                onPress={() => {
+                  /* HERE IS WHERE WE'RE GOING TO SHOW OUR FIRST MESSAGE */
+                  showMessage({
+                    message: 'My message title',
+                    description: 'My message description',
+                    type: 'default',
+                    backgroundColor: 'yellow', // background color
+                    color: '#606060', // text color
+                  });
+                }}
+                title="Request Details"
+                color="#841584"
               />
-            </View>
-            {/* <View style={styles.container}>
+              <LinearGradient
+                colors={['#4c669f', '#3b5998', '#192f6a']}
+                style={styles.linearGradient}>
+                <Text style={styles.buttonText}>Sign in with Facebook</Text>
+              </LinearGradient>
+              <Menu>
+                <MenuTrigger text="Select action" />
+                <MenuOptions>
+                  <MenuOption onSelect={() => alert(`Save`)} text="Save" />
+                  <MenuOption onSelect={() => alert(`Delete`)}>
+                    <Text style={{color: 'red'}}>Delete</Text>
+                  </MenuOption>
+                  <MenuOption
+                    onSelect={() => alert(`Not called`)}
+                    disabled={true}
+                    text="Disabled"
+                  />
+                </MenuOptions>
+              </Menu>
+              <View style={styles.container}>
+                <SwiperFlatList
+                  autoplay
+                  autoplayDelay={2}
+                  autoplayLoop
+                  index={2}
+                  showPagination
+                  data={colors}
+                  renderItem={({item}) => (
+                    <View style={[styles.child, {backgroundColor: item}]}>
+                      <Text style={styles.text}>{item}</Text>
+                    </View>
+                  )}
+                />
+              </View>
+              {/* <View style={styles.container}>
           <Pdf
             source={source}
             onLoadComplete={(numberOfPages, filePath) => {
@@ -141,9 +160,11 @@ function App() {
             style={styles.pdf}
           />
         </View> */}
-          </SafeAreaView>
-        </MenuProvider>
-      </SafeAreaProvider>
+            </SafeAreaView>
+          </MenuProvider>
+          <SafeAreaFlashMessage position="top" />
+        </SafeAreaProvider>
+      </>
     );
   }
 
@@ -163,6 +184,20 @@ function App() {
 }
 
 export default App;
+
+const SafeAreaFlashMessage = props => {
+  const insets = useSafeAreaInsets();
+
+  let statusBarHeight = 0;
+
+  if (props.position === 'top') {
+    statusBarHeight = insets.top;
+  } else if (props.position === 'bottom') {
+    statusBarHeight = insets.bottom;
+  }
+
+  return <FlashMessage {...props} statusBarHeight={statusBarHeight} />;
+};
 
 const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: 'white'},
