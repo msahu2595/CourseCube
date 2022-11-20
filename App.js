@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Dimensions,
+  Image,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -27,7 +28,6 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import FlashMessage, {showMessage} from 'react-native-flash-message';
 import TreeView from 'react-native-animated-tree-view';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const colors = ['tomato', 'thistle', 'skyblue', 'teal'];
 
@@ -78,11 +78,6 @@ function App() {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-
-  const [treeIcon, setTreeIcon] = useState();
-  AntDesign.getImageSource('copy1', 32, tw.color('green-700')).then(s =>
-    setTreeIcon(s),
-  );
 
   async function onGoogleButtonPress() {
     // Check if your device supports Google Play
@@ -165,6 +160,10 @@ function App() {
                   />
                 </MenuOptions>
               </Menu>
+              <Image
+                source={require('./assets/images/files.png')}
+                style={{width: 20, height: 20}}
+              />
               <View style={styles.container}>
                 <SwiperFlatList
                   autoplay
@@ -184,8 +183,18 @@ function App() {
                 data={data}
                 containerStyle={tw`px-4 py-2`}
                 listContainerStyle={tw``}
-                leftImage={treeIcon}
-                leftImageStyle={tw.style({width: 20, height: 20})}
+                leftImage={require('./assets/images/files.png')}
+                rightImage={require('./assets/images/chevron-down.png')}
+                leftImageStyle={tw.style({
+                  width: 20,
+                  height: 20,
+                  tintColor: tw.color('green-700'),
+                })}
+                rightImageStyle={tw.style({
+                  width: 15,
+                  height: 15,
+                  tintColor: tw.color('green-700'),
+                })}
                 textStyle={tw`pl-2 font-avReg text-base text-gray-900`}
               />
               {/* <View style={styles.container}>
