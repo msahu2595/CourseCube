@@ -80,15 +80,15 @@
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
-		<string>AvertaStdBold.ttf</string>
-		<string>AvertaStdLight.ttf</string>
-		<string>AvertaStdRegular.ttf</string>
-		<string>AvertaStdSemibold.ttf</string>
-		<string>PoppinsBold.ttf</string>
-		<string>PoppinsLight.ttf</string>
-		<string>PoppinsMedium.ttf</string>
-		<string>PoppinsRegular.ttf</string>
-		<string>PoppinsSemiBold.ttf</string>
+		<string>AvertaStd-Bold.ttf</string>
+		<string>AvertaStd-Light.ttf</string>
+		<string>AvertaStd-Regular.ttf</string>
+		<string>AvertaStd-Semibold.ttf</string>
+		<string>Poppins-Bold.ttf</string>
+		<string>Poppins-Light.ttf</string>
+		<string>Poppins-Medium.ttf</string>
+		<string>Poppins-Regular.ttf</string>
+		<string>Poppins-SemiBold.ttf</string>
 	</array>
 </dict>
 </plist>
