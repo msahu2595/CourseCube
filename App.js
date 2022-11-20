@@ -26,8 +26,41 @@ import {
 } from 'react-native-popup-menu';
 import LinearGradient from 'react-native-linear-gradient';
 import FlashMessage, {showMessage} from 'react-native-flash-message';
+import TreeView from 'react-native-animated-tree-view';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const colors = ['tomato', 'thistle', 'skyblue', 'teal'];
+
+const data = [
+  {
+    name: 'Cheese',
+    value: 'cheese-value',
+  },
+  {
+    name: 'Cheese',
+    value: 'cheese-value',
+    items: [
+      {
+        name: 'Spicy',
+        value: 'spicy-value',
+      },
+      {
+        name: 'Cheese',
+        value: 'cheese-value',
+        items: [
+          {
+            name: 'Spicy',
+            value: 'spicy-value',
+          },
+          {
+            name: 'Spicy',
+            value: 'spicy-value',
+          },
+        ],
+      },
+    ],
+  },
+];
 
 const source = {
   uri: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
@@ -45,6 +78,11 @@ function App() {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
+
+  const [treeIcon, setTreeIcon] = useState();
+  AntDesign.getImageSource('copy1', 32, tw.color('green-700')).then(s =>
+    setTreeIcon(s),
+  );
 
   async function onGoogleButtonPress() {
     // Check if your device supports Google Play
@@ -81,9 +119,9 @@ function App() {
       <>
         <SafeAreaProvider>
           <MenuProvider>
-            <SafeAreaView style={{flex: 1, backgroundColor: 'red'}}>
+            <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
               <View style={tw`pt-6 bg-red-100`}>
-                <Text style={tw`font-popBold text-lg`}>Login</Text>
+                <Text style={tw`font-popBold text-lg text-black`}>Login</Text>
                 <Button
                   title="Google Sign-In"
                   onPress={() =>
@@ -142,6 +180,14 @@ function App() {
                   )}
                 />
               </View>
+              <TreeView
+                data={data}
+                containerStyle={tw`px-4 py-2`}
+                listContainerStyle={tw``}
+                leftImage={treeIcon}
+                leftImageStyle={tw.style({width: 20, height: 20})}
+                textStyle={tw`pl-2 font-avReg text-base text-gray-900`}
+              />
               {/* <View style={styles.container}>
           <Pdf
             source={source}
