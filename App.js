@@ -12,6 +12,9 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import tw from './lib/tailwind';
 import Pdf from 'react-native-pdf';
+import {SwiperFlatList} from 'react-native-swiper-flatlist';
+
+const colors = ['tomato', 'thistle', 'skyblue', 'teal'];
 
 const source = {
   uri: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
@@ -76,6 +79,21 @@ function App() {
           {myIcon}
         </View>
         <View style={styles.container}>
+          <SwiperFlatList
+            autoplay
+            autoplayDelay={2}
+            autoplayLoop
+            index={2}
+            showPagination
+            data={colors}
+            renderItem={({item}) => (
+              <View style={[styles.child, {backgroundColor: item}]}>
+                <Text style={styles.text}>{item}</Text>
+              </View>
+            )}
+          />
+        </View>
+        {/* <View style={styles.container}>
           <Pdf
             source={source}
             onLoadComplete={(numberOfPages, filePath) => {
@@ -92,7 +110,7 @@ function App() {
             }}
             style={styles.pdf}
           />
-        </View>
+        </View> */}
       </SafeAreaView>
     );
   }
@@ -115,15 +133,21 @@ function App() {
 export default App;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginTop: 25,
-  },
-  pdf: {
-    flex: 1,
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
+  container: {flex: 1, backgroundColor: 'white'},
+  child: {width: Dimensions.get('window').width, justifyContent: 'center'},
+  text: {fontSize: Dimensions.get('window').width * 0.5, textAlign: 'center'},
 });
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'flex-start',
+//     alignItems: 'center',
+//     marginTop: 25,
+//   },
+//   pdf: {
+//     flex: 1,
+//     width: Dimensions.get('window').width,
+//     height: Dimensions.get('window').height,
+//   },
+// });
