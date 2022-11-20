@@ -1,0 +1,72 @@
+[
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+        "image": "https://i.pravatar.cc/150?img=1",
+        "name": "Sonu Kumar",
+        "activities": 50,
+        "followers": "1k"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bb",
+        "image": "https://i.pravatar.cc/150?img=2",
+        "name": "Sonu Kumar",
+        "activities": 50,
+        "followers": "2k"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bc",
+        "image": "https://i.pravatar.cc/150?img=3",
+        "name": "Sonu Kumar",
+        "activities": 50,
+        "followers": "3k"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bd",
+        "image": "https://i.pravatar.cc/150?img=4",
+        "name": "Sonu Kumar",
+        "activities": 50,
+        "followers": "4k"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28be",
+        "image": "https://i.pravatar.cc/150?img=5",
+        "name": "Sonu Kumar",
+        "activities": 50,
+        "followers": "5k"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bf",
+        "image": "https://i.pravatar.cc/150?img=6",
+        "name": "Sonu Kumar",
+        "activities": 50,
+        "followers": "6k"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bg",
+        "image": "https://i.pravatar.cc/150?img=7",
+        "name": "Sonu Kumar",
+        "activities": 50,
+        "followers": "7k"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bh",
+        "image": "https://i.pravatar.cc/150?img=8",
+        "name": "Sonu Kumar",
+        "activities": 50,
+        "followers": "8k"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bi",
+        "image": "https://i.pravatar.cc/150?img=9",
+        "name": "Sonu Kumar",
+        "activities": 50,
+        "followers": "9k"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bj",
+        "image": "https://i.pravatar.cc/150?img=10",
+        "name": "Sonu Kumar",
+        "activities": 50,
+        "followers": "10k"
+    }
+]

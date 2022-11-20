@@ -3,48 +3,26 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import {ApolloProvider} from '@apollo/client';
 import {MenuProvider} from 'react-native-popup-menu';
 import FlashMessage from 'react-native-flash-message';
 import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import HomeScreen from './screens/HomeScreen';
-
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
-const TopTab = createMaterialTopTabNavigator();
+import MainNativeStackNavigator from '@navigators';
+import client from './apollo/client';
+import {linking} from '@lib';
 
 const App = () => {
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <MenuProvider>
-          <Stack.Navigator>
-            <Stack.Screen name="Home" component={TabNavigator} />
-          </Stack.Navigator>
-        </MenuProvider>
+    <MenuProvider>
+      <SafeAreaProvider>
+        <NavigationContainer linking={linking}>
+          <ApolloProvider client={client}>
+            <MainNativeStackNavigator />
+          </ApolloProvider>
+        </NavigationContainer>
         <SafeAreaFlashMessage position="top" />
-      </NavigationContainer>
-    </SafeAreaProvider>
-  );
-};
-
-const TabNavigator = () => {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen name="HomeTab" component={HomeScreen} />
-      <Tab.Screen name="AboutTab" component={TopTabNavigator} />
-    </Tab.Navigator>
-  );
-};
-
-const TopTabNavigator = () => {
-  return (
-    <TopTab.Navigator>
-      <TopTab.Screen name="HomeTopTab" component={HomeScreen} />
-      <TopTab.Screen name="AboutTopTab" component={HomeScreen} />
-    </TopTab.Navigator>
+      </SafeAreaProvider>
+    </MenuProvider>
   );
 };
 

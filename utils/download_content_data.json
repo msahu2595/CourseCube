@@ -1,0 +1,26 @@
+[
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
+        "image": "https://drive.google.com/uc?export=download&id=1DyNTGuJCb_8YLNchV0cPiFRMDH5HiVf_",
+        "title": "CGPSC Prelims Hindi Medium Mobile Course",
+        "course": "Geography",
+        "color": "sky",
+        "info": "45 Mins | 50k Watched | 223 Likes"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bb",
+        "image": "https://drive.google.com/uc?export=download&id=12y_RsIRIbYO4Ag3ozCczQ2mOIBoPZy7U",
+        "title": "CGPSC Prelims PDF",
+        "course": "Chhattisgarh",
+        "color": "yellow",
+        "info": "12 Pages | 5.5k Likes"
+    },
+    {
+        "id": "bd7acbea-c1b1-46c2-aed5-3ad53abb28bc",
+        "image": "https://drive.google.com/uc?export=download&id=1cw2lUPLPGmsj8RYEYunUdjo4AoRKOTmN",
+        "title": "CGPSC Prelims Mock Test",
+        "course": "History",
+        "color": "red",
+        "info": "12 Ques | 5 Mins | 180 Attempts"
+    }
+]

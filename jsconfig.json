@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@navigation_groups": ["navigation_groups"],
+      "@navigators": ["navigators"],
+      "@components": ["components"],
+      "@screens": ["screens"],
+      "@queries": ["apollo/queries"],
+      "@mutations": ["apollo/mutations"],
+      "@fragments": ["apollo/fragments"],
+      "@styles": ["styles"],
+      "@images": ["assets/images"],
+      "@fonts": ["assets/fonts"],
+      "@lib": ["lib"],
+      "@utils": ["utils"],
+      "@cache": ["apollo/cache"],
+      "@typeDefs": ["apollo/typeDefs"]
+    }
+  }
+}
