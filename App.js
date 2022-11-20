@@ -11,8 +11,16 @@ import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import tw from './lib/tailwind';
-import Pdf from 'react-native-pdf';
+// import Pdf from 'react-native-pdf';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {
+  MenuProvider,
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
 const colors = ['tomato', 'thistle', 'skyblue', 'teal'];
 
@@ -65,35 +73,51 @@ function App() {
 
   if (!user) {
     return (
-      <SafeAreaView style={{flex: 1}}>
-        <View style={tw`pt-6 bg-red-100`}>
-          <Text style={tw`font-popBold text-lg`}>Login</Text>
-          <Button
-            title="Google Sign-In"
-            onPress={() =>
-              onGoogleButtonPress().then(() =>
-                console.log('Signed in with Google!'),
-              )
-            }
-          />
-          {myIcon}
-        </View>
-        <View style={styles.container}>
-          <SwiperFlatList
-            autoplay
-            autoplayDelay={2}
-            autoplayLoop
-            index={2}
-            showPagination
-            data={colors}
-            renderItem={({item}) => (
-              <View style={[styles.child, {backgroundColor: item}]}>
-                <Text style={styles.text}>{item}</Text>
-              </View>
-            )}
-          />
-        </View>
-        {/* <View style={styles.container}>
+      <SafeAreaProvider>
+        <MenuProvider>
+          <SafeAreaView style={{flex: 1, backgroundColor: 'red'}}>
+            <View style={tw`pt-6 bg-red-100`}>
+              <Text style={tw`font-popBold text-lg`}>Login</Text>
+              <Button
+                title="Google Sign-In"
+                onPress={() =>
+                  onGoogleButtonPress().then(() =>
+                    console.log('Signed in with Google!'),
+                  )
+                }
+              />
+              {myIcon}
+            </View>
+            <Menu>
+              <MenuTrigger text="Select action" />
+              <MenuOptions>
+                <MenuOption onSelect={() => alert(`Save`)} text="Save" />
+                <MenuOption onSelect={() => alert(`Delete`)}>
+                  <Text style={{color: 'red'}}>Delete</Text>
+                </MenuOption>
+                <MenuOption
+                  onSelect={() => alert(`Not called`)}
+                  disabled={true}
+                  text="Disabled"
+                />
+              </MenuOptions>
+            </Menu>
+            <View style={styles.container}>
+              <SwiperFlatList
+                autoplay
+                autoplayDelay={2}
+                autoplayLoop
+                index={2}
+                showPagination
+                data={colors}
+                renderItem={({item}) => (
+                  <View style={[styles.child, {backgroundColor: item}]}>
+                    <Text style={styles.text}>{item}</Text>
+                  </View>
+                )}
+              />
+            </View>
+            {/* <View style={styles.container}>
           <Pdf
             source={source}
             onLoadComplete={(numberOfPages, filePath) => {
@@ -111,7 +135,9 @@ function App() {
             style={styles.pdf}
           />
         </View> */}
-      </SafeAreaView>
+          </SafeAreaView>
+        </MenuProvider>
+      </SafeAreaProvider>
     );
   }
 
