@@ -1,9 +1,22 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Button, SafeAreaView} from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  SafeAreaView,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import tw from './lib/tailwind';
+import Pdf from 'react-native-pdf';
+
+const source = {
+  uri: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+  cache: true,
+};
 
 const myIcon = <Icon name="rocket" size={30} color="#900" />;
 
@@ -49,7 +62,7 @@ function App() {
 
   if (!user) {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{flex: 1}}>
         <View style={tw`pt-6 bg-red-100`}>
           <Text style={tw`font-popBold text-lg`}>Login</Text>
           <Button
@@ -62,12 +75,30 @@ function App() {
           />
           {myIcon}
         </View>
+        <View style={styles.container}>
+          <Pdf
+            source={source}
+            onLoadComplete={(numberOfPages, filePath) => {
+              console.log(`Number of pages: ${numberOfPages}`);
+            }}
+            onPageChanged={(page, numberOfPages) => {
+              console.log(`Current page: ${page}`);
+            }}
+            onError={error => {
+              console.log(error);
+            }}
+            onPressLink={uri => {
+              console.log(`Link pressed: ${uri}`);
+            }}
+            style={styles.pdf}
+          />
+        </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
       <View>
         <Text>Welcome {user.email}</Text>
         <Button
@@ -82,3 +113,17 @@ function App() {
 }
 
 export default App;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginTop: 25,
+  },
+  pdf: {
+    flex: 1,
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+});
