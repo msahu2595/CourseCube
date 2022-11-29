@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {from, ApolloClient, createHttpLink} from '@apollo/client';
 import {InMemoryCache, makeVar, gql} from '@apollo/client';
-import {setContext} from '@apollo/client/link/context';
+// import {setContext} from '@apollo/client/link/context';
 import {onError} from '@apollo/client/link/error';
 import {Alert} from 'react-native';
 
@@ -47,19 +47,19 @@ export const cache = new InMemoryCache({
   },
 });
 
-const authLink = setContext(() => {
-  return AsyncStorage.multiGet(['token', 'refresh']).then(res => {
-    if (res[0][1]) {
-      return {
-        headers: {
-          authorization: `Bearer ${res[0][1]}`,
-          'refresh-token': res[0][1],
-        },
-      };
-    }
-    return;
-  });
-});
+// const authLink = setContext(() => {
+//   return AsyncStorage.multiGet(['token', 'refresh']).then(res => {
+//     if (res[0][1]) {
+//       return {
+//         headers: {
+//           authorization: `Bearer ${res[0][1]}`,
+//           'refresh-token': res[0][1],
+//         },
+//       };
+//     }
+//     return;
+//   });
+// });
 
 export const errorLink = onError(error => {
   console.log({error});
@@ -98,11 +98,12 @@ export const errorLink = onError(error => {
 
 const httpLink = createHttpLink({
   uri: 'https://course-cube-server.herokuapp.com/',
+  credentials: 'include',
 });
 
 // Initialize Apollo Client
 const client = new ApolloClient({
-  link: from([authLink, errorLink, httpLink]),
+  link: from([errorLink, httpLink]),
   typeDefs: typeDefs,
   cache: cache,
 });
