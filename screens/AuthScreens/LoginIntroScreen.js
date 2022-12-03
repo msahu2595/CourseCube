@@ -1,11 +1,17 @@
 import * as React from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {TouchableOpacity, ImageBackground, StatusBar, Text} from 'react-native';
+import {
+  Text,
+  Platform,
+  StatusBar,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {isLoggedInVar, loggedUserVar} from 'apollo/client';
 import messaging from '@react-native-firebase/messaging';
 import auth from '@react-native-firebase/auth';
-import {isLoggedInVar, loggedUserVar} from 'apollo/client';
 import {useMutation} from '@apollo/client';
 import {GOOGLE_LOG_IN} from '@mutations';
 import tw from '@lib/tailwind';
@@ -31,8 +37,9 @@ const multiSet = async ({token, refresh}) => {
 const LoginIntroScreen = ({navigation}) => {
   const signIn = async () => {
     try {
+      const FCMToken =
+        Platform.OS === 'ios' ? '' : await messaging().getToken();
       const {idToken} = await GoogleSignin.signIn();
-      const FCMToken = await messaging().getToken();
       console.log('{idToken, FCMToken} ==> ', {idToken, FCMToken});
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       await auth().signInWithCredential(googleCredential);
@@ -48,6 +55,7 @@ const LoginIntroScreen = ({navigation}) => {
   const [googleLogIn, {loading}] = useMutation(GOOGLE_LOG_IN, {
     onCompleted: data => {
       const {token, refresh, payload} = data?.googleLogIn;
+      console.log('Successfully logged in! ==> ', {token, refresh, payload});
       multiSet({token, refresh});
       loggedUserVar(payload);
       isLoggedInVar(true);
