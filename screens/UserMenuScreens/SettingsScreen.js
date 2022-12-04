@@ -1,5 +1,7 @@
 import {tw} from '@lib';
+import {LOGOUT} from '@mutations';
 import React, {useCallback} from 'react';
+import {useMutation} from '@apollo/client';
 import {SafeAreaContainer} from '@components';
 import auth from '@react-native-firebase/auth';
 import {useNavigation} from '@react-navigation/native';
@@ -21,6 +23,27 @@ const menu = [
 const SettingsScreen = () => {
   const navigation = useNavigation();
 
+  const [logout, {loading}] = useMutation(LOGOUT, {
+    onCompleted: data => {
+      console.log(data?.logout?.message);
+      auth()
+        .signOut()
+        .then(() => {
+          console.log('User signed out!');
+          AsyncStorage.multiRemove(['token', 'refresh']);
+        });
+    },
+    onError: err => {
+      console.log(err);
+      auth()
+        .signOut()
+        .then(() => {
+          console.log('User signed out!');
+          AsyncStorage.multiRemove(['token', 'refresh']);
+        });
+    },
+  });
+
   const handleMenuPress = useCallback(
     screen => {
       if (screen === 'Logout') {
@@ -28,14 +51,7 @@ const SettingsScreen = () => {
           {
             text: 'Logout',
             style: 'destructive',
-            onPress: () => {
-              auth()
-                .signOut()
-                .then(() => {
-                  console.log('User signed out!');
-                  AsyncStorage.multiRemove(['token', 'refresh']);
-                });
-            },
+            onPress: logout,
           },
           {
             text: 'Cancel',
@@ -46,7 +62,7 @@ const SettingsScreen = () => {
         navigation.navigate(screen);
       }
     },
-    [navigation],
+    [navigation, logout],
   );
 
   return (
@@ -57,6 +73,7 @@ const SettingsScreen = () => {
         {menu.map(({name, icon, screen}) => {
           return (
             <TouchableOpacity
+              disabled={loading}
               onPress={() => handleMenuPress(screen)}
               key={icon}
               style={tw.style(

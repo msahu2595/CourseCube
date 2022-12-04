@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {isLoggedInVar, loggedUserVar} from 'apollo/client';
 import messaging from '@react-native-firebase/messaging';
@@ -22,17 +21,6 @@ GoogleSignin.configure({
   offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
   forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
 });
-
-const multiSet = async ({token, refresh}) => {
-  const firstPair = ['token', token];
-  const secondPair = ['refresh', refresh];
-  try {
-    await AsyncStorage.multiSet([firstPair, secondPair]);
-    console.log('Done.');
-  } catch (e) {
-    console.log(e);
-  }
-};
 
 const LoginIntroScreen = ({navigation}) => {
   const signIn = async () => {
@@ -54,12 +42,9 @@ const LoginIntroScreen = ({navigation}) => {
 
   const [googleLogIn, {loading}] = useMutation(GOOGLE_LOG_IN, {
     onCompleted: data => {
-      const {token, refresh, payload} = data?.googleLogIn;
-      console.log('Successfully logged in! ==> ', {token, refresh, payload});
-      multiSet({token, refresh});
+      const {payload} = data?.googleLogIn;
       loggedUserVar(payload);
       isLoggedInVar(true);
-      // navigation.navigate('MobileNumberScreen');
     },
     onError: err => {
       console.log(err);

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {from, ApolloClient, createHttpLink} from '@apollo/client';
+import {from, ApolloClient, createHttpLink, ApolloLink} from '@apollo/client';
 import {InMemoryCache, makeVar, gql} from '@apollo/client';
 import {setContext} from '@apollo/client/link/context';
 import {onError} from '@apollo/client/link/error';
@@ -47,17 +47,18 @@ export const cache = new InMemoryCache({
   },
 });
 
-const authLink = setContext(() => {
+const authLink = setContext((_, {headers}) => {
   return AsyncStorage.multiGet(['token', 'refresh']).then(res => {
     if (res[0][1]) {
       return {
         headers: {
+          ...headers,
           authorization: `Bearer ${res[0][1]}`,
-          'refresh-token': res[0][1],
+          'refresh-token': res[1][1],
         },
       };
     }
-    return;
+    return {headers};
   });
 });
 
@@ -100,9 +101,42 @@ const httpLink = createHttpLink({
   uri: 'http://192.168.1.41:4000/',
 });
 
+async function singleSet(name, token) {
+  try {
+    await AsyncStorage.setItem(name, token);
+    console.log('SingleSet done.');
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+const setTokenLink = new ApolloLink((operation, forward) => {
+  return forward(operation).map(response => {
+    console.log(`====${operation.operationName}=====`);
+    if (response?.data && response?.data[operation.operationName]?.token) {
+      if (response?.data[operation.operationName]?.token) {
+        console.log(
+          'Got new token ==> ',
+          response?.data[operation.operationName]?.token,
+        );
+        singleSet('token', response?.data[operation.operationName]?.token);
+      }
+      if (response?.data[operation.operationName]?.refresh) {
+        console.log(
+          'Got new refresh ==> ',
+          response?.data[operation.operationName]?.refresh,
+        );
+        singleSet('refresh', response?.data[operation.operationName]?.refresh);
+      }
+    }
+    console.log(`====${operation.operationName}=====`);
+    return response;
+  });
+});
+
 // Initialize Apollo Client
 const client = new ApolloClient({
-  link: from([authLink, errorLink, httpLink]),
+  link: from([authLink, errorLink, setTokenLink.concat(httpLink)]),
   typeDefs: typeDefs,
   cache: cache,
 });
