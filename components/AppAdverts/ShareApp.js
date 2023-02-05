@@ -1,6 +1,7 @@
 import React from 'react';
 import tw from '@lib/tailwind';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
+import FontAwesome5Pro from 'react-native-vector-icons/FontAwesome5Pro';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ShareApp = () => {
@@ -21,7 +22,17 @@ const ShareApp = () => {
         </Text>
         <View style={tw`mt-2 flex-row`}>
           <TouchableOpacity
-            style={tw`mr-2 px-3 py-2 bg-green-500 rounded-lg self-start`}>
+            style={tw.style(
+              'mr-2',
+              'rounded-lg',
+              'bg-green-500',
+              'items-center',
+              'justify-center',
+              {
+                width: 40,
+                height: 36,
+              },
+            )}>
             <MaterialCommunityIcons
               name="whatsapp"
               color={tw.color('white')}
@@ -29,15 +40,35 @@ const ShareApp = () => {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={tw`mr-2 px-3 py-2 bg-sky-500 rounded-lg self-start`}>
-            <MaterialCommunityIcons
-              name="telegram"
+            style={tw.style(
+              'mr-2',
+              'bg-sky-500',
+              'rounded-lg',
+              'items-center',
+              'justify-center',
+              {
+                width: 40,
+                height: 36,
+              },
+            )}>
+            <FontAwesome5Pro
+              name="telegram-plane"
               color={tw.color('white')}
               size={20}
             />
           </TouchableOpacity>
           <TouchableOpacity
-            style={tw`mr-2 px-3 py-2 bg-blueGray-500 rounded-lg self-start`}>
+            style={tw.style(
+              'mr-2',
+              'bg-blue-500',
+              'rounded-lg',
+              'items-center',
+              'justify-center',
+              {
+                width: 40,
+                height: 36,
+              },
+            )}>
             <MaterialCommunityIcons
               name="link-variant"
               color={tw.color('white')}

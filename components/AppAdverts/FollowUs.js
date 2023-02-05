@@ -1,6 +1,7 @@
 import React from 'react';
 import tw from '@lib/tailwind';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
+import FontAwesome5Pro from 'react-native-vector-icons/FontAwesome5Pro';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const FollowUs = () => {
@@ -32,11 +33,14 @@ const FollowUs = () => {
           <TouchableOpacity
             style={tw.style(
               'mr-2',
-              'px-2',
-              'py-2',
               'rounded-lg',
-              'self-start',
-              {backgroundColor: '#DC2626'},
+              'items-center',
+              'justify-center',
+              {
+                width: 36,
+                height: 36,
+                backgroundColor: '#DC2626',
+              },
             )}>
             <MaterialCommunityIcons
               name="youtube"
@@ -47,14 +51,17 @@ const FollowUs = () => {
           <TouchableOpacity
             style={tw.style(
               'mr-2',
-              'px-2',
-              'py-2',
               'rounded-lg',
-              'self-start',
-              {backgroundColor: '#0088cc'},
+              'items-center',
+              'justify-center',
+              {
+                width: 36,
+                height: 36,
+                backgroundColor: '#0088cc',
+              },
             )}>
-            <MaterialCommunityIcons
-              name="telegram"
+            <FontAwesome5Pro
+              name="telegram-plane"
               color={tw.color('white')}
               size={20}
             />
@@ -62,11 +69,14 @@ const FollowUs = () => {
           <TouchableOpacity
             style={tw.style(
               'mr-2',
-              'px-2',
-              'py-2',
               'rounded-lg',
-              'self-start',
-              {backgroundColor: '#4267B2'},
+              'items-center',
+              'justify-center',
+              {
+                width: 36,
+                height: 36,
+                backgroundColor: '#4267B2',
+              },
             )}>
             <MaterialCommunityIcons
               name="facebook"
@@ -77,11 +87,14 @@ const FollowUs = () => {
           <TouchableOpacity
             style={tw.style(
               'mr-2',
-              'px-2',
-              'py-2',
               'rounded-lg',
-              'self-start',
-              {backgroundColor: '#1DA1F2'},
+              'items-center',
+              'justify-center',
+              {
+                width: 36,
+                height: 36,
+                backgroundColor: '#1DA1F2',
+              },
             )}>
             <MaterialCommunityIcons
               name="twitter"
@@ -92,11 +105,14 @@ const FollowUs = () => {
           <TouchableOpacity
             style={tw.style(
               'mr-2',
-              'px-2',
-              'py-2',
               'rounded-lg',
-              'self-start',
-              {backgroundColor: '#E1306C'},
+              'items-center',
+              'justify-center',
+              {
+                width: 36,
+                height: 36,
+                backgroundColor: '#E1306C',
+              },
             )}>
             <MaterialCommunityIcons
               name="instagram"
