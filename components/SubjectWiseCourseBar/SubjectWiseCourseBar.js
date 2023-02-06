@@ -1,18 +1,26 @@
-import React from 'react';
 import tw from '@lib/tailwind';
 import {BUNDLES} from '@queries';
 import {useQuery} from '@apollo/client';
-import {View, Text, FlatList} from 'react-native';
+import React, {useCallback} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import SubjectWiseCourseItem from './SubjectWiseCourseItem';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {View, Text, FlatList, TouchableOpacity} from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CourseBar = props => {
+  const navigation = useNavigation();
+
   const {loading: queryLoading, data: queryData} = useQuery(BUNDLES, {
     variables: {filter: {type: 'SUBJECT_COURSE'}},
   });
 
-  const renderItem = ({index, item}) => (
-    <SubjectWiseCourseItem index={index} {...item} />
+  const handleSeeAll = useCallback(() => {
+    navigation.navigate('SubjectWiseCourseListScreen');
+  }, [navigation]);
+
+  const renderItem = useCallback(
+    ({index, item}) => <SubjectWiseCourseItem index={index} {...item} />,
+    [],
   );
 
   return (
@@ -21,13 +29,19 @@ const CourseBar = props => {
         <Text style={tw`font-avSemi text-base text-gray-600`}>
           {props.title}
         </Text>
-        <View style={tw`flex-row items-center`}>
+        <TouchableOpacity
+          onPress={handleSeeAll}
+          style={tw`flex-row items-center`}>
           <Text
             style={tw.style('font-avSemi', 'text-gray-600', {fontSize: 10})}>
             SEE ALL
           </Text>
-          <Icon name="chevron-right" size={16} color="#52525B" />
-        </View>
+          <MaterialCommunityIcons
+            name="chevron-right"
+            size={16}
+            color="#52525B"
+          />
+        </TouchableOpacity>
       </View>
       <FlatList
         horizontal

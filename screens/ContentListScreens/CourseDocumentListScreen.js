@@ -1,19 +1,25 @@
 import tw from '@lib/tailwind';
-import {CONTENTS} from '@queries';
 import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
+import {BUNDLE_CONTENTS} from '@queries';
 import {View, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {ContentItem, SafeAreaContainer} from '@components';
 
-const TestListScreen = ({navigation, route}) => {
-  const {loading: queryLoading, data: queryData} = useQuery(CONTENTS, {
-    variables: {filter: {type: 'Test'}},
+const CourseDocumentListScreen = ({navigation, route}) => {
+  const {loading: queryLoading, data: queryData} = useQuery(BUNDLE_CONTENTS, {
+    variables: {
+      bundleId: route.params.bundleId,
+      filter: {subjectId: route.params.subjectId, type: 'Document'},
+    },
   });
 
   const handlePress = useCallback(
-    (contentId, title) => {
-      navigation?.navigate('TestViewScreen', {contentId, title});
+    (bundleContentId, title) => {
+      navigation?.navigate('CourseDocumentViewScreen', {
+        bundleContentId,
+        title,
+      });
     },
     [navigation],
   );
@@ -22,7 +28,7 @@ const TestListScreen = ({navigation, route}) => {
     ({index, item}) => (
       <ContentItem
         index={index}
-        color="amber"
+        color="teal"
         {...item}
         handlePress={handlePress}
       />
@@ -43,7 +49,7 @@ const TestListScreen = ({navigation, route}) => {
         ]}
         style={tw`flex-1`}>
         <FlatList
-          data={queryData?.contents?.payload || []}
+          data={queryData?.bundleContents?.payload || []}
           renderItem={renderItem}
           keyExtractor={item => item._id}
           // contentContainerStyle={tw`bg-white`}
@@ -56,4 +62,4 @@ const TestListScreen = ({navigation, route}) => {
   );
 };
 
-export default TestListScreen;
+export default CourseDocumentListScreen;

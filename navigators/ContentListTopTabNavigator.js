@@ -2,10 +2,10 @@ import React from 'react';
 import tw from '@lib/tailwind';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {
-  VideoListScreen,
-  TestListScreen,
-  DocumentListScreen,
-  DownloadListScreen,
+  CourseVideoListScreen,
+  CourseTestListScreen,
+  CourseDocumentListScreen,
+  CourseDownloadListScreen,
 } from '@screens';
 import {SafeAreaContainer} from '@components';
 
@@ -29,7 +29,7 @@ const ContentListTopTabNavigator = props => {
         }}>
         <Tab.Screen
           name="Video's"
-          component={VideoListScreen}
+          component={CourseVideoListScreen}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             subjectId: props.route.params?.subjectId,
@@ -37,7 +37,7 @@ const ContentListTopTabNavigator = props => {
         />
         <Tab.Screen
           name="PDF's"
-          component={DocumentListScreen}
+          component={CourseDocumentListScreen}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             subjectId: props.route.params?.subjectId,
@@ -45,13 +45,20 @@ const ContentListTopTabNavigator = props => {
         />
         <Tab.Screen
           name="Test's"
-          component={TestListScreen}
+          component={CourseTestListScreen}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             subjectId: props.route.params?.subjectId,
           }}
         />
-        <Tab.Screen name="Download's" component={DownloadListScreen} />
+        <Tab.Screen
+          name="Download's"
+          component={CourseDownloadListScreen}
+          initialParams={{
+            bundleId: props.route.params?.bundleId,
+            subjectId: props.route.params?.subjectId,
+          }}
+        />
       </Tab.Navigator>
     </SafeAreaContainer>
   );

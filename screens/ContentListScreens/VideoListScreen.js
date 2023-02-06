@@ -1,22 +1,19 @@
 import tw from '@lib/tailwind';
+import {CONTENTS} from '@queries';
 import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
-import {BUNDLE_CONTENTS} from '@queries';
 import {View, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {ContentItem, SafeAreaContainer} from '@components';
 
 const VideoListScreen = ({navigation, route}) => {
-  const {loading: queryLoading, data: queryData} = useQuery(BUNDLE_CONTENTS, {
-    variables: {
-      bundleId: route?.params?.bundleId,
-      filter: {subjectId: route?.params?.subjectId, type: 'Video'},
-    },
+  const {loading: queryLoading, data: queryData} = useQuery(CONTENTS, {
+    variables: {filter: {type: 'Video'}},
   });
 
   const handlePress = useCallback(
-    bundleContentId => {
-      navigation?.navigate('CourseVideoViewScreen', {bundleContentId});
+    contentId => {
+      navigation?.navigate('VideoViewScreen', {contentId});
     },
     [navigation],
   );
@@ -48,7 +45,7 @@ const VideoListScreen = ({navigation, route}) => {
         ]}
         style={tw`flex-1`}>
         <FlatList
-          data={queryData?.bundleContents?.payload || []}
+          data={queryData?.contents?.payload || []}
           renderItem={renderItem}
           keyExtractor={item => item._id}
           // contentContainerStyle={tw`bg-white`}

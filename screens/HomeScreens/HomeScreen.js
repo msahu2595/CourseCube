@@ -52,15 +52,23 @@ const HomeScreen = props => {
         </View>
         <View style={tw`pt-1`}>
           <VideoBar title="Recent Videos" />
-          <VideoBar title="Free Classes" />
-          <VideoBar title="Live Classes" />
+          <VideoBar title="Free Classes" filter={{paid: false}} />
+          <VideoBar title="Paid Classes" filter={{paid: true}} />
         </View>
         <View style={tw`pt-1`}>
           <TestBar title="Recent Tests" />
+          <TestBar title="Free Tests" filter={{paid: false}} />
+          <TestBar title="Paid Tests" filter={{paid: true}} />
         </View>
         <View style={tw`pt-1`}>
-          <DocumentBar title="Free PDF's (Study Materials)" />
-          <DocumentBar title="Paid PDF's (Study Materials)" />
+          <DocumentBar
+            title="Free PDF's (Study Materials)"
+            filter={{paid: false}}
+          />
+          <DocumentBar
+            title="Paid PDF's (Study Materials)"
+            filter={{paid: true}}
+          />
         </View>
         <View style={tw`pt-1`}>
           <SubjectWiseCourseBar title="Subject Wise Courses" />
