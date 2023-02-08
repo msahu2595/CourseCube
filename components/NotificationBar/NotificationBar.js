@@ -1,12 +1,13 @@
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {View, Text, TouchableOpacity} from 'react-native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
+import {useNavigation} from '@react-navigation/native';
 import React, {useCallback} from 'react';
 import {useQuery} from '@apollo/client';
 import tw from '@lib/tailwind';
 import {HEADLINES} from '@queries';
 import NotificationItem from './NotificationItem';
-import {useNavigation} from '@react-navigation/native';
+import {NotificationItemIndicator} from '@components/LoaderIndicator';
 
 const NotificationBar = props => {
   const navigation = useNavigation();
@@ -42,15 +43,19 @@ const NotificationBar = props => {
           />
         </TouchableOpacity>
       </View>
-      <SwiperFlatList
-        index={0}
-        autoplay
-        autoplayLoop
-        autoplayDelay={10}
-        data={queryData?.headlines?.payload || []}
-        renderItem={renderItem}
-        keyExtractor={item => item._id}
-      />
+      {queryLoading ? (
+        <NotificationItemIndicator />
+      ) : (
+        <SwiperFlatList
+          index={0}
+          autoplay
+          autoplayLoop
+          autoplayDelay={10}
+          data={queryData?.headlines?.payload || []}
+          renderItem={renderItem}
+          keyExtractor={item => item._id}
+        />
+      )}
     </View>
   );
 };
