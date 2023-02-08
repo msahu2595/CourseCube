@@ -3,7 +3,6 @@ import {from, ApolloClient, createHttpLink, ApolloLink} from '@apollo/client';
 import {InMemoryCache, makeVar, gql} from '@apollo/client';
 import {setContext} from '@apollo/client/link/context';
 import {onError} from '@apollo/client/link/error';
-import {Alert} from 'react-native';
 
 export const typeDefs = gql`
   extend type Query {
@@ -84,14 +83,14 @@ export const errorLink = onError(error => {
       }
       return;
     } else if (networkError?.message === 'Failed to fetch') {
-      if (operation?.operationName === 'outletLogin') {
-        Alert.alert(
+      if (operation?.operationName === 'googleLogIn') {
+        console.log(
           'No Internet Connection',
           'Please check your internet connectivity.',
         );
       }
     } else {
-      Alert.alert('Network Error', 'Please check your internet connectivity.');
+      console.log('Network Error', 'Please check your internet connectivity.');
       return;
     }
   }
