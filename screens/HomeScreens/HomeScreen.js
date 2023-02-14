@@ -28,22 +28,14 @@ const HomeScreen = props => {
     <SafeAreaContainer
       statusBgColor={tw.color('emerald-600')}
       statusBarStyle="light-content">
-      <ScrollView>
-        <View>
-          <AdvertBar type="TINY" containerStyle={tw`pt-2`} />
-        </View>
-        <View>
-          <AdvertBar type="SMALL" containerStyle={tw`pt-2`} />
-        </View>
-        <View style={tw`pt-1`}>
+      <ScrollView bounces={false} contentContainerStyle={tw`py-1`}>
+        <AdvertBar type="TINY" containerStyle={tw`py-1`} />
+        <AdvertBar type="SMALL" containerStyle={tw`py-1`} />
+        <View style={tw`py-1`}>
           <ShortcutBar />
         </View>
-        <View>
-          <AdvertBar type="MEDIUM" containerStyle={tw`pt-2`} />
-        </View>
-        <View>
-          <AdvertBar type="LARGE" containerStyle={tw`pt-2`} />
-        </View>
+        <AdvertBar type="MEDIUM" containerStyle={tw`py-1`} />
+        <AdvertBar type="LARGE" containerStyle={tw`py-1`} />
         <View style={tw`pt-1`}>
           <HistoryBar title="Continue Learning" />
         </View>

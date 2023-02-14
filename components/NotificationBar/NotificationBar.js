@@ -7,7 +7,7 @@ import {useQuery} from '@apollo/client';
 import tw from '@lib/tailwind';
 import {HEADLINES} from '@queries';
 import NotificationItem from './NotificationItem';
-import {NotificationItemIndicator} from '@components/LoaderIndicator';
+import {NotificationItemLoader} from 'components/Loaders';
 
 const NotificationBar = props => {
   const navigation = useNavigation();
@@ -44,7 +44,7 @@ const NotificationBar = props => {
         </TouchableOpacity>
       </View>
       {queryLoading ? (
-        <NotificationItemIndicator />
+        <NotificationItemLoader />
       ) : (
         <SwiperFlatList
           index={0}
