@@ -4,6 +4,7 @@ import {tw} from '@lib';
 import {ADD_TEST} from '@mutations';
 import React, {useState} from 'react';
 import {Button, Text, TextInput, View} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
 
 const AddTestScreen = () => {
   const [duration, setDuration] = useState('');
@@ -12,12 +13,20 @@ const AddTestScreen = () => {
   const [totalMarks, setTotalMarks] = useState('');
   const [negativeMark, setNegativeMarks] = useState('');
 
-  const [addTest, {data, loading, error}] = useMutation(ADD_TEST);
-  console.log(data, loading, error);
-  console.log(title);
+  const [addTest, {loading, error}] = useMutation(ADD_TEST, {
+    onCompleted: data => {
+      console.log('addTest ==> ', data);
+      showMessage({
+        message: 'Test Added Successfully.',
+        type: 'success',
+      });
+    },
+  });
 
   if (loading) return <Text>'Submitting...'</Text>;
+
   if (error) return <Text>`Submission error! ${error.message}`</Text>;
+
   return (
     <SafeAreaContainer>
       <View style={tw`border p-2 m-1`}>
