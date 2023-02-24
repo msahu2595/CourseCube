@@ -22,7 +22,7 @@ const AdminVideoListScreen = () => {
           style={tw`h-40 justify-between`}>
           <View style={tw` h-10 `}>
             <Text
-              style={tw` self-end text-xs  text-white p-1 bg-black bg-opacity-40   `}>
+              style={tw` self-end text-xs  text-white p-1 bg-black bg-opacity-40  rounded-bl-lg `}>
               {item.time}
             </Text>
           </View>
