@@ -1,8 +1,8 @@
 import {useQuery} from '@apollo/client';
-import {VIDEOS} from 'apollo/queries/VIDEOS';
 import React, {useCallback} from 'react';
 import {Dimensions, FlatList, ImageBackground, Text, View} from 'react-native';
 import tw from '@lib/tailwind';
+import {VIDEOS} from '@queries';
 
 const AdminVideoListScreen = () => {
   const {loading, error, data} = useQuery(VIDEOS);

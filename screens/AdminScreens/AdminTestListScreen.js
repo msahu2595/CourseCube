@@ -1,17 +1,40 @@
 import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {Dimensions, FlatList, ImageBackground, Text, View} from 'react-native';
 import tw from '@lib/tailwind';
-import {TESTS} from 'apollo/queries/TESTS';
+import {TESTS} from '@queries';
 
 const AdminTestListScreen = () => {
   const {loading, error, data} = useQuery(TESTS);
   console.log(data?.tests.payload);
 
+  const width = Dimensions.get('window').width;
+
   const Item = useCallback(
     ({item}) => (
-      <View style={tw`flex-row bg-white mb-3 mx-3 rounded-lg`}>
-        <Text style={tw`text-sm font-bold`}>{item.title}</Text>
+      <View style={tw.style(` rounded-lg bg-gray-200`, {width: width / 2 - 8})}>
+        <ImageBackground
+          source={{
+            uri: item.thumbnail,
+          }}
+          resizeMode="cover"
+          style={tw`h-32  justify-between`}>
+          <View style={tw` h-10 `}>
+            <Text
+              style={tw` self-end text-xs  text-white p-1 bg-black bg-opacity-40  rounded-bl-lg `}>
+              {item.duration}
+            </Text>
+          </View>
+          <View
+            style={tw`bg-black bg-opacity-50 text-white p-1 h-10 justify-center`}>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={tw`text-xs px-1 text-white`}>
+              {item.title}
+            </Text>
+          </View>
+        </ImageBackground>
       </View>
     ),
     [],
@@ -26,6 +49,10 @@ const AdminTestListScreen = () => {
         data={data?.tests?.payload}
         renderItem={({item}) => <Item item={item} />}
         keyExtractor={item => item._id}
+        numColumns={2}
+        columnWrapperStyle={tw`justify-between`}
+        contentContainerStyle={tw`p-1`}
+        ItemSeparatorComponent={() => <View style={tw`h-2`} />}
       />
     </View>
   );

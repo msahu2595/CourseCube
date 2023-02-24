@@ -1,18 +1,11 @@
 import {gql} from '@apollo/client';
 
 export const DOCUMENTS = gql`
-  query Documents {
-    documents {
+  query ExampleQuery {
+    user {
       code
-      success
-      message
-      token
-      offset
-      limit
-      search
-      filter {
-        enable
-      }
+    }
+    documents {
       payload {
         _id
         title
