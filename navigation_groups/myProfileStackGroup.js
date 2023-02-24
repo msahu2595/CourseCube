@@ -12,6 +12,8 @@ import {TextInput, TouchableOpacity, View} from 'react-native';
 // Icon Import
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AddTestScreen from 'screens/AdminScreens/AddTestScreen';
+import AddDocumentsScreen from 'screens/AdminScreens/AddDocumentsScreen';
+import AddVideosScreen from 'screens/AdminScreens/AddVideosScreen';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -54,6 +56,16 @@ const myProfileStackGroup = () => {
         name="AddTestScreen"
         component={AddTestScreen}
         options={{headerTitle: 'Add Test'}}
+      />
+      <Stack.Screen
+        name="AddDocumentScreen"
+        component={AddDocumentsScreen}
+        options={{headerTitle: 'Add Document'}}
+      />
+      <Stack.Screen
+        name="AddVideosScreen"
+        component={AddVideosScreen}
+        options={{headerTitle: 'Add Videos'}}
       />
     </Stack.Group>
   );
