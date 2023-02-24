@@ -1,11 +1,21 @@
+/* eslint-disable quotes */
+/* eslint-disable curly */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
-import {Dimensions, FlatList, ImageBackground, Text, View} from 'react-native';
 import tw from '@lib/tailwind';
 import {TESTS} from '@queries';
+import {
+  View,
+  Text,
+  Dimensions,
+  FlatList,
+  ImageBackground,
+  RefreshControl,
+} from 'react-native';
 
 const AdminTestListScreen = () => {
-  const {loading, error, data} = useQuery(TESTS);
+  const {loading, error, data, refetch} = useQuery(TESTS);
   console.log(data?.tests.payload);
 
   const width = Dimensions.get('window').width;
@@ -53,6 +63,9 @@ const AdminTestListScreen = () => {
         columnWrapperStyle={tw`justify-between`}
         contentContainerStyle={tw`p-1`}
         ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={refetch} />
+        }
       />
     </View>
   );

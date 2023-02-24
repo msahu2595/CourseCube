@@ -1,11 +1,21 @@
+/* eslint-disable curly */
+/* eslint-disable quotes */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
-import {Dimensions, FlatList, ImageBackground, Text, View} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  ImageBackground,
+  RefreshControl,
+  Text,
+  View,
+} from 'react-native';
 import tw from '@lib/tailwind';
 import {DOCUMENTS} from '@queries';
 
 const AdminDocumentListScreen = () => {
-  const {loading, error, data} = useQuery(DOCUMENTS);
+  const {loading, error, data, refetch} = useQuery(DOCUMENTS);
   console.log(data?.documents.payload);
   const width = Dimensions.get('window').width;
 
@@ -52,6 +62,9 @@ const AdminDocumentListScreen = () => {
         columnWrapperStyle={tw`justify-between`}
         contentContainerStyle={tw`p-1`}
         ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={refetch} />
+        }
       />
     </View>
   );
