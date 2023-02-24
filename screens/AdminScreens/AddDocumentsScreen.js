@@ -4,13 +4,22 @@ import {Button, Text, TextInput, View} from 'react-native';
 import {SafeAreaContainer} from '@components';
 import React, {useState} from 'react';
 import tw from 'twrnc';
+import {showMessage} from 'react-native-flash-message';
 
 const AddDocumentsScreen = () => {
   const [title, setTitle] = useState('');
   const [pages, setPages] = useState('');
   const [url, setUrl] = useState('');
 
-  const [addDocument, {data, loading, error}] = useMutation(ADD_DOCUMENT);
+  const [addDocument, {data, loading, error}] = useMutation(ADD_DOCUMENT, {
+    onCompleted: data => {
+      console.log(' ==> addDocument', data);
+      showMessage({
+        message: 'Document Added Successfully.',
+        type: 'success',
+      });
+    },
+  });
 
   console.log(data, loading, error);
 

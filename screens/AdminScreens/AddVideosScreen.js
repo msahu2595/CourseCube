@@ -4,11 +4,20 @@ import {Button, Text, TextInput, View} from 'react-native';
 import {SafeAreaContainer} from '@components';
 import React, {useState} from 'react';
 import tw from 'twrnc';
+import {showMessage} from 'react-native-flash-message';
 
 const AddVideosScreen = () => {
   const [url, setUrl] = useState('');
 
-  const [addDocument, {data, loading, error}] = useMutation(ADD_VIDEOS);
+  const [addVideo, {data, loading, error}] = useMutation(ADD_VIDEOS, {
+    onCompleted: data => {
+      console.log(' ==> addVideo', data);
+      showMessage({
+        message: 'Videos Added Successfully.',
+        type: 'success',
+      });
+    },
+  });
 
   console.log(data, loading, error);
 
@@ -28,7 +37,7 @@ const AddVideosScreen = () => {
         <Button
           title="Submit"
           onPress={() =>
-            addDocument({
+            addVideo({
               variables: {
                 videoLink: 'https://www.africau.edu/images/default/sample.pdf',
               },
