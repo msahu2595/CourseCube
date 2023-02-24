@@ -1,6 +1,7 @@
 export * from './LIKE';
 export * from './UNLIKE';
 export * from './LOGOUT';
+export * from './ADD_TEST';
 export * from './BOOKMARK';
 export * from './UNBOOKMARK';
 export * from './GOOGLE_LOG_IN';
