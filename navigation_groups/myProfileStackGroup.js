@@ -2,6 +2,7 @@ import React from 'react';
 import tw from '@lib/tailwind'; //Tailwind Imports
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
+  MediaScreen,
   EditProfileScreen,
   MyNotificationScreen,
   UserProfileScreen,
@@ -48,6 +49,11 @@ const myProfileStackGroup = () => {
         name="UserSearchScreen"
         component={UserSearchScreen}
         options={searchScreenOptions}
+      />
+      <Stack.Screen
+        name="MediaScreen"
+        component={MediaScreen}
+        options={{headerTitle: 'Media'}}
       />
     </Stack.Group>
   );

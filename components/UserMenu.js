@@ -12,7 +12,7 @@ const menu = [
   {name: 'Bookmarks', icon: 'bookmark', screen: ''},
   {name: 'Payments', icon: 'credit-card', screen: ''},
   {name: 'Settings', icon: 'settings', screen: 'SettingsScreen'},
-  {name: 'Help & Support', icon: 'headphones', screen: ''},
+  {name: 'Help & Support', icon: 'headphones', screen: 'MediaScreen'},
 ];
 
 // const IS_LOGGED_IN = gql`
