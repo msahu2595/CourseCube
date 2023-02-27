@@ -2,24 +2,30 @@
 /* eslint-disable curly */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useQuery} from '@apollo/client';
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
+  Button,
   Dimensions,
   FlatList,
   ImageBackground,
   RefreshControl,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import tw from '@lib/tailwind';
 import {VIDEOS} from '@queries';
 
 const AdminVideoListScreen = () => {
-  const {loading, error, data, refetch} = useQuery(VIDEOS);
+  const [input, setInput] = useState('');
+  const {loading, error, data, refetch, fetchMore} = useQuery(VIDEOS, {
+    variables: {offset: 0, limit: 10, search: null, Filter: {enable: null}},
+  });
   console.log(data, error, loading);
+  console.log(input);
 
   const width = Dimensions.get('window').width;
-  console.log(width);
+  // console.log(width);
   const Item = useCallback(
     ({item}) => (
       <View style={tw.style(` rounded-lg bg-gray-200`, {width: width / 2 - 8})}>
@@ -55,6 +61,26 @@ const AdminVideoListScreen = () => {
 
   return (
     <View>
+      <TextInput
+        style={tw`h-10 border m-5 p-2  rounded-lg text-center`}
+        placeholder="Search"
+        onChangeText={text => {
+          if (text.length > 2) {
+            refetch({search: text});
+          }
+        }}
+      />
+      {/* <Button
+        title="submit"
+        style={tw`bg-black `}
+        accessibilityLabel="Learn more about this purple button"
+        onPress={() => {
+          refetch({
+            search: input,
+          });
+        }}
+      />
+ */}
       <FlatList
         bounces={true}
         data={data?.videos?.payload}
@@ -64,8 +90,14 @@ const AdminVideoListScreen = () => {
         columnWrapperStyle={tw`justify-between`}
         contentContainerStyle={tw`p-1`}
         ItemSeparatorComponent={() => <View style={tw`h-2`} />}
-        // refreshing={loading}
-        // onRefresh={<RefreshControl onRefresh={refetch} />}
+        onEndReached={() => {
+          console.log('reached end');
+          fetchMore({
+            variables: {offset: 1, limit: 10},
+          }).then(fetchMoreResult => {
+            console.log(fetchMoreResult.data.videos.payload.length);
+          });
+        }}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={refetch} />
         }

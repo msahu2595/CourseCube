@@ -1,21 +1,26 @@
 import {gql} from '@apollo/client';
 
 export const VIDEOS = gql`
-  query Videos {
-    videos {
+  query videos(
+    $offset: Int
+    $limit: Int
+    $search: String
+    $filter: VideosFilterInput
+  ) {
+    videos(offset: $offset, limit: $limit, search: $search, filter: $filter) {
       payload {
         _id
-        createdAt
-        enable
-        link
-        thumbnail
-        time
         title
-        updatedAt
+        thumbnail
+        link
+        time
         urls {
-          format
           url
+          format
         }
+        enable
+        createdAt
+        updatedAt
       }
     }
   }
