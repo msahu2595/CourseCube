@@ -11,18 +11,18 @@ import {
   RefreshControl,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import tw from '@lib/tailwind';
 import {VIDEOS} from '@queries';
 
 const AdminVideoListScreen = () => {
-  const [input, setInput] = useState('');
+  const [filter, setFilter] = useState(false);
   const {loading, error, data, refetch, fetchMore} = useQuery(VIDEOS, {
-    variables: {offset: 0, limit: 10, search: null, Filter: {enable: null}},
+    variables: {offset: 0},
   });
   console.log(data, error, loading);
-  console.log(input);
 
   const width = Dimensions.get('window').width;
   // console.log(width);
@@ -56,31 +56,32 @@ const AdminVideoListScreen = () => {
     [],
   );
 
-  if (loading) return <Text>'Loading...'</Text>;
-  if (error) return <Text>`Error! ${error.message}`</Text>;
-
   return (
-    <View>
-      <TextInput
-        style={tw`h-10 border m-5 p-2  rounded-lg text-center`}
-        placeholder="Search"
-        onChangeText={text => {
-          if (text.length > 2) {
-            refetch({search: text});
-          }
-        }}
-      />
-      {/* <Button
-        title="submit"
-        style={tw`bg-black `}
-        accessibilityLabel="Learn more about this purple button"
-        onPress={() => {
-          refetch({
-            search: input,
-          });
-        }}
-      />
- */}
+    <View style={tw`flex justify-center  items-center`}>
+      <View style={tw`flex flex-row  `}>
+        <TextInput
+          style={tw`h-10 border m-5 p-2  w-72 rounded-lg text-center`}
+          placeholder="Search"
+          onChangeText={text => {
+            if (text.length > 2) {
+              refetch({search: text});
+            } else {
+              refetch({offset: 0, limit: 10, search: ''});
+            }
+          }}
+        />
+        <TouchableOpacity>
+          <Button
+            title="Delete"
+            style={tw`w-10 h-10 text-center pt-4 `}
+            onPress={() => {
+              console.log('heyyyyy');
+              refetch({filter: {enable: false}});
+            }}
+          />
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         bounces={true}
         data={data?.videos?.payload}
@@ -93,9 +94,10 @@ const AdminVideoListScreen = () => {
         onEndReached={() => {
           console.log('reached end');
           fetchMore({
-            variables: {offset: 1, limit: 10},
-          }).then(fetchMoreResult => {
-            console.log(fetchMoreResult.data.videos.payload.length);
+            variables: {
+              offset: data?.videos?.payload.length,
+              limit: 10,
+            },
           });
         }}
         refreshControl={

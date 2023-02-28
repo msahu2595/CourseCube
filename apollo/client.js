@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {from, ApolloClient, createHttpLink, ApolloLink} from '@apollo/client';
+import {offsetLimitPagination} from '@apollo/client/utilities';
 import {InMemoryCache, makeVar, gql} from '@apollo/client';
 import {setContext} from '@apollo/client/link/context';
 import {onError} from '@apollo/client/link/error';
@@ -26,6 +27,29 @@ export const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
+        // videos: {
+        //   merge(existing = {}, incoming) {
+        //     if (incoming) {
+        //       return {
+        //         ...existing,
+        //         payload: [...existing?.payload, ...incoming?.payload],
+        //       };
+        //     } else {
+        //       return existing;
+        //     }
+        //   },
+        // },
+
+        videos: {
+          keyArgs: false,
+          merge(existing = {payload: []}, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+              payload: [...existing.payload, ...incoming.payload],
+            };
+          },
+        },
         isLoggedIn: {
           read() {
             return isLoggedInVar();
@@ -97,7 +121,7 @@ export const errorLink = onError(error => {
 });
 
 const httpLink = createHttpLink({
-  uri: 'https://course-cube-server.onrender.com/',
+  uri: 'https://course-cube-server-python-env.onrender.com/',
 });
 
 async function singleSet(name, token) {
