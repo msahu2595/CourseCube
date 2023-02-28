@@ -1,9 +1,9 @@
 import {ADD_DOCUMENT} from '@mutations';
 import {useMutation} from '@apollo/client';
-import {Button, Text, TextInput, View} from 'react-native';
+import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {SafeAreaContainer} from '@components';
 import React from 'react';
-import tw from 'twrnc';
+import tw from '@lib/tailwind';
 import {showMessage} from 'react-native-flash-message';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
@@ -38,8 +38,7 @@ const AddDocumentsScreen = () => {
   if (error) return <Text>`Submission error! ${error.message}`</Text>;
   return (
     <SafeAreaContainer>
-      <View style={tw`m-1 border p-1`}>
-        <Text style={tw`font-bold text-gray-900 text-lg`}>DOCUMENT SCREEN</Text>
+      <View style={tw`m-1 p-2 shadow-sm border-none`}>
         <Formik
           initialValues={{
             title: '',
@@ -68,56 +67,86 @@ const AddDocumentsScreen = () => {
             touched,
           }) => (
             <>
-              <Text style={tw`mx-2`}>Title :</Text>
-              <View style={tw`flex flex-row border`}>
-                <MaterialCommunityIcons
-                  name="format-title"
-                  size={30}
-                  style={tw`border-r-2`}
-                />
-                <TextInput
-                  placeholder="Enter Title"
-                  onChangeText={handleChange('title')}
-                  onBlur={handleBlur('title')}
-                  value={values.title}
-                  style={tw`border-b-black`}
-                />
+              <View style={tw`pb-2`}>
+                <Text style={tw`font-avSemi pl-2 text-base text-gray-600`}>
+                  Title :
+                </Text>
+                <View
+                  style={tw`flex mt-2 flex-row border border-black rounded-lg`}>
+                  <MaterialCommunityIcons
+                    name="format-title"
+                    size={25}
+                    style={tw`border-r p-1 border-b-black`}
+                  />
+                  <TextInput
+                    placeholder="Enter Title"
+                    onChangeText={handleChange('title')}
+                    onBlur={handleBlur('title')}
+                    value={values.title}
+                    style={tw`h-10 w-80 font-popLight`}
+                  />
+                </View>
               </View>
               {errors.title && touched.title && <Text>{errors.title}</Text>}
-              <Text style={tw`mx-2`}>Pages :</Text>
-              <TextInput
-                placeholder="Enter Pages"
-                onChangeText={handleChange('pages')}
-                onBlur={handleBlur('pages')}
-                value={values.pages}
-                style={tw`border m-2 border-b-black`}
-                keyboardType="numeric"
-              />
+              <View style={tw`pb-2`}>
+                <Text style={tw`font-avSemi pl-2 text-base text-gray-600`}>
+                  Pages :
+                </Text>
+                <View
+                  style={tw`mt-2 flex flex-row border border-black rounded-lg`}>
+                  <MaterialCommunityIcons
+                    style={tw`border-r p-1 border-b-black`}
+                    name="book-open-page-variant-outline"
+                    color="#4F8EF7"
+                    size={25}
+                  />
+                  <TextInput
+                    placeholder="Enter Pages"
+                    onChangeText={handleChange('pages')}
+                    onBlur={handleBlur('pages')}
+                    value={values.pages}
+                    style={tw`h-10 w-80 font-popLight`}
+                    keyboardType="numeric"
+                  />
+                </View>
+              </View>
               {errors.pages && touched.pages && <Text>{errors.pages}</Text>}
-              <Text style={tw`mx-2`}>Url :</Text>
-              <View style={tw`flex flex-row border`}>
-                <MaterialCommunityIcons
-                  style={tw`border border-b-black`}
-                  name="link"
-                  color="#4F8EF7"
-                  size={20}
-                />
-                <TextInput
-                  placeholder="Enter Url"
-                  onChangeText={handleChange('url')}
-                  value={values.url}
-                  onBlur={handleBlur('url')}
-                  style={tw`m-2`}
-                />
+              <View style={tw`pb-2`}>
+                <Text style={tw`font-avSemi pl-2 text-base text-gray-600`}>
+                  Url :
+                </Text>
+                <View
+                  style={tw`mt-2 flex flex-row border border-black rounded-lg`}>
+                  <MaterialCommunityIcons
+                    style={tw`border-r p-1 border-b-black`}
+                    name="link"
+                    color="#4F8EF7"
+                    size={25}
+                  />
+                  <TextInput
+                    placeholder="Enter Url"
+                    onChangeText={handleChange('url')}
+                    value={values.url}
+                    onBlur={handleBlur('url')}
+                    style={tw`h-10 w-80 font-popLight`}
+                  />
+                </View>
               </View>
               {errors.url && touched.url && <Text>{errors.url}</Text>}
-              <Button
-                title="Submit"
-                onPress={() => {
-                  console.log('submit');
-                  handleSubmit();
-                }}
-              />
+              <View style={tw`m-3 shadow-sm`}>
+                <TouchableOpacity
+                  title="Submit"
+                  onPress={() => {
+                    console.log('submit');
+                    handleSubmit();
+                  }}
+                  style={tw`bg-blue-800 rounded-lg p-2`}>
+                  <Text
+                    style={tw`text-white text-center text-base font-popSemi`}>
+                    Submit
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </>
           )}
         </Formik>
