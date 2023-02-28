@@ -50,6 +50,26 @@ export const cache = new InMemoryCache({
             };
           },
         },
+        Payload: {
+          keyArgs: false,
+          merge(existing = {payload: []}, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+              payload: [...existing.payload, ...incoming.payload],
+            };
+          },
+        },
+        ExampleQuery: {
+          keyArgs: false,
+          merge(existing = {payload: []}, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+              payload: [...existing.payload, ...incoming.payload],
+            };
+          },
+        },
         isLoggedIn: {
           read() {
             return isLoggedInVar();

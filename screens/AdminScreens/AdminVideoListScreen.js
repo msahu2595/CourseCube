@@ -1,14 +1,13 @@
 /* eslint-disable quotes */
-/* eslint-disable curly */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useQuery} from '@apollo/client';
 import React, {useCallback, useState} from 'react';
 import {
-  Button,
   Dimensions,
   FlatList,
   ImageBackground,
   RefreshControl,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -16,9 +15,12 @@ import {
 } from 'react-native';
 import tw from '@lib/tailwind';
 import {VIDEOS} from '@queries';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const AdminVideoListScreen = () => {
-  const [filter, setFilter] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [search, setSearch] = useState('');
+
   const {loading, error, data, refetch, fetchMore} = useQuery(VIDEOS, {
     variables: {offset: 0},
   });
@@ -59,27 +61,42 @@ const AdminVideoListScreen = () => {
   return (
     <View style={tw`flex justify-center  items-center`}>
       <View style={tw`flex flex-row  `}>
-        <TextInput
-          style={tw`h-10 border m-5 p-2  w-72 rounded-lg text-center`}
-          placeholder="Search"
-          onChangeText={text => {
-            if (text.length > 2) {
-              refetch({search: text});
-            } else {
-              refetch({offset: 0, limit: 10, search: ''});
-            }
-          }}
-        />
-        <TouchableOpacity>
-          <Button
-            title="Delete"
-            style={tw`w-10 h-10 text-center pt-4 `}
-            onPress={() => {
-              console.log('heyyyyy');
-              refetch({filter: {enable: false}});
+        <View
+          style={tw`flex flex-row w-72 m-2 justify-between rounded-lg px-2 items-center border `}>
+          <TextInput
+            style={tw` w-60`}
+            placeholder="Search"
+            onChangeText={text => {
+              console.log('text', text);
+              setSearch(text);
+              if (text.length > 2) {
+                refetch({search: text});
+              } else {
+                refetch({search: ''});
+              }
             }}
+            value={search}
           />
-        </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              setSearch('');
+              refetch({search: ''});
+            }}>
+            <MaterialIcons name="clear" size={20} color={tw.color('black')} />
+          </TouchableOpacity>
+        </View>
+
+        <Switch
+          trackColor={{false: '#767577', true: '#81b0ff'}}
+          thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={value => {
+            setIsEnabled(value);
+            refetch({filter: {enable: !value}});
+          }}
+          value={isEnabled}
+        />
       </View>
 
       <FlatList
