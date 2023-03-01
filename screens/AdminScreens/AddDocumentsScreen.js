@@ -2,7 +2,7 @@ import {ADD_DOCUMENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {SafeAreaContainer} from '@components';
-import React from 'react';
+import React, {useState} from 'react';
 import tw from '@lib/tailwind';
 import {showMessage} from 'react-native-flash-message';
 import * as Yup from 'yup';
