@@ -59,12 +59,11 @@ const AdminVideoListScreen = () => {
   );
 
   return (
-    <View style={tw`flex justify-center  items-center`}>
-      <View style={tw`flex flex-row  `}>
+    <View style={tw`flex-1`}>
+      <View style={tw`flex-row`}>
         <View
-          style={tw`flex flex-row w-72 m-2 justify-between rounded-lg px-2 items-center border `}>
+          style={tw`flex-1 flex-row m-2 justify-between rounded-lg px-2 items-center border`}>
           <TextInput
-            style={tw` w-60`}
             placeholder="Search"
             onChangeText={text => {
               console.log('text', text);

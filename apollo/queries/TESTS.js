@@ -1,7 +1,7 @@
 const {gql} = require('@apollo/client');
 
 export const TESTS = gql`
-  query ExampleQuery(
+  query tests(
     $offset: Int
     $limit: Int
     $search: String

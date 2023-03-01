@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client';
 
 export const DOCUMENTS = gql`
-  query Payload(
+  query documents(
     $offset: Int
     $limit: Int
     $search: String

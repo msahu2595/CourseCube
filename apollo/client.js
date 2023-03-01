@@ -27,19 +27,6 @@ export const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
-        // videos: {
-        //   merge(existing = {}, incoming) {
-        //     if (incoming) {
-        //       return {
-        //         ...existing,
-        //         payload: [...existing?.payload, ...incoming?.payload],
-        //       };
-        //     } else {
-        //       return existing;
-        //     }
-        //   },
-        // },
-
         videos: {
           keyArgs: false,
           merge(existing = {payload: []}, incoming) {
@@ -50,7 +37,7 @@ export const cache = new InMemoryCache({
             };
           },
         },
-        Payload: {
+        tests: {
           keyArgs: false,
           merge(existing = {payload: []}, incoming) {
             return {
@@ -60,7 +47,7 @@ export const cache = new InMemoryCache({
             };
           },
         },
-        ExampleQuery: {
+        documents: {
           keyArgs: false,
           merge(existing = {payload: []}, incoming) {
             return {
