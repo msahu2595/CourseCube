@@ -3,6 +3,7 @@ import {
   AdminVideoListScreen,
   AdminDocumentListScreen,
   AdminTestListScreen,
+  AddContentScreen,
 } from './AdminScreens';
 import {
   LoginIntroScreen,
@@ -73,6 +74,7 @@ export {
   AdminVideoListScreen,
   AdminTestListScreen,
   AdminDocumentListScreen,
+  AddContentScreen,
   LoginIntroScreen,
   MobileNumberScreen,
   OTPVerifyScreen,

@@ -1,5 +1,4 @@
 import React from 'react';
-import tw from '@lib/tailwind';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {SafeAreaContainer} from '@components';

@@ -24,7 +24,7 @@ const AdminDocumentListScreen = () => {
   const {loading, error, data, refetch, fetchMore} = useQuery(DOCUMENTS, {
     variables: {offset: 0},
   });
-  console.log(data, error, loading);
+  console.log(data?.documents?.payload, error, loading);
 
   const width = Dimensions.get('window').width;
   // console.log(width);

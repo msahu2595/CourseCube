@@ -3,6 +3,7 @@
 import {useQuery} from '@apollo/client';
 import React, {useCallback, useState} from 'react';
 import {
+  Button,
   Dimensions,
   FlatList,
   ImageBackground,
@@ -16,10 +17,13 @@ import {
 import tw from '@lib/tailwind';
 import {VIDEOS} from '@queries';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useNavigation} from '@react-navigation/native';
 
 const AdminVideoListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
+
+  const navigation = useNavigation();
 
   const {loading, error, data, refetch, fetchMore} = useQuery(VIDEOS, {
     variables: {offset: 0},
@@ -53,6 +57,11 @@ const AdminVideoListScreen = () => {
             </Text>
           </View>
         </ImageBackground>
+
+        <Button
+          title="Add Videos"
+          onPress={() => navigation.navigate('AddContentScreen', item)}
+        />
       </View>
     ),
     [],
