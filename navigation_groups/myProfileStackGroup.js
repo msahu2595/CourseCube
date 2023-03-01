@@ -14,6 +14,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AddTestScreen from 'screens/AdminScreens/AddTestScreen';
 import AddDocumentsScreen from 'screens/AdminScreens/AddDocumentsScreen';
 import AddVideosScreen from 'screens/AdminScreens/AddVideosScreen';
+import AdminContentListScreen from 'screens/AdminScreens/AdminContentListScreen';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -66,6 +67,11 @@ const myProfileStackGroup = () => {
         name="AddVideosScreen"
         component={AddVideosScreen}
         options={{headerTitle: 'Add Videos'}}
+      />
+      <Stack.Screen
+        name="AdminContentListScreen"
+        component={AdminContentListScreen}
+        options={{headerTitle: 'Admin Content List'}}
       />
     </Stack.Group>
   );

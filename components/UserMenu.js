@@ -7,7 +7,7 @@ import {useNavigation} from '@react-navigation/native';
 // import {loggedUserVar} from 'apollo/client';
 
 const menu = [
-  {name: 'My Courses', icon: 'book-open', screen: ''},
+  {name: 'My Courses', icon: 'book-open', screen: 'AdminContentListScreen'},
   {name: 'Downloads', icon: 'download', screen: 'AddVideosScreen'},
   {name: 'Bookmarks', icon: 'bookmark', screen: 'AddDocumentScreen'},
   {name: 'Payments', icon: 'credit-card', screen: 'AddTestScreen'},
