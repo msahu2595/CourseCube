@@ -106,7 +106,6 @@ const AdminVideoListScreen = () => {
           value={isEnabled}
         />
       </View>
-
       <FlatList
         bounces={true}
         data={data?.videos?.payload}

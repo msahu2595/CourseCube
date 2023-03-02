@@ -7,3 +7,4 @@ export * from './GOOGLE_LOG_IN';
 export * from './REFRESH_VIDEO';
 export * from './CREATE_ANSWER';
 export * from './CREATE_QUESTION';
+export * from './ADD_CONTENT';

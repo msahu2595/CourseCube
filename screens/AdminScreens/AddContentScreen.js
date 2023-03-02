@@ -1,12 +1,41 @@
 import {useMutation} from '@apollo/client';
 import {tw} from '@lib';
-import {ADD_CONTENT} from 'apollo/mutations/ADD_CONTENT';
+import {ADD_CONTENT} from '@mutations';
 import {Formik} from 'formik';
-import React from 'react';
-import {Button, ImageBackground, ScrollView, Text, TextInput, View} from 'react-native';
+import React, {useState} from 'react';
+import {
+  Button,
+  ImageBackground,
+  ScrollView,
+  Switch,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
+import * as yup from 'yup';
+
+const ValidationSchema = yup.object({
+  subject: yup.string().required('required'),
+  image: yup.string().url().required('required'),
+  title: yup.string().required('required'),
+  type: yup.string().oneOf(['Video', 'Test', 'Document']).required('required'),
+  media: yup.string().required('required'),
+  paid: yup.boolean().required('required'),
+  description: yup.string().required('required'),
+  language: yup.string().oneOf(['HI', 'EN']).required('required'),
+});
 
 const AddContentScreen = ({route}) => {
-  const [addContent, {data, loading, error}] = useMutation(ADD_CONTENT);
+  const [addContent, {loading, error}] = useMutation(ADD_CONTENT, {
+    onCompleted: data => {
+      console.log(data);
+      showMessage({
+        message: 'Your Content Successfully added.',
+        type: 'success',
+      });
+    },
+  });
 
   if (loading) return <Text>'Submitting...';</Text>;
   if (error) return <Text>`Submission error! ${error.message}`;</Text>;
@@ -15,7 +44,6 @@ const AddContentScreen = ({route}) => {
   const item = route.params;
 
   console.log(item);
-  console.log('data', data);
 
   return (
     <ScrollView>
@@ -49,14 +77,15 @@ const AddContentScreen = ({route}) => {
             subject: '',
             image: '',
             title: '',
-            type: '',
-            media: '',
-            paid: '',
+            type: item.__typename,
+            media: item._id,
+            paid: false,
             description: '',
-            language: '',
+            language: 'HI',
           }}
+          validationSchema={ValidationSchema}
           onSubmit={values => {
-            console.log(values);
+            console.log('onSubmit', values);
             addContent({
               variables: {
                 contentInput: {
@@ -72,7 +101,15 @@ const AddContentScreen = ({route}) => {
               },
             });
           }}>
-          {({handleChange, handleBlur, handleSubmit, values}) => (
+          {({
+            handleChange,
+            handleBlur,
+            setFieldValue,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+          }) => (
             <View>
               <TextInput
                 onChangeText={handleChange('subject')}
@@ -80,36 +117,41 @@ const AddContentScreen = ({route}) => {
                 value={values.subject}
                 placeholder="Subject"
               />
+              {errors.subject && touched.subject ? (
+                <Text>{errors.subject}</Text>
+              ) : null}
               <TextInput
                 onChangeText={handleChange('image')}
                 onBlur={handleBlur('image')}
                 value={values.image}
                 placeholder="image"
               />
+              {errors.image && touched.image ? (
+                <Text>{errors.image}</Text>
+              ) : null}
               <TextInput
                 onChangeText={handleChange('title')}
                 onBlur={handleBlur('title')}
                 value={values.title}
                 placeholder="title"
               />
-              <TextInput
-                onChangeText={handleChange('media')}
-                onBlur={handleBlur('media')}
-                value={values.media}
-                placeholder="media"
-              />
-              <TextInput
-                onChangeText={handleChange('type')}
-                onBlur={handleBlur('type')}
-                value={values.type}
-                placeholder="type"
-              />
-              <TextInput
-                onChangeText={handleChange('paid')}
-                onBlur={handleBlur('paid')}
-                value={values.paid}
-                placeholder="paid"
-              />
+              {errors.title && touched.title ? (
+                <Text>{errors.title}</Text>
+              ) : null}
+              <View style={tw`flex-1 flex-row  justify-between items-center `}>
+                <Text> Content paid </Text>
+                <Switch
+                  trackColor={{false: '#767577', true: '#81b0ff'}}
+                  thumbColor={values.paid ? '#f5dd4b' : '#f4f3f4'}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={value => {
+                    console.log(value);
+                    setFieldValue('paid', value);
+                  }}
+                  value={values.paid}
+                />
+              </View>
+              {errors.paid && touched.paid ? <Text>{errors.paid}</Text> : null}
               <TextInput
                 onChangeText={handleChange('description')}
                 onBlur={handleBlur('description')}
@@ -122,7 +164,16 @@ const AddContentScreen = ({route}) => {
                 value={values.language}
                 placeholder="language"
               />
-              <Button onPress={handleSubmit} title="Submit" />
+              {errors.language && touched.language ? (
+                <Text>{errors.language}</Text>
+              ) : null}
+              <Button
+                onPress={() => {
+                  console.log('handleSubmit', values);
+                  handleSubmit();
+                }}
+                title="Submit"
+              />
             </View>
           )}
         </Formik>
