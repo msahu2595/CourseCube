@@ -15,6 +15,7 @@ import AddTestScreen from 'screens/AdminScreens/AddTestScreen';
 import AddDocumentsScreen from 'screens/AdminScreens/AddDocumentsScreen';
 import AddVideosScreen from 'screens/AdminScreens/AddVideosScreen';
 import AdminContentListScreen from 'screens/AdminScreens/AdminContentListScreen';
+import AdminAddBundleScreen from 'screens/AdminScreens/AdminAddBundleScreen';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -72,6 +73,11 @@ const myProfileStackGroup = () => {
         name="AdminContentListScreen"
         component={AdminContentListScreen}
         options={{headerTitle: 'Admin Content List'}}
+      />
+      <Stack.Screen
+        name="AdminAddBundleScreen"
+        component={AdminAddBundleScreen}
+        options={{headerTitle: 'Admin Bundle List'}}
       />
     </Stack.Group>
   );

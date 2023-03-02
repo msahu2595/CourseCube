@@ -10,3 +10,4 @@ export * from './CREATE_ANSWER';
 export * from './CREATE_QUESTION';
 export * from './ADD_DOCUMENT';
 export * from './ADD_VIDEOS';
+export * from './ADD_BUNDLE';
