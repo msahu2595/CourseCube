@@ -1,15 +1,13 @@
 import React from 'react';
-import {Text, View} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import AddVideosScreen from './AddVideosScreen';
-import AddTestScreen from './AddTestScreen';
-import AddDocumentsScreen from './AddDocumentsScreen';
+import AdminContentVideoListScreen from './AdminContentVideoListScreen';
+import AdminContentTestListScreen from './AdminContentTestListScreen';
+import AdminContentDocumentListScreen from './AdminContentDocumentListScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
 const AdminContentListScreen = () => {
   return (
-    // <View>
     <Tab.Navigator
       initialRouteName="Feed"
       screenOptions={{
@@ -20,16 +18,16 @@ const AdminContentListScreen = () => {
       <Tab.Screen
         tabBarShowLabel={false}
         name="Videos"
-        component={AddVideosScreen}
+        component={AdminContentVideoListScreen}
       />
       <Tab.Screen
         tabBarShowLabel={false}
         name="Test"
-        component={AddTestScreen}
+        component={AdminContentTestListScreen}
       />
       <Tab.Screen
         name="Documents"
-        component={AddDocumentsScreen}
+        component={AdminContentDocumentListScreen}
         tabBarShowLabel={false}
       />
     </Tab.Navigator>

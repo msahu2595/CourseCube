@@ -10,44 +10,12 @@ import {
   TouchableOpacity,
   Switch,
 } from 'react-native';
-import {useQuery, gql} from '@apollo/client';
+import {CONTENTS} from '@queries';
+import {useQuery} from '@apollo/client';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
+import {SafeAreaContainer} from '@components';
 
 const Separator = () => <View style={tw`h-2`} />;
-
-const GET_TEST = gql`
-  query Contents($filter: ContentsFilterInput) {
-    contents(filter: $filter) {
-      payload {
-        subject
-        title
-        tags
-        type
-        updatedAt
-        validity
-        visible
-        purchases
-        purchased
-        price
-        paid
-        offerType
-        offer
-        likes
-        language
-        instructors
-        index
-        image
-        highlight
-        exams
-        enable
-        description
-        createdAt
-        categories
-        _id
-      }
-    }
-  }
-`;
 
 const width = Dimensions.get('window').width;
 
@@ -65,7 +33,9 @@ const Item = props => {
         style={tw`h-44 rounded-lg`}
       />
       <View style={tw`h-24 flex justify-between p-2`}>
-        <Text style={tw`text-xs font-bold text-red-700`}>Geography</Text>
+        <Text style={tw`text-xs font-bold text-red-700`}>
+          {props.item.subject}
+        </Text>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
@@ -73,7 +43,9 @@ const Item = props => {
           {props.item.title}
         </Text>
         <View>
-          <Text style={tw`text-[10px]`}>100 likes | 180 attempts</Text>
+          <Text style={tw`text-[10px]`}>
+            {props.item.likes} likes | 180 attempts
+          </Text>
         </View>
         <View style={tw`flex-row px-1 pb-1 flex justify-between `}>
           <Text
@@ -92,7 +64,7 @@ function AdminContentTestListScreen() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
 
-  const {loading, error, data, refetch, fetchMore} = useQuery(GET_TEST, {
+  const {loading, error, data, refetch, fetchMore} = useQuery(CONTENTS, {
     variables: {
       filter: {
         type: 'Test',
@@ -102,37 +74,40 @@ function AdminContentTestListScreen() {
 
   console.log(data);
 
-  if (loading) return <Text>Loading</Text>;
+  if (loading) return null;
   if (error) return <Text>Error: {error.message}</Text>;
   return (
-    <View>
-      <View style={tw`flex flex-row`}>
-        <TextInput
-          placeholder="Enter name to search"
-          value={search}
-          onChangeText={text => {
-            setSearch(text);
-            if (text.length > 2) {
+    <SafeAreaContainer>
+      <View style={tw`flex-row m-2`}>
+        <View style={tw`flex-1 flex-row items-center border rounded-lg`}>
+          <TextInput
+            placeholder="Enter name to search"
+            style={tw`flex-1`}
+            value={search}
+            onChangeText={text => {
+              setSearch(text);
+              if (text.length > 2) {
+                refetch({search: text});
+              } else {
+                refetch({search: ''});
+              }
+            }}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              setSearch('');
               refetch({search: ''});
-            } else {
-              refetch({search: ''});
-            }
-          }}
-        />
-        <TouchableOpacity
-          onPress={() => {
-            setSearch('');
-            refetch({search: ''});
-          }}>
-          <MaterialCommunityIcons name="clear" size={25} style={tw`p-1`} />
-        </TouchableOpacity>
+            }}>
+            <MaterialCommunityIcons name="clear" size={25} style={tw`p-1`} />
+          </TouchableOpacity>
+        </View>
         <Switch
           trackColor={{false: '#767577', true: '#81b0ff'}}
           thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
           ios_backgroundColor="#3e3e3e"
           onValueChange={value => {
             setIsEnabled(value);
-            refetch({filter: {enable: !value}});
+            refetch({filter: {type: 'Test', enable: !value}});
           }}
           value={isEnabled}
         />
@@ -157,7 +132,7 @@ function AdminContentTestListScreen() {
           })
         }
       />
-    </View>
+    </SafeAreaContainer>
   );
 }
 
