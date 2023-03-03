@@ -14,7 +14,24 @@ const AdminBundleListScreen = () => {
         tabBarActiveTintColor: '#e91e63',
         tabBarLabelStyle: {fontSize: 12},
         tabBarStyle: {backgroundColor: 'powderblue'},
-      }}></Tab.Navigator>
+      }}>
+      {' '}
+      <Tab.Screen
+        tabBarShowLabel={false}
+        name="Videos"
+        component={AdminContentVideoListScreen}
+      />
+      <Tab.Screen
+        tabBarShowLabel={false}
+        name="Test"
+        component={AdminContentTestListScreen}
+      />
+      <Tab.Screen
+        name="Documents"
+        component={AdminContentDocumentListScreen}
+        tabBarShowLabel={false}
+      />
+    </Tab.Navigator>
   );
 };
 
