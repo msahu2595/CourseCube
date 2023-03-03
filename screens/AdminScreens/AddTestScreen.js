@@ -10,39 +10,38 @@ import {Formik} from 'formik';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {TimePicker} from 'react-native-simple-time-picker';
 
-const ValidationSchema = () =>
-  Yup.object().shape({
-    title: Yup.string()
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
-      .required('Required title'),
-    duration: Yup.object().shape({
-      hours: Yup.number()
-        .min(0, 'Too Short!')
-        .max(4, 'Too Long!')
-        .required('Hours Required'),
-      minutes: Yup.number()
-        .min(0, 'Too Short!')
-        .max(60, 'Too Long!')
-        .required('Minutes Required'),
-      seconds: Yup.number()
-        .min(0, 'Too Short!')
-        .max(60, 'Too Long!')
-        .required('Seconds Required'),
-    }),
-    instructions: Yup.string()
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
-      .required('Instructions Required'),
-    totalMarks: Yup.number()
-      .required('Total Marks Required')
-      .positive()
-      .integer(),
-    negativeMark: Yup.number()
-      .required('Negative Marks Required')
-      .negative()
-      .integer(),
-  });
+const ValidationSchema = Yup.object().shape({
+  title: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required title'),
+  duration: Yup.object().shape({
+    hours: Yup.number()
+      .min(0, 'Too Short!')
+      .max(4, 'Too Long!')
+      .required('Hours Required'),
+    minutes: Yup.number()
+      .min(0, 'Too Short!')
+      .max(60, 'Too Long!')
+      .required('Minutes Required'),
+    seconds: Yup.number()
+      .min(0, 'Too Short!')
+      .max(60, 'Too Long!')
+      .required('Seconds Required'),
+  }),
+  instructions: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Instructions Required'),
+  totalMarks: Yup.number()
+    .required('Total Marks Required')
+    .positive()
+    .integer(),
+  negativeMark: Yup.number()
+    .required('Negative Marks Required')
+    .negative()
+    .integer(),
+});
 
 const AddTestScreen = () => {
   const [addTest, {loading, error}] = useMutation(ADD_TEST, {
