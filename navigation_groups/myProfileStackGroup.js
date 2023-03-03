@@ -11,6 +11,7 @@ import {
 import {TextInput, TouchableOpacity, View} from 'react-native';
 // Icon Import
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AdminHeadlineListScreen from 'screens/AdminScreens/AdminHeadlineListScreen';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -48,6 +49,11 @@ const myProfileStackGroup = () => {
         name="UserSearchScreen"
         component={UserSearchScreen}
         options={searchScreenOptions}
+      />
+      <Stack.Screen
+        name="AdminHeadlineListScreen"
+        component={AdminHeadlineListScreen}
+        options={{headerTitle: 'Admin Head line List'}}
       />
     </Stack.Group>
   );
