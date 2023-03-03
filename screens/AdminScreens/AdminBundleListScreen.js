@@ -1,34 +1,32 @@
 import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import AdminContentVideoListScreen from './AdminContentVideoListScreen';
-import AdminContentTestListScreen from './AdminContentTestListScreen';
-import AdminContentDocumentListScreen from './AdminContentDocumentListScreen';
+import AdminFullCourseBundleListScreen from './AdminFullCourseBundleListScreen';
+import AdminSubjectCourseBundleListScreen from './AdminSubjectCourseBundleListScreen';
+import AdminPlaylistCourseBundleListScreen from './AdminPlaylistCourseBundleListScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
 const AdminBundleListScreen = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Feed"
       screenOptions={{
         tabBarActiveTintColor: '#e91e63',
         tabBarLabelStyle: {fontSize: 12},
         tabBarStyle: {backgroundColor: 'powderblue'},
       }}>
-      {' '}
       <Tab.Screen
         tabBarShowLabel={false}
-        name="Videos"
-        component={AdminContentVideoListScreen}
+        name="Full Course"
+        component={AdminFullCourseBundleListScreen}
       />
       <Tab.Screen
         tabBarShowLabel={false}
-        name="Test"
-        component={AdminContentTestListScreen}
+        name="Subject Course"
+        component={AdminSubjectCourseBundleListScreen}
       />
       <Tab.Screen
-        name="Documents"
-        component={AdminContentDocumentListScreen}
+        name="Playlist Course"
+        component={AdminPlaylistCourseBundleListScreen}
         tabBarShowLabel={false}
       />
     </Tab.Navigator>
