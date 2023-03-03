@@ -1,20 +1,49 @@
-import React from 'react';
 import tw from '@lib/tailwind';
-import {useQuery} from '@apollo/client';
-import {Text, View, TouchableOpacity, ActivityIndicator} from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {STATISTICS} from '@queries';
+import {useQuery} from '@apollo/client';
+import React, {useCallback} from 'react';
+import {useNavigation} from '@react-navigation/native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {Text, View, TouchableOpacity, ActivityIndicator} from 'react-native';
 
 const statistics = [
-  {name: "Video's", icon: 'playcircleo', value: 'videos', type: 'Watched'},
-  {name: "PDF's", icon: 'pdffile1', value: 'documents', type: 'Read'},
-  {name: "Test's", icon: 'form', value: 'tests', type: 'Attempted'},
-  {name: "Q&A's", icon: 'questioncircleo', value: 'questions', type: 'Viewed'},
+  {
+    name: "Video's",
+    icon: 'playcircleo',
+    value: 'videos',
+    type: 'Watched',
+    screen: 'AdminBundleListScreen',
+  },
+  {
+    name: "PDF's",
+    icon: 'pdffile1',
+    value: 'documents',
+    type: 'Read',
+    screen: '',
+  },
+  {name: "Test's", icon: 'form', value: 'tests', type: 'Attempted', screen: ''},
+  {
+    name: "Q&A's",
+    icon: 'questioncircleo',
+    value: 'questions',
+    type: 'Viewed',
+    screen: '',
+  },
 ];
 
 const UserStatistics = () => {
   const {loading, error, data} = useQuery(STATISTICS);
   console.log(error?.message);
+
+  const navigation = useNavigation();
+
+  const handleMenuPress = useCallback(
+    screen => {
+      navigation.navigate(screen);
+    },
+    [navigation],
+  );
+
   return (
     <View style={tw`py-4 bg-white`}>
       <View style={tw`flex-row justify-between items-center px-4 bg-white`}>
@@ -22,9 +51,10 @@ const UserStatistics = () => {
       </View>
       <View
         style={tw`pt-2 flex-row flex-wrap items-center justify-evenly bg-white`}>
-        {statistics.map(({name, icon, value, type}) => {
+        {statistics.map(({name, icon, value, type, screen}) => {
           return (
             <TouchableOpacity
+              onPress={() => handleMenuPress(screen)}
               key={icon}
               style={tw.style(
                 'mb-2',
