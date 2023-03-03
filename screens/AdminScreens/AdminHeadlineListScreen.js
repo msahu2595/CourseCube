@@ -1,13 +1,15 @@
 import tw from '@lib/tailwind';
 import {HEADLINES} from '@queries';
 import {useQuery} from '@apollo/client';
-import React, {useCallback} from 'react';
-import {FlatList, Text, View} from 'react-native';
+import React, {useCallback, useRef} from 'react';
 import {NotificationItem, SafeAreaContainer} from '@components';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
+import {FlatList, Text, TextInput, TouchableOpacity, View} from 'react-native';
 
 const Separator = () => <View style={tw`h-2`} />;
 
 const AdminHeadlineListScreen = () => {
+  const searchInputRef = useRef(null);
   const {loading, error, data, refetch, fetchMore} = useQuery(HEADLINES);
 
   const renderItem = useCallback(
@@ -19,6 +21,31 @@ const AdminHeadlineListScreen = () => {
 
   return (
     <SafeAreaContainer>
+      <View style={tw`flex-row border rounded-lg items-center`}>
+        <TextInput
+          ref={searchInputRef}
+          placeholder="Enter name to search"
+          style={tw`flex-1`}
+          onChangeText={text => {
+            if (text.length > 2) {
+              refetch({search: text});
+            } else {
+              refetch({search: ''});
+            }
+          }}
+        />
+        <TouchableOpacity
+          onPress={() => {
+            searchInputRef.current?.clear();
+            refetch({search: ''});
+          }}>
+          <MaterialCommunityIcons
+            name="clear"
+            size={25}
+            style={tw`p-1 items-center`}
+          />
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={data?.headlines?.payload}
         renderItem={renderItem}
