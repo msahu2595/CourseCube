@@ -19,7 +19,6 @@ const AdminHeadlineListScreen = () => {
 
   return (
     <SafeAreaContainer>
-      <Text>AdminHeadlineListScreen</Text>
       <FlatList
         data={data?.headlines?.payload}
         renderItem={renderItem}
