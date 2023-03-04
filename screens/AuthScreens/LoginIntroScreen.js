@@ -11,15 +11,14 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {isLoggedInVar, loggedUserVar} from 'apollo/client';
 import messaging from '@react-native-firebase/messaging';
 import auth from '@react-native-firebase/auth';
+import {LoadingIndicator} from '@components';
 import {useMutation} from '@apollo/client';
 import {GOOGLE_LOG_IN} from '@mutations';
 import tw from '@lib/tailwind';
 
 GoogleSignin.configure({
   webClientId:
-    '712761607011-pen5ucovsnc3pm7uf6hgic9k63s3bq6a.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-  offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-  forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+    '712761607011-pen5ucovsnc3pm7uf6hgic9k63s3bq6a.apps.googleusercontent.com',
 });
 
 const LoginIntroScreen = ({navigation}) => {
@@ -55,31 +54,34 @@ const LoginIntroScreen = ({navigation}) => {
   });
 
   return (
-    <SafeAreaView style={tw`flex-1`}>
-      <StatusBar backgroundColor="#1b368d" />
-      <ImageBackground
-        source={require('@images/LoginBackground.png')}
-        resizeMode="cover"
-        style={tw`flex-1 justify-end p-4`}>
-        <Text style={tw`text-white text-3xl leading-10 font-avBold`}>
-          Lakshya with BHAVESH GAJPAL
-        </Text>
-        <Text style={tw`text-white font-avReg text-base mt-2`}>
-          Planting the seeds of knowledge.
-        </Text>
-        <Text style={tw`text-white font-avReg text-xs mb-4 mt-2`}>
-          CGPSC/CGVYAPAM/SSC/BANKING/RAILWAYS
-        </Text>
-        <TouchableOpacity
-          disabled={loading}
-          onPress={signIn}
-          style={tw`bg-green-500 justify-center items-center p-3 rounded-lg`}>
-          <Text style={tw`text-white font-avBold text-base`}>
-            Login with Google
+    <>
+      <SafeAreaView style={tw`flex-1`}>
+        <StatusBar backgroundColor="#1b368d" />
+        <ImageBackground
+          source={require('@images/LoginBackground.png')}
+          resizeMode="cover"
+          style={tw`flex-1 justify-end p-4`}>
+          <Text style={tw`text-white text-3xl leading-10 font-avBold`}>
+            Lakshya with BHAVESH GAJPAL
           </Text>
-        </TouchableOpacity>
-      </ImageBackground>
-    </SafeAreaView>
+          <Text style={tw`text-white font-avReg text-base mt-2`}>
+            Planting the seeds of knowledge.
+          </Text>
+          <Text style={tw`text-white font-avReg text-xs mb-4 mt-2`}>
+            CGPSC/CGVYAPAM/SSC/BANKING/RAILWAYS
+          </Text>
+          <TouchableOpacity
+            disabled={loading}
+            onPress={signIn}
+            style={tw`bg-green-500 justify-center items-center p-3 rounded-lg`}>
+            <Text style={tw`text-white font-avBold text-base`}>
+              Login with Google
+            </Text>
+          </TouchableOpacity>
+        </ImageBackground>
+      </SafeAreaView>
+      <LoadingIndicator loading={loading} />
+    </>
   );
 };
 

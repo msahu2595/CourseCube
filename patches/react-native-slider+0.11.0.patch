@@ -1,0 +1,55 @@
+diff --git a/node_modules/react-native-slider/lib/Slider.js b/node_modules/react-native-slider/lib/Slider.js
+index c640410..07bc489 100644
+--- a/node_modules/react-native-slider/lib/Slider.js
++++ b/node_modules/react-native-slider/lib/Slider.js
+@@ -549,13 +549,13 @@ return false;}}]);return Slider;}(_react.PureComponent);Slider.propTypes={ /**
+      * the slider is released).
+      */onSlidingComplete:_propTypes2.default.func, /**
+      * The style applied to the slider container.
+-     */style:_reactNative.ViewPropTypes.style, /**
++     */style:_propTypes2.default.oneOfType([_propTypes2.default.object,_propTypes2.default.array]), /**
+      * The style applied to the track.
+-     */trackStyle:_reactNative.ViewPropTypes.style, /**
++     */trackStyle:_propTypes2.default.oneOfType([_propTypes2.default.object,_propTypes2.default.array]), /**
+      * The style applied to the thumb.
+-     */thumbStyle:_reactNative.ViewPropTypes.style, /**
++     */thumbStyle:_propTypes2.default.oneOfType([_propTypes2.default.object,_propTypes2.default.array]), /**
+      * Sets an image for the thumb.
+-     */thumbImage:_reactNative.Image.propTypes.source, /**
++     */thumbImage:_propTypes2.default.number, /**
+      * Set this to true to visually see the thumb touch rect in green.
+      */debugTouchArea:_propTypes2.default.bool, /**
+      * Set to true to animate values with default 'timing' animation type
+diff --git a/node_modules/react-native-slider/src/Slider.js b/node_modules/react-native-slider/src/Slider.js
+index 37deee5..1b0ade1 100644
+--- a/node_modules/react-native-slider/src/Slider.js
++++ b/node_modules/react-native-slider/src/Slider.js
+@@ -11,7 +11,6 @@ import {
+   PanResponder,
+   View,
+   Easing,
+-  ViewPropTypes
+ } from "react-native";
+ 
+ import PropTypes from 'prop-types';
+@@ -131,17 +130,17 @@ export default class Slider extends PureComponent {
+     /**
+      * The style applied to the slider container.
+      */
+-    style: ViewPropTypes.style,
++    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+ 
+     /**
+      * The style applied to the track.
+      */
+-    trackStyle: ViewPropTypes.style,
++    trackStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+ 
+     /**
+      * The style applied to the thumb.
+      */
+-    thumbStyle: ViewPropTypes.style,
++    thumbStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+ 
+     /**
+      * Sets an image for the thumb.

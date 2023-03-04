@@ -27,6 +27,9 @@ const contentViewStackGroup = () => {
         component={VideoViewScreen}
         options={{
           headerShown: false,
+          orientation: 'portrait',
+          navigationBarHidden: true,
+          autoHideHomeIndicator: true,
         }}
       />
       <Stack.Screen

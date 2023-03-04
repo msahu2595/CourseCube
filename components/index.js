@@ -31,6 +31,9 @@ import NotificationBar, {NotificationItem} from './NotificationBar';
 import CurrentAffairBar, {CurrentAffairItem} from './CurrentAffairBar';
 // App Advert Imports
 import {ShareApp, FollowUs, GetCallFromUs, GetSubscription} from './AppAdverts';
+//
+import LoadingIndicator from './LoadingIndicator';
+import NetworkStatusProvider from './NetworkStatusProvider';
 
 export {
   FocusAwareStatusBar,
@@ -76,4 +79,7 @@ export {
   FollowUs,
   GetCallFromUs,
   GetSubscription,
+  //
+  LoadingIndicator,
+  NetworkStatusProvider,
 };

@@ -1,10 +1,9 @@
 import React from 'react';
-import tw from '@lib/tailwind'; //Tailwind Imports
-import {View, Text, Image, TextInput, TouchableOpacity} from 'react-native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'; // Tab Navigator Import
-import {HomeScreen, MyProfileScreen, CommunityScreen} from '@screens'; // Screens Import
-// Icon Imports
+import tw from '@lib/tailwind';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
+import {HomeScreen, MyProfileScreen, CommunityScreen} from '@screens';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Tab = createBottomTabNavigator(); // Created Bottom Tab Navigator
@@ -15,7 +14,6 @@ const MainBottomTabNavigator = () => {
       screenOptions={{
         headerShown: true,
         headerShadowVisible: true,
-        tabBarStyle: tw`h-14 pb-1`,
       }}>
       <Tab.Screen
         name="Home"
@@ -38,28 +36,30 @@ const MainBottomTabNavigator = () => {
 
 export default MainBottomTabNavigator;
 
-const homeScreenOptions = {
-  header: ({navigation}) => {
+const homeScreenOptions = ({navigation}) => ({
+  headerTitle: 'Lakshya PSC Academy',
+  headerStyle: tw`bg-emerald-600`,
+  headerTitleStyle: tw`font-avSemi`,
+  headerTintColor: tw.color('white'),
+  headerRight: () => {
     return (
-      <View
-        style={tw`h-14 px-4 flex-row justify-between items-center bg-emerald-600`}>
-        <View style={tw`flex-1 flex-row items-center`}>
-          <Image
-            source={require('@images/Logo.png')}
-            resizeMode="contain"
-            style={tw.style({height: 36, width: 36})}
-          />
-          <Text
-            style={tw`flex-1 font-avSemi text-base text-white pl-4`}
-            numberOfLines={1}>
-            Lakshya PSC Academy
-          </Text>
-        </View>
+      <View style={tw`flex-row`}>
         <TouchableOpacity
+          style={tw`pr-3`}
           onPress={() => navigation.navigate('SearchScreen')}
           hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
           <MaterialCommunityIcons
             name="magnify"
+            size={28}
+            color={tw.color('white')}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={tw`pr-3`}
+          onPress={() => navigation.navigate('MyNotificationScreen')}
+          hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
+          <MaterialCommunityIcons
+            name="bell"
             size={28}
             color={tw.color('white')}
           />
@@ -88,7 +88,7 @@ const homeScreenOptions = {
       />
     );
   },
-};
+});
 
 const myProfileScreenOptions = ({navigation}) => ({
   headerTitle: 'My Profile',
@@ -147,47 +147,37 @@ const myProfileScreenOptions = ({navigation}) => ({
   },
 });
 
-const communityScreenOptions = {
-  header: ({navigation}) => (
-    <View style={tw`h-14 px-4 flex-row bg-red-600 items-center`}>
-      <View style={tw`flex-1 flex-row items-center bg-white rounded-lg shadow`}>
-        <MaterialCommunityIcons
-          name="magnify"
-          size={28}
-          color={tw.color('red-600')}
-          style={tw`px-2`}
-        />
-        <TextInput
-          style={tw.style(
-            'py-1',
-            'flex-1',
-            'font-avReg',
-            'text-base',
-            'text-black',
-            'rounded',
-            {
-              paddingVertical: 0,
-            },
-          )}
-          returnKeyType="search"
-          returnKeyLabel="Search"
-          placeholder="Type search keyword here ..."
-          placeholderTextColor={tw.color('gray-400')}
-          onSubmitEditing={() => console.log('Pressed return key !!!')}
-        />
+const communityScreenOptions = ({navigation}) => ({
+  headerTitle: 'Community',
+  headerStyle: tw`bg-red-600`,
+  headerTitleStyle: tw`font-avSemi`,
+  headerTintColor: tw.color('white'),
+  headerRight: () => {
+    return (
+      <View style={tw`flex-row`}>
+        <TouchableOpacity
+          style={tw`pr-3`}
+          onPress={() => navigation.navigate('UserSearchScreen')}
+          hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
+          <MaterialCommunityIcons
+            name="magnify"
+            size={28}
+            color={tw.color('white')}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={tw`pr-3`}
+          onPress={() => navigation.navigate('CommunityNotificationScreen')}
+          hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
+          <MaterialCommunityIcons
+            name="bell"
+            size={28}
+            color={tw.color('white')}
+          />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={tw`pl-2`}
-        onPress={() => navigation.navigate('CommunityNotificationScreen')}
-        hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
-        <MaterialCommunityIcons
-          name="bell"
-          size={28}
-          color={tw.color('white')}
-        />
-      </TouchableOpacity>
-    </View>
-  ),
+    );
+  },
   tabBarLabel: ({focused}) => {
     return (
       <Text
@@ -209,4 +199,4 @@ const communityScreenOptions = {
       />
     );
   },
-};
+});

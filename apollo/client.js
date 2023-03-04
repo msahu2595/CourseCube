@@ -97,7 +97,7 @@ export const errorLink = onError(error => {
 });
 
 const httpLink = createHttpLink({
-  uri: 'https://course-cube-server.onrender.com/',
+  uri: 'https://course-cube-server-python-env.onrender.com/',
 });
 
 async function singleSet(name, token) {
