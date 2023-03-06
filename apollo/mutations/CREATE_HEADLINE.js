@@ -1,6 +1,6 @@
 import {gql} from '@apollo/client';
 
-export const ADD_NOTIFICATION = gql`
+export const ADD_HEADLINE = gql`
 Mutation($headlineInput: HeadlineInput!) {
   createHeadline(headlineInput: $headlineInput) {
     code

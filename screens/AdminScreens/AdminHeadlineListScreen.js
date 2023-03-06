@@ -15,6 +15,8 @@ import {
   View,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+// import {ADD_HEADLINE} from '@mutations';
+import AddHeadlineScreen from './AddHeadlineScreen';
 
 const Separator = () => <View style={tw`h-2`} />;
 
@@ -68,9 +70,17 @@ const AdminHeadlineListScreen = () => {
               setModalVisible(!modalVisible);
             }}>
             <View>
-              <Text>Hello World</Text>
+              <Text>{AddHeadlineScreen}</Text>
+              <TextInput
+                style={tw`border`}
+                placeholder="CreateHeadline"
+                onChangeText={Text}
+                value={text}
+              />
               <Pressable onPress={() => setModalVisible(!modalVisible)}>
-                <Text>Hide Modal</Text>
+                <View style={tw` p-6 items-center `}>
+                  <Text style={tw`border p-2  `}>Hide Modal</Text>
+                </View>
               </Pressable>
             </View>
           </Modal>
