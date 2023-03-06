@@ -77,7 +77,7 @@ const AdminHeadlineListScreen = () => {
           <Pressable onPress={() => setModalVisible(true)}>
             <MaterialCommunityIcons
               name="plus"
-              size={28}
+              size={30}
               style={tw`pt-4 pr-2 items-center`}
             />
           </Pressable>
