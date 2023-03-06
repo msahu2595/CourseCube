@@ -1,15 +1,25 @@
 import tw from '@lib/tailwind';
 import {HEADLINES} from '@queries';
 import {useQuery} from '@apollo/client';
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {NotificationItem, SafeAreaContainer} from '@components';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {FlatList, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  FlatList,
+  Modal,
+  Pressable,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Separator = () => <View style={tw`h-2`} />;
 
 const AdminHeadlineListScreen = () => {
+  const [modalVisible, setModalVisible] = useState(false);
   const searchInputRef = useRef(null);
   const {loading, error, data, refetch, fetchMore} = useQuery(HEADLINES);
 
@@ -48,11 +58,30 @@ const AdminHeadlineListScreen = () => {
             />
           </TouchableOpacity>
         </View>
-        <MaterialCommunityIcons
-          name="plus"
-          size={25}
-          style={tw`pt-5 pr-2 justify-center items-center`}
-        />
+        <View>
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed');
+              setModalVisible(!modalVisible);
+            }}>
+            <View>
+              <Text>Hello World</Text>
+              <Pressable onPress={() => setModalVisible(!modalVisible)}>
+                <Text>Hide Modal</Text>
+              </Pressable>
+            </View>
+          </Modal>
+          <Pressable onPress={() => setModalVisible(true)}>
+            <MaterialCommunityIcons
+              name="plus"
+              size={28}
+              style={tw`pt-4 pr-2 items-center`}
+            />
+          </Pressable>
+        </View>
       </View>
       <FlatList
         data={data?.headlines?.payload}
