@@ -3,8 +3,9 @@ import {HEADLINES} from '@queries';
 import {useQuery} from '@apollo/client';
 import React, {useCallback, useRef} from 'react';
 import {NotificationItem, SafeAreaContainer} from '@components';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {FlatList, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Separator = () => <View style={tw`h-2`} />;
 
@@ -21,30 +22,37 @@ const AdminHeadlineListScreen = () => {
 
   return (
     <SafeAreaContainer>
-      <View style={tw`flex-row border rounded-lg items-center`}>
-        <TextInput
-          ref={searchInputRef}
-          placeholder="Enter name to search"
-          style={tw`flex-1`}
-          onChangeText={text => {
-            if (text.length > 2) {
-              refetch({search: text});
-            } else {
-              refetch({search: ''});
-            }
-          }}
-        />
-        <TouchableOpacity
-          onPress={() => {
-            searchInputRef.current?.clear();
-            refetch({search: ''});
-          }}>
-          <MaterialCommunityIcons
-            name="clear"
-            size={25}
-            style={tw`p-1 items-center`}
+      <View style={tw`flex-row`}>
+        <View style={tw`flex-1 flex-row border rounded-lg items-center m-2`}>
+          <TextInput
+            ref={searchInputRef}
+            placeholder="Enter name to search"
+            style={tw`flex-1`}
+            onChangeText={text => {
+              if (text.length > 2) {
+                refetch({search: text});
+              } else {
+                refetch({search: ''});
+              }
+            }}
           />
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              searchInputRef.current?.clear();
+              refetch({search: ''});
+            }}>
+            <MaterialIcons
+              name="clear"
+              size={25}
+              style={tw`p-1 items-center`}
+            />
+          </TouchableOpacity>
+        </View>
+        <MaterialCommunityIcons
+          name="plus"
+          size={25}
+          style={tw`pt-5 pr-2 justify-center items-center`}
+        />
       </View>
       <FlatList
         data={data?.headlines?.payload}
