@@ -57,6 +57,16 @@ export const cache = new InMemoryCache({
             };
           },
         },
+        articles: {
+          keyArgs: false,
+          merge(existing = {payload: []}, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+              payload: [...existing.payload, ...incoming.payload],
+            };
+          },
+        },
         isLoggedIn: {
           read() {
             return isLoggedInVar();

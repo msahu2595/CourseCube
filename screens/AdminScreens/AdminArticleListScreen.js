@@ -3,7 +3,6 @@
 import {useQuery} from '@apollo/client';
 import React, {useCallback, useState} from 'react';
 import {
-  Button,
   Dimensions,
   FlatList,
   ImageBackground,
@@ -15,9 +14,8 @@ import {
   View,
 } from 'react-native';
 import tw from '@lib/tailwind';
-import {ARTICLES, VIDEOS} from '@queries';
+import {ARTICLES} from '@queries';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
 
 const AdminArticleListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
