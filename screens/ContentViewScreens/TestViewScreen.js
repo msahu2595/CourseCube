@@ -4,7 +4,6 @@ import {
   Image,
   Alert,
   FlatList,
-  StatusBar,
   ScrollView,
   TouchableOpacity,
   useWindowDimensions,
@@ -12,8 +11,8 @@ import {
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import {useQuery} from '@apollo/client';
+import {SafeAreaContainer} from '@components';
 import LinearGradient from 'react-native-linear-gradient';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import React, {memo, useCallback, useRef, useState} from 'react';
 
 const TestViewScreen = ({route}) => {
@@ -79,11 +78,7 @@ const TestViewScreen = ({route}) => {
   console.log({questions});
 
   return (
-    <SafeAreaView style={tw`flex-1 bg-gray-100`}>
-      <StatusBar
-        backgroundColor={tw.color('amber-200')}
-        barStyle="dark-content"
-      />
+    <SafeAreaContainer statusBgColor={tw.color('amber-200')}>
       <LinearGradient
         locations={[0, 0.2, 0.5]}
         colors={[
@@ -134,7 +129,7 @@ const TestViewScreen = ({route}) => {
             scrollEnabled={false}
             renderItem={renderItem}
             keyExtractor={item => item._id}
-            contentContainerStyle={tw`border`}
+            contentContainerStyle={tw``}
             showsHorizontalScrollIndicator={false}
           />
         </View>
@@ -166,7 +161,7 @@ const TestViewScreen = ({route}) => {
           </TouchableOpacity>
         </View>
       </LinearGradient>
-    </SafeAreaView>
+    </SafeAreaContainer>
   );
 };
 
