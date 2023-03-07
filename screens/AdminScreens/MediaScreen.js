@@ -6,6 +6,7 @@ import {
   AdminVideoListScreen,
   AdminTestListScreen,
   AdminDocumentListScreen,
+  AdminArticleListScreen,
 } from '@screens';
 
 const Tab = createMaterialTopTabNavigator();
@@ -27,7 +28,12 @@ const MediaScreen = () => {
         <Tab.Screen
           name="AdminDocumentListScreen"
           component={AdminDocumentListScreen}
-          options={{title: 'Documents'}}
+          options={{title: 'Docs'}}
+        />
+        <Tab.Screen
+          name="AdminArticleListScreen"
+          component={AdminArticleListScreen}
+          options={{title: 'Articles'}}
         />
       </Tab.Navigator>
     </SafeAreaContainer>

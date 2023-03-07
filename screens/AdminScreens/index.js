@@ -2,6 +2,8 @@ import MediaScreen from './MediaScreen';
 import AdminVideoListScreen from './AdminVideoListScreen';
 import AdminTestListScreen from './AdminTestListScreen';
 import AdminDocumentListScreen from './AdminDocumentListScreen';
+import AdminArticleListScreen from './AdminArticleListScreen';
+
 import AddContentScreen from './AddContentScreen';
 
 export {
@@ -9,5 +11,6 @@ export {
   AdminVideoListScreen,
   AdminTestListScreen,
   AdminDocumentListScreen,
+  AdminArticleListScreen,
   AddContentScreen,
 };
