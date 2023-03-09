@@ -8,12 +8,13 @@ import {
   TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
+import dayjs from 'dayjs';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import {useQuery} from '@apollo/client';
 import {SafeAreaContainer} from '@components';
 import LinearGradient from 'react-native-linear-gradient';
-import React, {memo, useCallback, useRef, useState} from 'react';
+import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
 
 const TestViewScreen = ({route}) => {
   const flatListRef = useRef();
@@ -21,7 +22,7 @@ const TestViewScreen = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [questions, setQuestions] = useState([]);
 
-  const {loading: queryLoading} = useQuery(CONTENT, {
+  const {loading: queryLoading, data: queryData} = useQuery(CONTENT, {
     variables: {contentId: route.params.contentId},
     onCompleted: data => {
       setQuestions(data?.content?.payload?.media?.questions);
@@ -74,8 +75,6 @@ const TestViewScreen = ({route}) => {
     ({item}) => <Item {...item} onSelect={handleSelect} />,
     [handleSelect],
   );
-
-  console.log({questions});
 
   return (
     <SafeAreaContainer statusBgColor={tw.color('amber-200')}>
@@ -134,10 +133,10 @@ const TestViewScreen = ({route}) => {
           />
         </View>
         <View style={tw`flex-row items-center justify-between p-2 pt-1 pb-3`}>
-          <Text
-            style={tw`tracking-widest font-avSemi rounded text-xs px-4 py-2 bg-black text-white shadow-sm`}>
-            01:33
-          </Text>
+          <Duration
+            duration={queryData?.content?.payload?.media?.duration}
+            style={tw`w-18 text-center py-2 tracking-widest font-avSemi rounded text-xs bg-black text-white shadow-sm`}
+          />
           <TouchableOpacity onPress={handlePrev}>
             <Text
               style={tw`font-avSemi rounded text-xs px-4 py-2 bg-amber-100 text-amber-600 shadow-sm`}>
@@ -164,6 +163,29 @@ const TestViewScreen = ({route}) => {
     </SafeAreaContainer>
   );
 };
+
+const Duration = memo(({duration, style}) => {
+  const [time, setTime] = useState(dayjs.duration(duration).asMilliseconds());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(prev => {
+        if (prev) {
+          return prev - 1000;
+        } else {
+          return 0;
+        }
+      });
+    }, 1000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  return (
+    <Text style={style}>{new Date(time).toISOString().slice(11, 19)}</Text>
+  );
+});
 
 const Item = memo(props => {
   const width = useWindowDimensions().width;
@@ -219,8 +241,12 @@ const Item = memo(props => {
               style={tw`flex-row p-4 bg-${
                 props?.selectedIndex === index ? 'green-400' : 'yellow-50'
               } my-1 shadow-sm rounded-lg`}>
-              <Text style={tw`font-avReg text-sm`}>{index + 1}.</Text>
-              <Text style={tw`font-avReg text-sm pl-2`}>{value}</Text>
+              <Text style={tw`font-avReg text-black text-sm`}>
+                {index + 1}.
+              </Text>
+              <Text style={tw`font-avReg text-black text-sm pl-2`}>
+                {value}
+              </Text>
             </TouchableOpacity>
           );
         })}
