@@ -256,11 +256,6 @@ const AddHeadlineModal = ({visible, onClose}) => {
               )}
             </Formik>
           </View>
-          <Pressable onPress={onClose}>
-            <View style={tw` p-6 items-center `}>
-              <Text style={tw`border p-2  `}>Hide Modal</Text>
-            </View>
-          </Pressable>
         </View>
       </View>
     </Modal>
