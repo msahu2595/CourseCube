@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useEffect, useState} from 'react';
+import React, {memo, useCallback, useEffect, useMemo, useState} from 'react';
 import {useQuery} from '@apollo/client';
 import playerRef from 'playerRef';
 import {CONTENT} from '@queries';
@@ -21,17 +21,26 @@ import Orientation, {useLockListener} from 'react-native-orientation-locker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const VideoPlayer = ({contentId}) => {
+  const {width, height} = useWindowDimensions();
+
   const {loading: queryLoading, data: queryData} = useQuery(CONTENT, {
     variables: {contentId},
   });
 
   const data = queryData?.content?.payload || {};
 
-  console.log(queryLoading, data);
-
   return (
     <>
-      <Player />
+      {queryLoading ? (
+        <View
+          style={tw.style('bg-black', {
+            width: width < height ? width : (height * 16) / 9,
+            height: height < width ? height : (width * 9) / 16,
+          })}
+        />
+      ) : (
+        <Player link={data?.media?.link} />
+      )}
       <LinearGradient
         locations={[0, 0.2, 0.5]}
         colors={[
@@ -125,7 +134,7 @@ const VideoPlayer = ({contentId}) => {
 
 export default VideoPlayer;
 
-const Player = memo(() => {
+const Player = memo(({link}) => {
   const {width, height} = useWindowDimensions();
   const navigation = useNavigation();
 
@@ -138,6 +147,11 @@ const Player = memo(() => {
   const [playbackRates, setPlaybackRates] = useState([]);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PLAYING);
+
+  const videoId = useMemo(() => {
+    const arr = link?.split('https://youtu.be/');
+    return arr[1];
+  }, [link]);
 
   useEffect(() => {
     let interval = setInterval(() => {
@@ -307,7 +321,7 @@ const Player = memo(() => {
           key={`Player-${playerKey}`}
           width={width < height ? width : (height * 16) / 9}
           height={height < width ? height : (width * 9) / 16}
-          videoId={'zDq-FFTvpQI'}
+          videoId={videoId}
           mute={mute}
           playbackRate={rate}
           forceAndroidAutoplay={true}
@@ -358,7 +372,7 @@ const Player = memo(() => {
               <View style={tw`flex-row self-start`}>
                 <TouchableOpacity
                   onPress={onToggleSpeedVideo}
-                  disabled={playbackRates.length < 2}
+                  disabled={isLoading || playbackRates.length < 2}
                   style={tw`m-1 px-1 min-w-8 h-8 items-center justify-center bg-gray-300 rounded shadow`}>
                   <Text style={tw`font-avSemi text-sm text-gray-600`}>
                     {rate}x
@@ -366,6 +380,7 @@ const Player = memo(() => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={onToggleMute}
+                  disabled={isLoading}
                   style={tw`m-1 w-8 h-8 items-center justify-center ${
                     mute ? 'bg-blue-600' : 'bg-gray-300'
                   } rounded shadow`}>
@@ -378,14 +393,14 @@ const Player = memo(() => {
               </View>
             </View>
             <View style={tw`h-2/4 flex-row justify-around items-center`}>
-              <TouchableOpacity onPress={onRewindVideo}>
+              <TouchableOpacity onPress={onRewindVideo} disabled={isLoading}>
                 <MaterialCommunityIcons
                   name="rewind-10"
                   size={32}
                   color={tw.color('gray-300')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={onForwardVideo}>
+              <TouchableOpacity onPress={onForwardVideo} disabled={isLoading}>
                 <MaterialCommunityIcons
                   name="fast-forward-10"
                   size={32}

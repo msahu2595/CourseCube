@@ -39,10 +39,6 @@ export const CONTENTS = gql`
             thumbnail
             link
             time
-            urls {
-              url
-              format
-            }
             enable
             createdAt
             updatedAt
@@ -55,7 +51,6 @@ export const CONTENTS = gql`
             instructions
             duration
             totalMarks
-            negativeMark
             enable
             createdAt
             updatedAt
