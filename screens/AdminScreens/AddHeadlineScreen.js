@@ -1,39 +1,25 @@
-import {ADD_HEADLINE} from '@mutations';
-import {useMutation} from '@apollo/client';
-import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {SafeAreaContainer} from '@components';
+import {useMutation} from '@apollo/client';
+import {ADD_HEADLINE} from '@mutations';
+import * as Yup from 'yup';
 import React from 'react';
 import tw from 'twrnc';
-import {showMessage} from 'react-native-flash-message';
-import * as Yup from 'yup';
 import {Formik} from 'formik';
+import {showMessage} from 'react-native-flash-message';
+import {
+  ActivityIndicator,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ValidationSchema = Yup.object().shape({
   url: Yup.string().url('Invalid URL').required('URL is required'),
 });
 const AddHeadlineScreen = () => {
-  const [CreateHeadline, {loading, error}] = useMutation(ADD_HEADLINE, {
-    onCompleted: data => {
-      console.log('onCompleted', data);
-      showMessage({
-        message: 'Haedline Added Successfully.',
-        type: 'success',
-      });
-    },
-    onError: error => {
-      console.log('onError', error.message);
-      showMessage({
-        message: 'Error.',
-        type: 'error',
-      });
-    },
-  });
-
-  console.log(loading, error);
-
-  if (loading) return <Text>'Submitting...'</Text>;
-  if (error) return <Text>`Submission error! ${error.message}`</Text>;
+  console.log(loading);
   return (
     <SafeAreaContainer>
       <View style={tw`m-1 shadow p-1`}>
@@ -44,7 +30,7 @@ const AddHeadlineScreen = () => {
           validationSchema={ValidationSchema}
           onSubmit={values => {
             console.log(values);
-            CreateHeadline({
+            createHeadline({
               variables: {
                 videoLink: values.description,
               },
@@ -59,7 +45,7 @@ const AddHeadlineScreen = () => {
             touched,
           }) => (
             <>
-              <Text style={tw`mx-2`}>Url :</Text>
+              <Text style={tw`mx-2`}>Description :</Text>
               <View
                 style={tw`mt-2 flex flex-row border border-black rounded-lg`}>
                 <MaterialCommunityIcons
@@ -69,6 +55,7 @@ const AddHeadlineScreen = () => {
                   size={25}
                 />
                 <TextInput
+                  editable={!loading}
                   placeholder="Enter description"
                   onChangeText={handleChange('description')}
                   value={values.description}
@@ -76,9 +63,12 @@ const AddHeadlineScreen = () => {
                   style={tw`h-10 w-80 p-2 font-popLight`}
                 />
               </View>
-              {errors.url && touched.url && <Text>{errors.url}</Text>}
+              {errors.description && touched.description && (
+                <Text>{errors.description}</Text>
+              )}
               <View style={tw`m-3 shadow-sm`}>
                 <TouchableOpacity
+                  disabled={loading}
                   title="Submit"
                   onPress={() => {
                     console.log('submit');
@@ -89,6 +79,9 @@ const AddHeadlineScreen = () => {
                     style={tw`text-white text-center text-base font-popSemi`}>
                     Submit
                   </Text>
+                  {loading && (
+                    <ActivityIndicator animating={true} size="small" />
+                  )}
                 </TouchableOpacity>
               </View>
             </>
