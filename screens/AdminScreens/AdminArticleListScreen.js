@@ -3,12 +3,10 @@
 import {useQuery} from '@apollo/client';
 import React, {useCallback, useState} from 'react';
 import {
-  Dimensions,
+  Button,
   FlatList,
-  ImageBackground,
   RefreshControl,
   Switch,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -16,53 +14,32 @@ import {
 import tw from '@lib/tailwind';
 import {ARTICLES} from '@queries';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {CurrentAffairItem, SafeAreaContainer} from '@components';
+import LinearGradient from 'react-native-linear-gradient';
+import {useNavigation} from '@react-navigation/native';
 
 const AdminArticleListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
 
-  const {loading, error, data, refetch, fetchMore} = useQuery(ARTICLES, {
+  const navigation = useNavigation();
+
+  const {loading, data, refetch, fetchMore} = useQuery(ARTICLES, {
     variables: {offset: 0},
   });
-  console.log(data, error, loading);
 
-  const width = Dimensions.get('window').width;
+  // console.log(data.articles.payload);
   // console.log(width);
   const Item = useCallback(
-    ({item}) => (
-      <View style={tw.style(` rounded-lg bg-gray-200`, {width: width / 2 - 8})}>
-        <ImageBackground
-          source={{
-            uri: item.thumbnail,
-          }}
-          resizeMode="cover"
-          style={tw`h-40  justify-between`}>
-          <View style={tw` h-10 `}>
-            <Text
-              style={tw` self-end text-xs  text-white p-1 bg-black bg-opacity-40  rounded-bl-lg `}>
-              {item.time}
-            </Text>
-          </View>
-          <View
-            style={tw`bg-black bg-opacity-50 text-white p-1 h-10 justify-center`}>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={tw`text-xs px-1 text-white`}>
-              {item.title}
-            </Text>
-          </View>
-        </ImageBackground>
-      </View>
-    ),
+    ({item, index}) => <CurrentAffairItem index={index} {...item} />,
     [],
   );
 
   return (
     <View style={tw`flex-1`}>
-      <View style={tw`flex-row`}>
+      <View style={tw`flex-row items-center m-2`}>
         <View
-          style={tw`flex-1 flex-row m-2 justify-between rounded-lg px-2 items-center border`}>
+          style={tw`flex-1 flex-row  justify-between rounded-lg px-2 items-center border`}>
           <TextInput
             placeholder="Search"
             onChangeText={text => {
@@ -88,6 +65,7 @@ const AdminArticleListScreen = () => {
 
         <Switch
           trackColor={{false: '#767577', true: '#81b0ff'}}
+          style={tw`ml-2`}
           thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
           ios_backgroundColor="#3e3e3e"
           onValueChange={value => {
@@ -96,29 +74,56 @@ const AdminArticleListScreen = () => {
           }}
           value={isEnabled}
         />
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AdminCreateArticleScreen')}>
+          <MaterialIcons
+            name="add-circle"
+            size={40}
+            color={tw.color('blue-600')}
+          />
+        </TouchableOpacity>
+        {/* <View style={tw` `}>
+          <Button
+            title="+"
+            onPress={() => navigation.navigate('AdminCreateArticleScreen')}
+          />
+        </View> */}
       </View>
-      <FlatList
-        bounces={true}
-        data={data?.articles?.payload}
-        renderItem={({item}) => <Item item={item} />}
-        keyExtractor={item => item._id}
-        numColumns={2}
-        columnWrapperStyle={tw`justify-between`}
-        contentContainerStyle={tw`p-1`}
-        ItemSeparatorComponent={() => <View style={tw`h-2`} />}
-        onEndReached={() => {
-          console.log('reached end');
-          fetchMore({
-            variables: {
-              offset: data?.articles?.payload.length,
-              limit: 10,
-            },
-          });
-        }}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={refetch} />
-        }
-      />
+      <SafeAreaContainer
+        statusBgColor={tw.color('gray-300')}
+        statusBarStyle="dark-content">
+        <LinearGradient
+          locations={[0, 0.5, 1]}
+          colors={[
+            tw.color('gray-300'),
+            tw.color('gray-200'),
+            tw.color('gray-100'),
+          ]}
+          style={tw`flex-1`}>
+          <FlatList
+            bounces={true}
+            data={data?.articles?.payload}
+            renderItem={({item}) => <Item item={item} />}
+            keyExtractor={item => item._id}
+            // contentContainerStyle={tw`bg-white`}
+            // ItemSeparatorComponent={() => <View style={tw`h-3`} />}
+            ListHeaderComponent={() => <View style={tw`h-2`} />}
+            ListFooterComponent={() => <View style={tw`h-2`} />}
+            onEndReached={() => {
+              console.log('reached end');
+              fetchMore({
+                variables: {
+                  offset: data?.articles?.payload.length,
+                  limit: 10,
+                },
+              });
+            }}
+            refreshControl={
+              <RefreshControl refreshing={loading} onRefresh={refetch} />
+            }
+          />
+        </LinearGradient>
+      </SafeAreaContainer>
     </View>
   );
 };

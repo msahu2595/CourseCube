@@ -21,10 +21,9 @@ const AdminTestListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
 
-  const {loading, error, data, refetch, fetchMore} = useQuery(TESTS, {
+  const {loading, data, refetch, fetchMore} = useQuery(TESTS, {
     variables: {offset: 0},
   });
-  console.log(data, error, loading);
 
   const width = Dimensions.get('window').width;
   // console.log(width);

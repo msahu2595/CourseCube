@@ -30,11 +30,6 @@ const MediaScreen = () => {
           component={AdminDocumentListScreen}
           options={{title: 'Docs'}}
         />
-        <Tab.Screen
-          name="AdminArticleListScreen"
-          component={AdminArticleListScreen}
-          options={{title: 'Articles'}}
-        />
       </Tab.Navigator>
     </SafeAreaContainer>
   );

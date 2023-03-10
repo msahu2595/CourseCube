@@ -21,10 +21,9 @@ const AdminDocumentListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
 
-  const {loading, error, data, refetch, fetchMore} = useQuery(DOCUMENTS, {
+  const {loading, data, refetch, fetchMore} = useQuery(DOCUMENTS, {
     variables: {offset: 0},
   });
-  console.log(data?.documents?.payload, error, loading);
 
   const width = Dimensions.get('window').width;
   // console.log(width);

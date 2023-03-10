@@ -25,10 +25,9 @@ const AdminVideoListScreen = () => {
 
   const navigation = useNavigation();
 
-  const {loading, error, data, refetch, fetchMore} = useQuery(VIDEOS, {
+  const {loading, data, refetch, fetchMore} = useQuery(VIDEOS, {
     variables: {offset: 0},
   });
-  console.log(data, error, loading);
 
   const width = Dimensions.get('window').width;
   // console.log(width);

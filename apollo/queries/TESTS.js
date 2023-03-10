@@ -21,11 +21,9 @@ export const TESTS = gql`
           options
           mark
           answerIndex
-          enable
         }
         duration
         totalMarks
-        negativeMark
         enable
         createdAt
         updatedAt

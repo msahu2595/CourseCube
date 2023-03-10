@@ -9,10 +9,12 @@ import {
   LeaderboardScreen,
   UserSearchScreen,
   AddContentScreen,
+  AdminArticleListScreen,
 } from '@screens';
 import {TextInput, TouchableOpacity, View} from 'react-native';
 // Icon Import
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {AdminCreateArticleScreen} from 'screens/AdminScreens';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -60,6 +62,16 @@ const myProfileStackGroup = () => {
         name="AddContentScreen"
         component={AddContentScreen}
         options={{headerTitle: 'Add Content'}}
+      />
+      <Stack.Screen
+        name="AdminArticleListScreen"
+        component={AdminArticleListScreen}
+        options={{title: 'Articles'}}
+      />
+      <Stack.Screen
+        name="AdminCreateArticleScreen"
+        component={AdminCreateArticleScreen}
+        options={{title: 'Articles'}}
       />
     </Stack.Group>
   );

@@ -14,10 +14,6 @@ export const VIDEOS = gql`
         thumbnail
         link
         time
-        urls {
-          url
-          format
-        }
         enable
         createdAt
         updatedAt
