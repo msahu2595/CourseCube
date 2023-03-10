@@ -114,6 +114,7 @@ const AddHeadlineModal = ({visible, onClose}) => {
     {
       onCompleted: data => {
         console.log('onCompleted', data);
+        onClose();
         showMessage({
           message: 'Haedline Added Successfully.',
           type: 'success',
