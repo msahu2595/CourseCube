@@ -4,13 +4,14 @@ import {ADVERTS} from '@queries';
 import {CREATE_ADVERT} from '@mutations';
 import {useMutation, useQuery} from '@apollo/client';
 import React, {useCallback, useRef, useState} from 'react';
-import {NotificationItem, SafeAreaContainer} from '@components';
+import {AdvertItem, NotificationItem, SafeAreaContainer} from '@components';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   ActivityIndicator,
   FlatList,
   Modal,
   Pressable,
+  Switch,
   Text,
   TextInput,
   TouchableOpacity,
@@ -24,11 +25,11 @@ const Separator = () => <View style={tw`h-2`} />;
 
 const AdminAdvertListScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const searchInputRef = useRef(null);
+  const [isEnabled, setIsEnabled] = useState(false);
   const {loading, error, data, refetch, fetchMore} = useQuery(ADVERTS);
 
   const renderItem = useCallback(
-    ({item, index}) => <NotificationItem index={index} {...item} />,
+    ({item, index}) => <AdvertItem index={index} {...item} />,
     [],
   );
 
@@ -37,8 +38,20 @@ const AdminAdvertListScreen = () => {
   return (
     <SafeAreaContainer>
       <View style={tw`flex-row`}>
-        <View style={tw`flex-1 flex-row border rounded-lg items-center m-2`}>
-          <TextInput
+        <View style={tw` flex-rowrounded-lg items-center m-2`}>
+          <View style={tw`items-start`}>
+            <Switch
+              trackColor={{false: '#767577', true: '#81b0ff'}}
+              thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={value => {
+                setIsEnabled(value);
+                refetch({filter: {enable: !value}});
+              }}
+              value={isEnabled}
+            />
+          </View>
+          {/* <TextInput
             ref={searchInputRef}
             placeholder="Enter name to search"
             style={tw`flex-1`}
@@ -49,8 +62,8 @@ const AdminAdvertListScreen = () => {
                 refetch({search: ''});
               }
             }}
-          />
-          <TouchableOpacity
+          /> */}
+          {/* <TouchableOpacity
             onPress={() => {
               searchInputRef.current?.clear();
               refetch({search: ''});
@@ -60,16 +73,18 @@ const AdminAdvertListScreen = () => {
               size={25}
               style={tw`p-1 items-center`}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
-        <View>
-          <Pressable onPress={() => setModalVisible(true)}>
-            <MaterialCommunityIcons
-              name="plus"
-              size={30}
-              style={tw`pt-4 pr-2 items-center`}
-            />
-          </Pressable>
+        <View style={tw`justify-end items-end pl-60`}>
+          <View>
+            <Pressable onPress={() => setModalVisible(true)}>
+              <MaterialCommunityIcons
+                name="plus"
+                size={30}
+                style={tw`pr-2 items-center`}
+              />
+            </Pressable>
+          </View>
         </View>
       </View>
       <FlatList
