@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import tw from '@lib/tailwind';
 import {useQuery} from '@apollo/client';
 import {Text, View, TouchableOpacity, ActivityIndicator} from 'react-native';

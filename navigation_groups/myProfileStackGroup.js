@@ -50,11 +50,7 @@ const myProfileStackGroup = () => {
         component={UserSearchScreen}
         options={searchScreenOptions}
       />
-      <Stack.Screen
-        name="UserSearchScreen"
-        component={UserSearchScreen}
-        options={searchScreenOptions}
-      />
+
       <Stack.Screen
         name="AdminAdvertListScreen"
         component={AdminAdvertListScreen}

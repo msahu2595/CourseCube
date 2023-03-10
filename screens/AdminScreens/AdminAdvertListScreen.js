@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import tw from '@lib/tailwind';
 import {ADVERTS} from '@queries';
-import {CREATE_ADVERT, CREATE_HEADLINE} from '@mutations';
+import {CREATE_ADVERT} from '@mutations';
 import {useMutation, useQuery} from '@apollo/client';
 import React, {useCallback, useRef, useState} from 'react';
 import {NotificationItem, SafeAreaContainer} from '@components';
@@ -73,7 +73,7 @@ const AdminAdvertListScreen = () => {
         </View>
       </View>
       <FlatList
-        data={data?.headlines?.payload}
+        data={data?.adverts?.payload}
         renderItem={renderItem}
         keyExtractor={item => item._id}
         ItemSeparatorComponent={Separator}
@@ -86,7 +86,7 @@ const AdminAdvertListScreen = () => {
         onEndReached={() =>
           fetchMore({
             variables: {
-              offset: data?.advert?.payload.length,
+              offset: data?.adverts?.payload.length,
               limit: 10,
             },
           })
@@ -103,9 +103,9 @@ const AdminAdvertListScreen = () => {
 export default AdminAdvertListScreen;
 
 const ValidationSchema = Yup.object().shape({
-  description: Yup.string().required('description is required'),
   image: Yup.string().url('invalid image URL'),
   link: Yup.string().url('invalid link'),
+  type: Yup.string(),
 });
 
 const AddAdvertModal = ({visible, onClose}) => {
@@ -129,6 +129,7 @@ const AddAdvertModal = ({visible, onClose}) => {
       },
     },
   );
+
   return (
     <Modal
       animationType="slide"
@@ -140,24 +141,34 @@ const AddAdvertModal = ({visible, onClose}) => {
           <View style={tw`m-1 shadow p-1`}>
             <Formik
               initialValues={{
-                description: '',
                 image: '',
                 link: '',
+                type: '',
               }}
               validationSchema={ValidationSchema}
               onSubmit={values => {
                 console.log(values);
-                const advertInput = {description: values.description};
-                if (values.image) {
-                  advertInput.image = values.image;
-                }
-                if (values.link) {
-                  advertInput.link = values.link;
-                }
-                createAdvert({variables: {advertInput}});
+                // const advertInput = {description: values.description};
+                // if (values.image) {
+                //   advertInput.image = values.image;
+                // }
+                // if (values.link) {
+                //   advertInput.link = values.link;
+                // }
+                // createAdvert({variables: {advertInput}});
+                createAdvert({
+                  variables: {
+                    advertInput: {
+                      image: values.image,
+                      type: values.type,
+                      link: values.link,
+                    },
+                  },
+                });
               }}>
               {({
                 handleChange,
+                setFieldValue,
                 handleBlur,
                 handleSubmit,
                 values,
@@ -168,7 +179,7 @@ const AddAdvertModal = ({visible, onClose}) => {
                   <View style={tw`flex-row`}>
                     <Text
                       style={tw`flex-1 text-center font-popBold text-lg m-4`}>
-                      Create Headline
+                      Create Advertisement
                     </Text>
                     <TouchableOpacity onPress={onClose}>
                       <MaterialIcons
@@ -178,28 +189,49 @@ const AddAdvertModal = ({visible, onClose}) => {
                       />
                     </TouchableOpacity>
                   </View>
-                  <Text style={tw`mx-2`}>Description (required!): </Text>
+                  <Text style={tw`mx-2`}>Type (required!) : </Text>
                   <View
-                    style={tw`mt-2 flex flex-row border border-black rounded-lg`}>
-                    <MaterialIcons
+                    style={tw`mt-2 flex-row border border-black rounded-lg`}>
+                    {/* <MaterialIcons
                       style={tw`border-r p-1 border-b-black`}
                       name="description"
                       color="#4F8EF7"
                       size={25}
-                    />
-                    <TextInput
+                    /> */}
+                    {/* <TextInput
                       editable={!mutationLoading}
-                      placeholder="Enter description"
-                      onChangeText={handleChange('description')}
-                      value={values.description}
-                      onBlur={handleBlur('description')}
-                      style={tw`h-10 w-80 p-2 bg-white font-popLight`}
+                      placeholder="Enter type"
+                      onChangeText={handleChange('type')}
+                      value={values.type}
+                      onBlur={handleBlur('type')}
+                      style={tw`h-10 p-2 bg-white font-popLight`}
+                    /> */}
+                    <FlatList
+                      horizontal
+                      data={['TINY', 'SMALL', 'MEDIUM', 'LARGE']}
+                      renderItem={({item}) => (
+                        <TouchableOpacity
+                          style={{
+                            backgroundColor:
+                              values.type === item
+                                ? tw.color('blue-600')
+                                : 'white',
+                          }}
+                          onPress={() => setFieldValue('type', item)}>
+                          <Text>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+                      keyExtractor={item => item}
+                      style={tw`bg-white`}
+                      contentContainerStyle={tw`py-2`}
+                      showsHorizontalScrollIndicator={false}
+                      ItemSeparatorComponent={() => <View style={tw`w-8`} />}
+                      ListHeaderComponent={() => <View style={tw`w-8`} />}
+                      ListFooterComponent={() => <View style={tw`w-2`} />}
                     />
                   </View>
-                  {errors.description && touched.description && (
-                    <Text>{errors.description}</Text>
-                  )}
-                  <Text style={tw`pt-4 mx-2`}>Image Link :</Text>
+                  {errors.type && touched.type && <Text>{errors.type}</Text>}
+                  <Text style={tw`pt-4 mx-2`}>Image Link (required!) :</Text>
                   <View
                     style={tw`mt-2 flex flex-row border border-black rounded-lg`}>
                     <MaterialCommunityIcons
