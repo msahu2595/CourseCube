@@ -1,10 +1,12 @@
 import * as Yup from 'yup';
 import tw from '@lib/tailwind';
+import {Formik} from 'formik';
 import {ADVERTS} from '@queries';
 import {CREATE_ADVERT} from '@mutations';
+import React, {useCallback, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
-import React, {useCallback, useRef, useState} from 'react';
-import {AdvertItem, NotificationItem, SafeAreaContainer} from '@components';
+import {showMessage} from 'react-native-flash-message';
+import {AdvertItem, SafeAreaContainer} from '@components';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   ActivityIndicator,
@@ -17,8 +19,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Formik} from 'formik';
-import {showMessage} from 'react-native-flash-message';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Separator = () => <View style={tw`h-2`} />;
@@ -37,8 +37,8 @@ const AdminAdvertListScreen = () => {
 
   return (
     <SafeAreaContainer>
-      <View style={tw`flex-row`}>
-        <View style={tw` flex-rowrounded-lg items-center m-2`}>
+      <View style={tw`flex-row justify-between`}>
+        <View style={tw` flex-row bg-gray-600 items-center m-2`}>
           <View style={tw`items-start`}>
             <Switch
               trackColor={{false: '#767577', true: '#81b0ff'}}
@@ -51,37 +51,14 @@ const AdminAdvertListScreen = () => {
               value={isEnabled}
             />
           </View>
-          {/* <TextInput
-            ref={searchInputRef}
-            placeholder="Enter name to search"
-            style={tw`flex-1`}
-            onChangeText={text => {
-              if (text.length > 2) {
-                refetch({search: text});
-              } else {
-                refetch({search: ''});
-              }
-            }}
-          /> */}
-          {/* <TouchableOpacity
-            onPress={() => {
-              searchInputRef.current?.clear();
-              refetch({search: ''});
-            }}>
-            <MaterialIcons
-              name="clear"
-              size={25}
-              style={tw`p-1 items-center`}
-            />
-          </TouchableOpacity> */}
         </View>
-        <View style={tw`justify-end items-end pl-60`}>
+        <View style={tw`bg-slate-500`}>
           <View>
             <Pressable onPress={() => setModalVisible(true)}>
               <MaterialCommunityIcons
                 name="plus"
                 size={30}
-                style={tw`pr-2 items-center`}
+                style={tw`pr-1 items-center text-white`}
               />
             </Pressable>
           </View>
@@ -163,14 +140,6 @@ const AddAdvertModal = ({visible, onClose}) => {
               validationSchema={ValidationSchema}
               onSubmit={values => {
                 console.log(values);
-                // const advertInput = {description: values.description};
-                // if (values.image) {
-                //   advertInput.image = values.image;
-                // }
-                // if (values.link) {
-                //   advertInput.link = values.link;
-                // }
-                // createAdvert({variables: {advertInput}});
                 createAdvert({
                   variables: {
                     advertInput: {
@@ -207,20 +176,6 @@ const AddAdvertModal = ({visible, onClose}) => {
                   <Text style={tw`mx-2`}>Type (required!) : </Text>
                   <View
                     style={tw`mt-2 flex-row border border-black rounded-lg`}>
-                    {/* <MaterialIcons
-                      style={tw`border-r p-1 border-b-black`}
-                      name="description"
-                      color="#4F8EF7"
-                      size={25}
-                    /> */}
-                    {/* <TextInput
-                      editable={!mutationLoading}
-                      placeholder="Enter type"
-                      onChangeText={handleChange('type')}
-                      value={values.type}
-                      onBlur={handleBlur('type')}
-                      style={tw`h-10 p-2 bg-white font-popLight`}
-                    /> */}
                     <FlatList
                       horizontal
                       data={['TINY', 'SMALL', 'MEDIUM', 'LARGE']}
