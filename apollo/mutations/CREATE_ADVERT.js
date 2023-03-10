@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client';
 
 export const CREATE_ADVERT = gql`
-  mutation CreateAdvert($advertInput: AdvertInput!) {
+  mutation createAdvert($advertInput: AdvertInput!) {
     createAdvert(advertInput: $advertInput) {
       payload {
         _id

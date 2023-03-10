@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import tw from '@lib/tailwind';
-import {HEADLINES} from '@queries';
-import {CREATE_HEADLINE} from '@mutations';
+import {ADVERTS} from '@queries';
+import {CREATE_ADVERT, CREATE_HEADLINE} from '@mutations';
 import {useMutation, useQuery} from '@apollo/client';
 import React, {useCallback, useRef, useState} from 'react';
 import {NotificationItem, SafeAreaContainer} from '@components';
@@ -25,7 +25,7 @@ const Separator = () => <View style={tw`h-2`} />;
 const AdminAdvertListScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const searchInputRef = useRef(null);
-  const {loading, error, data, refetch, fetchMore} = useQuery(HEADLINES);
+  const {loading, error, data, refetch, fetchMore} = useQuery(ADVERTS);
 
   const renderItem = useCallback(
     ({item, index}) => <NotificationItem index={index} {...item} />,
@@ -86,13 +86,13 @@ const AdminAdvertListScreen = () => {
         onEndReached={() =>
           fetchMore({
             variables: {
-              offset: data?.headlines?.payload.length,
+              offset: data?.advert?.payload.length,
               limit: 10,
             },
           })
         }
       />
-      <AddHeadlineModal
+      <AddAdvertModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
       />
@@ -108,9 +108,9 @@ const ValidationSchema = Yup.object().shape({
   link: Yup.string().url('invalid link'),
 });
 
-const AddHeadlineModal = ({visible, onClose}) => {
-  const [createHeadline, {loading: mutationLoading}] = useMutation(
-    CREATE_HEADLINE,
+const AddAdvertModal = ({visible, onClose}) => {
+  const [createAdvert, {loading: mutationLoading}] = useMutation(
+    CREATE_ADVERT,
     {
       onCompleted: data => {
         console.log('onCompleted', data);
@@ -147,14 +147,14 @@ const AddHeadlineModal = ({visible, onClose}) => {
               validationSchema={ValidationSchema}
               onSubmit={values => {
                 console.log(values);
-                const headlineInput = {description: values.description};
+                const advertInput = {description: values.description};
                 if (values.image) {
-                  headlineInput.image = values.image;
+                  advertInput.image = values.image;
                 }
                 if (values.link) {
-                  headlineInput.link = values.link;
+                  advertInput.link = values.link;
                 }
-                createHeadline({variables: {headlineInput}});
+                createAdvert({variables: {advertInput}});
               }}>
               {({
                 handleChange,

@@ -11,6 +11,7 @@ import {
 import {TextInput, TouchableOpacity, View} from 'react-native';
 // Icon Import
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AdminAdvertListScreen from 'screens/AdminScreens/AdminAdvertListScreen';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -48,6 +49,16 @@ const myProfileStackGroup = () => {
         name="UserSearchScreen"
         component={UserSearchScreen}
         options={searchScreenOptions}
+      />
+      <Stack.Screen
+        name="UserSearchScreen"
+        component={UserSearchScreen}
+        options={searchScreenOptions}
+      />
+      <Stack.Screen
+        name="AdminAdvertListScreen"
+        component={AdminAdvertListScreen}
+        options={{headerTitle: 'Admin Advert List'}}
       />
     </Stack.Group>
   );
