@@ -1,6 +1,5 @@
 import {useMutation} from '@apollo/client';
-import {tw} from '@lib';
-import {CREATE_ARTICLE} from 'apollo/mutations/CREATE_ARTICLE';
+import {EDIT_ARTICLE} from 'apollo/mutations/EDIT_ARTICLE';
 import {Formik} from 'formik';
 import React from 'react';
 import {Button, ScrollView, Text, TextInput, View} from 'react-native';
@@ -13,39 +12,53 @@ const ValidationSchema = yup.object({
   author: yup.string().required('required'),
 });
 
-const AdminCreateArticleScreen = ({route}) => {
-  const [createArticle, {loading, error}] = useMutation(CREATE_ARTICLE, {
+const AdminEditArticleScreen = ({route}) => {
+  const [editArticle, {loading, error}] = useMutation(EDIT_ARTICLE, {
     onCompleted: data => {
       console.log(data);
       showMessage({
-        message: 'Your Article Successfully added.',
+        message: 'Your Article successfully Edited',
         type: 'success',
       });
     },
+    onError: err => {
+      console.log(err);
+    },
+    refetchQueries: ['articles'],
   });
 
-  if (loading) return <Text>'Submitting...';</Text>;
-  if (error) return <Text>`Submission error! ${error.message}`;</Text>;
+  if (loading) return <Text>'Submitting....'</Text>;
+  if (error) return <Text>'Submission error!{error.message}'</Text>;
 
-  // console.log(data);
   const item = route.params;
 
   console.log(item);
 
   return (
     <ScrollView>
-      <View style={tw`m-5 `}>
+      <View>
         <Formik
           initialValues={{
-            title: '',
-            description: '',
-            author: '',
+            title: item.title,
+            id: item._id,
+            description: item.description,
+            author: item.author,
           }}
           validationSchema={ValidationSchema}
           onSubmit={values => {
-            console.log('onSubmit', values);
-            createArticle({
+            console.log({
               variables: {
+                articleId: values.id,
+                articleInput: {
+                  title: values.title,
+                  description: values.description,
+                  author: values.author,
+                },
+              },
+            });
+            editArticle({
+              variables: {
+                articleId: values.id,
                 articleInput: {
                   title: values.title,
                   description: values.description,
@@ -105,4 +118,4 @@ const AdminCreateArticleScreen = ({route}) => {
   );
 };
 
-export default AdminCreateArticleScreen;
+export default AdminEditArticleScreen;

@@ -15,6 +15,7 @@ import {TextInput, TouchableOpacity, View} from 'react-native';
 // Icon Import
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {AdminCreateArticleScreen} from 'screens/AdminScreens';
+import AdminEditArticleScreen from 'screens/AdminScreens/AdminEditArticleScreen';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -72,6 +73,11 @@ const myProfileStackGroup = () => {
         name="AdminCreateArticleScreen"
         component={AdminCreateArticleScreen}
         options={{title: 'Articles'}}
+      />
+      <Stack.Screen
+        name="AdminEditArticleScreen"
+        component={AdminEditArticleScreen}
+        options={{title: ' Edit Article'}}
       />
     </Stack.Group>
   );

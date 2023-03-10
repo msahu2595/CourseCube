@@ -7,6 +7,7 @@ import {
   FlatList,
   RefreshControl,
   Switch,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -30,10 +31,22 @@ const AdminArticleListScreen = () => {
 
   // console.log(data.articles.payload);
   // console.log(width);
-  const Item = useCallback(
-    ({item, index}) => <CurrentAffairItem index={index} {...item} />,
-    [],
-  );
+
+  const Item = useCallback(({item, index}) => {
+    return (
+      <View index={index} {...item}>
+        <CurrentAffairItem index={index} {...item} />
+        <View style={tw`flex flex-row justify-evenly `}>
+          <Button
+            onPress={() => navigation.navigate('AdminEditArticleScreen', item)}
+            title="Edit"
+            color="#841584"
+          />
+          <Button title="Delete" color="#0866d6" />
+        </View>
+      </View>
+    );
+  });
 
   return (
     <View style={tw`flex-1`}>
