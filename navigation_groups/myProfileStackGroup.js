@@ -53,7 +53,7 @@ const myProfileStackGroup = () => {
       <Stack.Screen
         name="AdminHeadlineListScreen"
         component={AdminHeadlineListScreen}
-        options={{headerTitle: 'Admin Head line List'}}
+        options={{headerTitle: 'Admin Headline List'}}
       />
     </Stack.Group>
   );

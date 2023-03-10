@@ -135,7 +135,7 @@ const AddHeadlineModal = ({visible, onClose}) => {
       visible={visible}
       onRequestClose={onClose}>
       <View style={tw`flex-1 items-center justify-center`}>
-        <View style={tw`bg-white`}>
+        <View style={tw`bg-slate-100`}>
           <View style={tw`m-1 shadow p-1`}>
             <Formik
               initialValues={{
@@ -177,12 +177,12 @@ const AddHeadlineModal = ({visible, onClose}) => {
                       />
                     </TouchableOpacity>
                   </View>
-                  <Text style={tw`mx-2`}>Description (required): </Text>
+                  <Text style={tw`mx-2`}>Description (required!): </Text>
                   <View
                     style={tw`mt-2 flex flex-row border border-black rounded-lg`}>
-                    <MaterialCommunityIcons
+                    <MaterialIcons
                       style={tw`border-r p-1 border-b-black`}
-                      name="link"
+                      name="description"
                       color="#4F8EF7"
                       size={25}
                     />
@@ -192,12 +192,13 @@ const AddHeadlineModal = ({visible, onClose}) => {
                       onChangeText={handleChange('description')}
                       value={values.description}
                       onBlur={handleBlur('description')}
-                      style={tw`h-10 w-80 p-2 font-popLight`}
+                      style={tw`h-10 w-80 p-2 bg-white font-popLight`}
                     />
                   </View>
                   {errors.description && touched.description && (
                     <Text>{errors.description}</Text>
                   )}
+                  <Text style={tw`pt-4 mx-2`}>Image Link :</Text>
                   <View
                     style={tw`mt-2 flex flex-row border border-black rounded-lg`}>
                     <MaterialCommunityIcons
@@ -212,10 +213,11 @@ const AddHeadlineModal = ({visible, onClose}) => {
                       onChangeText={handleChange('image')}
                       value={values.image}
                       onBlur={handleBlur('image')}
-                      style={tw`h-10 w-80 p-2 font-popLight`}
+                      style={tw`h-10 w-80 p-2 bg-white font-popLight`}
                     />
                   </View>
                   {errors.image && touched.image && <Text>{errors.image}</Text>}
+                  <Text style={tw`pt-4 mx-2`}>Reference Link:</Text>
                   <View
                     style={tw`mt-2 flex flex-row border border-black rounded-lg`}>
                     <MaterialCommunityIcons
@@ -226,15 +228,15 @@ const AddHeadlineModal = ({visible, onClose}) => {
                     />
                     <TextInput
                       editable={!mutationLoading}
-                      placeholder="Enter link"
+                      placeholder="Enter Reference link"
                       onChangeText={handleChange('link')}
                       value={values.link}
                       onBlur={handleBlur('link')}
-                      style={tw`h-10 w-80 p-2 font-popLight`}
+                      style={tw`h-10 w-80 p-2 bg-white font-popLight`}
                     />
                   </View>
                   {errors.link && touched.link && <Text>{errors.link}</Text>}
-                  <View style={tw`m-3 shadow-sm`}>
+                  <View style={tw`m-3 shadow-sm pt-4`}>
                     <TouchableOpacity
                       disabled={mutationLoading}
                       title="Submit"
