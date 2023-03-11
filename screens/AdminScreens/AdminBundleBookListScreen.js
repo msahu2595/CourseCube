@@ -47,14 +47,14 @@ const Item = props => {
   );
 };
 
-function AdminBundleVideoListScreen() {
+function AdminBundleBookListScreen() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
 
   const {loading, error, data, refetch, fetchMore} = useQuery(BUNDLE_CONTENTS, {
     variables: {
       filter: {
-        type: 'Video',
+        type: 'Book',
       },
     },
   });
@@ -94,7 +94,7 @@ function AdminBundleVideoListScreen() {
           ios_backgroundColor="#3e3e3e"
           onValueChange={value => {
             setIsEnabled(value);
-            refetch({filter: {type: 'Video', enable: !value}});
+            refetch({filter: {type: 'Book', enable: !value}});
           }}
           value={isEnabled}
         />
@@ -123,4 +123,4 @@ function AdminBundleVideoListScreen() {
   );
 }
 
-export default AdminBundleVideoListScreen;
+export default AdminBundleBookListScreen;
