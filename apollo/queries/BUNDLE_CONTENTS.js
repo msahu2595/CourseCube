@@ -77,9 +77,6 @@ export const BUNDLE_CONTENTS = gql`
         enable
         createdAt
         updatedAt
-        bundle {
-          _id
-        }
         purchased
       }
     }
