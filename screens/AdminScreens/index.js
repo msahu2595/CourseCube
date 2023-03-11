@@ -3,7 +3,6 @@ import AdminVideoListScreen from './AdminVideoListScreen';
 import AdminTestListScreen from './AdminTestListScreen';
 import AdminDocumentListScreen from './AdminDocumentListScreen';
 import AdminArticleListScreen from './AdminArticleListScreen';
-import AdminCreateArticleScreen from './AdminCreateArticleScreen';
 
 import AddContentScreen from './AddContentScreen';
 
@@ -14,5 +13,4 @@ export {
   AdminDocumentListScreen,
   AdminArticleListScreen,
   AddContentScreen,
-  AdminCreateArticleScreen,
 };
