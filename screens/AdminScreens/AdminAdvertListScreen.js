@@ -26,7 +26,13 @@ const Separator = () => <View style={tw`h-2`} />;
 const AdminAdvertListScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
-  const {loading, error, data, refetch, fetchMore} = useQuery(ADVERTS);
+  const {loading, error, data, refetch, fetchMore} = useQuery(ADVERTS, {
+    variables: {
+      filter: {
+        type: 'MEDIUM',
+      },
+    },
+  });
 
   const renderItem = useCallback(
     ({item, index}) => <AdvertItem index={index} {...item} />,
@@ -52,6 +58,29 @@ const AdminAdvertListScreen = () => {
             />
           </View>
         </View>
+        <FlatList
+          horizontal
+          data={['TINY', 'SMALL', 'MEDIUM', 'LARGE']}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              style={{
+                backgroundColor: type === item ? tw.color('blue-600') : 'white',
+              }}
+              onPress={() => {
+                console.log(item);
+                refetch({filter: {type: item}});
+              }}>
+              <Text style={tw`font-bold`}>{item}</Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={item => item}
+          style={tw`bg-white`}
+          contentContainerStyle={tw`py-2`}
+          showsHorizontalScrollIndicator={false}
+          ItemSeparatorComponent={() => <View style={tw`w-8`} />}
+          ListHeaderComponent={() => <View style={tw`w-8`} />}
+          ListFooterComponent={() => <View style={tw`w-2`} />}
+        />
         <View style={tw`bg-slate-500`}>
           <View>
             <Pressable onPress={() => setModalVisible(true)}>
