@@ -29,7 +29,7 @@ const AdminAdvertListScreen = () => {
   const {loading, error, data, refetch, fetchMore} = useQuery(ADVERTS, {
     variables: {
       filter: {
-        type: 'MEDIUM',
+        type: 'TINY',
       },
     },
   });
@@ -60,15 +60,19 @@ const AdminAdvertListScreen = () => {
         </View>
         <FlatList
           horizontal
-          data={['TINY', 'SMALL', 'MEDIUM', 'LARGE']}
+          data={['ALL', 'TINY', 'SMALL', 'MEDIUM', 'LARGE']}
           renderItem={({item}) => (
             <TouchableOpacity
               style={{
-                backgroundColor: type === item ? tw.color('blue-600') : 'white',
+                backgroundColor: 'white',
               }}
               onPress={() => {
                 console.log(item);
-                refetch({filter: {type: item}});
+                if (item === 'ALL') {
+                  refetch({filter: {}});
+                } else {
+                  refetch({filter: {type: item}});
+                }
               }}>
               <Text style={tw`font-bold`}>{item}</Text>
             </TouchableOpacity>
