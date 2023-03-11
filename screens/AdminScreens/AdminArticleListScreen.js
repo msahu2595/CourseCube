@@ -1,12 +1,9 @@
-/* eslint-disable quotes */
-/* eslint-disable react-hooks/exhaustive-deps */
 import {useMutation, useQuery} from '@apollo/client';
 import React, {useCallback, useState} from 'react';
 import {
   Alert,
   Button,
   FlatList,
-  Modal,
   RefreshControl,
   Switch,
   Text,
@@ -16,38 +13,30 @@ import {
 } from 'react-native';
 import tw from '@lib/tailwind';
 import {ARTICLES} from '@queries';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {CurrentAffairItem, SafeAreaContainer} from '@components';
-import LinearGradient from 'react-native-linear-gradient';
-import * as yup from 'yup';
-import {EDIT_ARTICLE} from 'apollo/mutations/EDIT_ARTICLE';
 import {showMessage} from 'react-native-flash-message';
-import {Formik} from 'formik';
-import {CREATE_ARTICLE} from '@mutations';
+import LinearGradient from 'react-native-linear-gradient';
+import EditArticleModal from 'components/EditArticleModal';
 import {DELETE_ARTICLE} from 'apollo/mutations/DELETE_ARTICLE';
+import CreateArticleModal from 'components/CreateArticleModal';
+import {CurrentAffairItem, SafeAreaContainer} from '@components';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const AdminArticleListScreen = () => {
-  const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [editArticleModal, setEditArticleModal] = useState(null);
+  const [createModalVisible, setCreateModalVisible] = useState(false);
 
-  const [editModalVisible, setEditModalVisible] = useState(null);
-  const [createModalVisible, setCrearteModalVisible] = useState(false);
-
-  const {loading, data, error, refetch, fetchMore} = useQuery(ARTICLES, {
-    variables: {offset: 0},
-  });
+  const {loading, data, error, refetch, fetchMore} = useQuery(ARTICLES);
 
   const [deleteArticle] = useMutation(DELETE_ARTICLE, {
-    onCompleted: data => {
-      console.log(data);
-
+    onCompleted: () => {
       showMessage({
         message: 'Your Article successfully deleted',
         type: 'success',
       });
     },
-    onError: err => {
-      console.log(err);
+    onError: () => {
       showMessage({
         message: 'Not able to delete',
         type: 'danger',
@@ -56,53 +45,56 @@ const AdminArticleListScreen = () => {
     refetchQueries: ['articles'],
   });
 
-  const deleteHandler = articleId =>
-    Alert.alert('Delete Article', 'Are you want to delete article', [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      {
-        text: 'OK',
-        onPress: () =>
-          deleteArticle({
-            variables: {articleId},
-          }),
-      },
-    ]);
+  const deleteHandler = useCallback(
+    articleId =>
+      Alert.alert('Delete Article', 'Are you want to delete article', [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () =>
+            deleteArticle({
+              variables: {articleId},
+            }),
+        },
+      ]),
+    [deleteArticle],
+  );
 
-  // console.log(data.articles.payload);
-  // console.log(width);
-
-  const Item = useCallback(({item, index}) => {
-    return (
-      <View index={index} {...item}>
-        <CurrentAffairItem index={index} {...item} />
-        <View style={tw`flex flex-row justify-evenly `}>
-          <Button
-            onPress={() => setEditModalVisible(item)}
-            title="Edit"
-            color="#841584"
-          />
-          {/* <Button
-            onPress={() => setDeleteModalVisible(item)}
-            title="Delete"
-            color="#0866d6"
-          /> */}
-          <Button
-            title={'Delete'}
-            onPress={() => {
-              deleteHandler(item._id);
-            }}
-          />
+  const Item = useCallback(
+    ({item, index}) => {
+      return (
+        <View index={index} {...item}>
+          <CurrentAffairItem index={index} {...item} />
+          <View style={tw`flex flex-row justify-evenly `}>
+            <Button
+              onPress={() => setEditArticleModal(item)}
+              title="Edit"
+              color="#841584"
+            />
+            <Button
+              title={'Delete'}
+              onPress={() => {
+                deleteHandler(item._id);
+              }}
+            />
+          </View>
         </View>
-      </View>
-    );
-  });
-  console.log(editModalVisible);
-  if (loading) return <Text>Submitting...</Text>;
-  if (error) return <Text>Submission error! ${error.message}</Text>;
+      );
+    },
+    [deleteHandler],
+  );
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error! ${error.message}</Text>;
+  }
 
   return (
     <>
@@ -123,7 +115,6 @@ const AdminArticleListScreen = () => {
               }}
               value={search}
             />
-
             <TouchableOpacity
               onPress={() => {
                 setSearch('');
@@ -132,7 +123,6 @@ const AdminArticleListScreen = () => {
               <MaterialIcons name="clear" size={20} color={tw.color('black')} />
             </TouchableOpacity>
           </View>
-
           <Switch
             trackColor={{false: '#767577', true: '#81b0ff'}}
             style={tw`ml-2`}
@@ -144,19 +134,13 @@ const AdminArticleListScreen = () => {
             }}
             value={isEnabled}
           />
-          <TouchableOpacity onPress={() => setCrearteModalVisible(true)}>
+          <TouchableOpacity onPress={() => setCreateModalVisible(true)}>
             <MaterialIcons
               name="add-circle"
               size={40}
               color={tw.color('blue-600')}
             />
           </TouchableOpacity>
-          {/* <View style={tw` `}>
-          <Button
-            title="+"
-            onPress={() => navigation.navigate('AdminCreateArticleScreen')}
-          />
-        </View> */}
         </View>
         <SafeAreaContainer
           statusBgColor={tw.color('gray-300')}
@@ -194,16 +178,16 @@ const AdminArticleListScreen = () => {
           </LinearGradient>
         </SafeAreaContainer>
       </View>
-      <AdminCreateArticleScreen
+      <CreateArticleModal
         visible={createModalVisible}
         onClose={() => {
-          setCrearteModalVisible(null);
+          setCreateModalVisible(false);
         }}
       />
-      <AdminEditArticleScreen
-        item={editModalVisible}
+      <EditArticleModal
+        article={editArticleModal}
         onClose={() => {
-          setEditModalVisible(null);
+          setEditArticleModal(null);
         }}
       />
     </>
@@ -211,218 +195,3 @@ const AdminArticleListScreen = () => {
 };
 
 export default AdminArticleListScreen;
-
-const AddValidationSchema = yup.object({
-  title: yup.string().required('required'),
-  description: yup.string().required('required'),
-  author: yup.string().required('required'),
-});
-
-export const AdminCreateArticleScreen = ({visible, onClose}) => {
-  const [createArticle, {loading, error}] = useMutation(CREATE_ARTICLE, {
-    onCompleted: data => {
-      console.log(data);
-      onClose();
-      showMessage({
-        message: 'Your Article Successfully added.',
-        type: 'success',
-      });
-    },
-    onError: err => {
-      console.log(err);
-    },
-    refetchQueries: ['articles'],
-  });
-
-  if (loading) return <Text>Submitting...</Text>;
-  if (error) return <Text>Submission error! ${error.message}</Text>;
-
-  // console.log(data);
-
-  return (
-    <Modal visible={visible} transparent={true} onRequestClose={onClose}>
-      <View style={tw`bg-white`}>
-        <TouchableOpacity onPress={onClose}>
-          <Text>Close</Text>
-        </TouchableOpacity>
-        <Formik
-          initialValues={{
-            title: '',
-            description: '',
-            author: '',
-          }}
-          validationSchema={AddValidationSchema}
-          onSubmit={values => {
-            console.log('onSubmit', values);
-            createArticle({
-              variables: {
-                articleInput: {
-                  title: values.title,
-                  description: values.description,
-                  author: values.author,
-                },
-              },
-            });
-          }}>
-          {({
-            handleChange,
-            handleBlur,
-            setFieldValue,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
-            <View>
-              <TextInput
-                onChangeText={handleChange('title')}
-                onBlur={handleBlur('title')}
-                value={values.title}
-                placeholder="title"
-              />
-              {errors.title && touched.title ? (
-                <Text>{errors.title}</Text>
-              ) : null}
-
-              <TextInput
-                onChangeText={handleChange('description')}
-                onBlur={handleBlur('description')}
-                value={values.description}
-                placeholder="description"
-              />
-              <TextInput
-                onChangeText={handleChange('author')}
-                onBlur={handleBlur('author')}
-                value={values.language}
-                placeholder="author"
-              />
-              {errors.language && touched.language ? (
-                <Text>{errors.language}</Text>
-              ) : null}
-
-              <Button
-                onPress={() => {
-                  console.log('handleSubmit', values);
-                  handleSubmit();
-                }}
-                title="Submit"
-              />
-            </View>
-          )}
-        </Formik>
-      </View>
-    </Modal>
-  );
-};
-
-const ValidationSchema = yup.object({
-  title: yup.string().required('required'),
-  description: yup.string().required('required'),
-  author: yup.string().required('required'),
-});
-
-export const AdminEditArticleScreen = ({item, onClose}) => {
-  const [editArticle, {loading, error}] = useMutation(EDIT_ARTICLE, {
-    onCompleted: data => {
-      console.log(data);
-      onClose();
-      showMessage({
-        message: 'Your Article successfully Edited',
-        type: 'success',
-      });
-    },
-    onError: err => {
-      console.log(err);
-    },
-    refetchQueries: ['articles'],
-  });
-
-  if (loading) return <Text>'Submitting....'</Text>;
-  if (error) return <Text>'Submission error!{error.message}'</Text>;
-
-  return (
-    <Modal visible={!!item} transparent={true} onRequestClose={onClose}>
-      <View style={tw`bg-white`}>
-        <TouchableOpacity onPress={onClose}>
-          <Text>Close</Text>
-        </TouchableOpacity>
-        <Formik
-          initialValues={{
-            title: item?.title,
-            id: item?._id,
-            description: item?.description,
-            author: item?.author,
-          }}
-          validationSchema={ValidationSchema}
-          onSubmit={values => {
-            console.log({
-              variables: {
-                articleId: values.id,
-                articleInput: {
-                  title: values.title,
-                  description: values.description,
-                  author: values.author,
-                },
-              },
-            });
-            editArticle({
-              variables: {
-                articleId: values.id,
-                articleInput: {
-                  title: values.title,
-                  description: values.description,
-                  author: values.author,
-                },
-              },
-            });
-          }}>
-          {({
-            handleChange,
-            handleBlur,
-            setFieldValue,
-            handleSubmit,
-            values,
-            errors,
-            touched,
-          }) => (
-            <View>
-              <TextInput
-                onChangeText={handleChange('title')}
-                onBlur={handleBlur('title')}
-                value={values.title}
-                placeholder="title"
-              />
-              {errors.title && touched.title ? (
-                <Text>{errors.title}</Text>
-              ) : null}
-
-              <TextInput
-                onChangeText={handleChange('description')}
-                onBlur={handleBlur('description')}
-                value={values.description}
-                placeholder="description"
-              />
-              <TextInput
-                onChangeText={handleChange('author')}
-                onBlur={handleBlur('author')}
-                value={values.language}
-                placeholder="author"
-              />
-              {errors.language && touched.language ? (
-                <Text>{errors.language}</Text>
-              ) : null}
-
-              <Button
-                onPress={() => {
-                  console.log('handleSubmit', values);
-                  handleSubmit();
-                }}
-                title="Submit"
-              />
-            </View>
-          )}
-        </Formik>
-      </View>
-    </Modal>
-  );
-};
