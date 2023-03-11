@@ -56,6 +56,7 @@ function AdminBundleDocumentListScreen() {
       filter: {
         type: 'Document',
       },
+      bundleId: '6402198917b9fcec1454dbd6',
     },
   });
 
@@ -94,7 +95,7 @@ function AdminBundleDocumentListScreen() {
           ios_backgroundColor="#3e3e3e"
           onValueChange={value => {
             setIsEnabled(value);
-            refetch({filter: {type: 'FULL_COURSE', enable: !value}});
+            refetch({filter: {type: 'Document', enable: !value}});
           }}
           value={isEnabled}
         />

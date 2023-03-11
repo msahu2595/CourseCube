@@ -56,6 +56,7 @@ function AdminBundleTestListScreen() {
       filter: {
         type: 'Test',
       },
+      bundleId: '6402198917b9fcec1454dbd6',
     },
   });
 

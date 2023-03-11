@@ -56,6 +56,7 @@ function AdminBundleVideoListScreen() {
       filter: {
         type: 'Video',
       },
+      bundleId: '6402198917b9fcec1454dbd6',
     },
   });
 
