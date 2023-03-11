@@ -18,19 +18,18 @@ import {ARTICLES} from '@queries';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {CurrentAffairItem, SafeAreaContainer} from '@components';
 import LinearGradient from 'react-native-linear-gradient';
-import {useNavigation} from '@react-navigation/native';
 import * as yup from 'yup';
 import {EDIT_ARTICLE} from 'apollo/mutations/EDIT_ARTICLE';
 import {showMessage} from 'react-native-flash-message';
 import {Formik} from 'formik';
+import {CREATE_ARTICLE} from '@mutations';
 
 const AdminArticleListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
 
   const [editModalVisible, setEditModalVisible] = useState(null);
-
-  const navigation = useNavigation();
+  const [createModalVisible, setCrearteModalVisible] = useState(false);
 
   const {loading, data, refetch, fetchMore} = useQuery(ARTICLES, {
     variables: {offset: 0},
@@ -95,8 +94,7 @@ const AdminArticleListScreen = () => {
             }}
             value={isEnabled}
           />
-          <TouchableOpacity
-            onPress={() => navigation.navigate('AdminCreateArticleScreen')}>
+          <TouchableOpacity onPress={() => setCrearteModalVisible(true)}>
             <MaterialIcons
               name="add-circle"
               size={40}
@@ -146,6 +144,12 @@ const AdminArticleListScreen = () => {
           </LinearGradient>
         </SafeAreaContainer>
       </View>
+      <AdminCreateArticleScreen
+        visible={createModalVisible}
+        onClose={() => {
+          setCrearteModalVisible(null);
+        }}
+      />
       <AdminEditArticleScreen
         item={editModalVisible}
         onClose={() => {
@@ -211,6 +215,109 @@ export const AdminEditArticleScreen = ({item, onClose}) => {
             editArticle({
               variables: {
                 articleId: values.id,
+                articleInput: {
+                  title: values.title,
+                  description: values.description,
+                  author: values.author,
+                },
+              },
+            });
+          }}>
+          {({
+            handleChange,
+            handleBlur,
+            setFieldValue,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+          }) => (
+            <View>
+              <TextInput
+                onChangeText={handleChange('title')}
+                onBlur={handleBlur('title')}
+                value={values.title}
+                placeholder="title"
+              />
+              {errors.title && touched.title ? (
+                <Text>{errors.title}</Text>
+              ) : null}
+
+              <TextInput
+                onChangeText={handleChange('description')}
+                onBlur={handleBlur('description')}
+                value={values.description}
+                placeholder="description"
+              />
+              <TextInput
+                onChangeText={handleChange('author')}
+                onBlur={handleBlur('author')}
+                value={values.language}
+                placeholder="author"
+              />
+              {errors.language && touched.language ? (
+                <Text>{errors.language}</Text>
+              ) : null}
+
+              <Button
+                onPress={() => {
+                  console.log('handleSubmit', values);
+                  handleSubmit();
+                }}
+                title="Submit"
+              />
+            </View>
+          )}
+        </Formik>
+      </View>
+    </Modal>
+  );
+};
+
+const AddValidationSchema = yup.object({
+  title: yup.string().required('required'),
+  description: yup.string().required('required'),
+  author: yup.string().required('required'),
+});
+
+export const AdminCreateArticleScreen = ({visible, onClose}) => {
+  const [createArticle, {loading, error}] = useMutation(CREATE_ARTICLE, {
+    onCompleted: data => {
+      console.log(data);
+      onClose();
+      showMessage({
+        message: 'Your Article Successfully added.',
+        type: 'success',
+      });
+    },
+    onError: err => {
+      console.log(err);
+    },
+    refetchQueries: ['articles'],
+  });
+
+  if (loading) return <Text>Submitting...</Text>;
+  if (error) return <Text>Submission error! ${error.message}</Text>;
+
+  // console.log(data);
+
+  return (
+    <Modal visible={visible} transparent={true} onRequestClose={onClose}>
+      <View style={tw`bg-white`}>
+        <TouchableOpacity onPress={onClose}>
+          <Text>Close</Text>
+        </TouchableOpacity>
+        <Formik
+          initialValues={{
+            title: '',
+            description: '',
+            author: '',
+          }}
+          validationSchema={AddValidationSchema}
+          onSubmit={values => {
+            console.log('onSubmit', values);
+            createArticle({
+              variables: {
                 articleInput: {
                   title: values.title,
                   description: values.description,
