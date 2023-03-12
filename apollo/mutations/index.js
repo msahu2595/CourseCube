@@ -8,3 +8,4 @@ export * from './REFRESH_VIDEO';
 export * from './CREATE_ANSWER';
 export * from './CREATE_QUESTION';
 export * from './CREATE_ADVERT';
+export * from './EDIT_ADVERT';
