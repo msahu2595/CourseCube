@@ -1,9 +1,10 @@
 import tw from '@lib/tailwind';
 import {ADVERTS} from '@queries';
 import React, {useCallback, useState} from 'react';
-import {useQuery} from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import {AdvertItem, SafeAreaContainer} from '@components';
 import {
+  Alert,
   Button,
   FlatList,
   Pressable,
@@ -15,6 +16,9 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EditAdvertModal from 'components/EditAdvertModal';
 import CreateAdvertModal from 'components/CreateAdvertModal';
+import {DELETE_ADVERT} from '@mutations';
+import {showMessage} from 'react-native-flash-message';
+import {onError} from '@apollo/client/link/error';
 
 const Separator = () => <View style={tw`h-2`} />;
 
@@ -33,20 +37,66 @@ const AdminAdvertListScreen = () => {
     // }
   );
 
-  const renderItem = useCallback(({item, index}) => {
-    return (
-      <View index={index} {...item}>
-        <AdvertItem index={index} {...item} />
-        <View style={tw`flex flex-row justify-evenly`}>
-          <Button
-            onPress={() => setEditAdvertModal(item)}
-            title="Edit"
-            color="#841584"
-          />
+  const [deleteAdvert] = useMutation(DELETE_ADVERT, {
+    onCompleted: () => {
+      showMessage({
+        message: 'Your article successfully deleted',
+        type: 'success',
+      });
+    },
+    onError: error => {
+      console.log('onError', error.message);
+      showMessage({
+        message: 'Not able to delete',
+        type: 'error',
+      });
+    },
+    refetchQueries: ['adverts'],
+  });
+
+  const deleteHandler = useCallback(
+    advertId =>
+      Alert.alert('Delete Advert', 'Are you sure want to delete advert', [
+        {
+          text: 'cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () =>
+            deleteAdvert({
+              variables: {advertId},
+            }),
+        },
+      ]),
+    [deleteAdvert],
+  );
+
+  const renderItem = useCallback(
+    ({item, index}) => {
+      return (
+        <View index={index} {...item}>
+          <AdvertItem index={index} {...item} />
+          <View style={tw`flex flex-row justify-evenly`}>
+            <Button
+              onPress={() => setEditAdvertModal(item)}
+              title="Edit"
+              color="#841584"
+            />
+            <Button
+              title={'delete'}
+              color="red"
+              onPress={() => {
+                deleteHandler(item._id);
+              }}
+            />
+          </View>
         </View>
-      </View>
-    );
-  }, []);
+      );
+    },
+    [deleteHandler],
+  );
 
   if (error) return <Text>Error: {error.message}</Text>;
 

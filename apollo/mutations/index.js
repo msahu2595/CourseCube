@@ -9,3 +9,4 @@ export * from './CREATE_ANSWER';
 export * from './CREATE_QUESTION';
 export * from './CREATE_ADVERT';
 export * from './EDIT_ADVERT';
+export * from './DELETE_ADVERT';
