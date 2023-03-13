@@ -1,8 +1,10 @@
 /* eslint-disable quotes */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {useQuery} from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import React, {useCallback, useState} from 'react';
 import {
+  Alert,
+  Button,
   Dimensions,
   FlatList,
   ImageBackground,
@@ -17,16 +19,55 @@ import tw from '@lib/tailwind';
 import {TESTS} from '@queries';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AddTestModal from 'components/AddTestModal';
+import EditTestModal from 'components/EditTestModal';
+import {DELETE_TEST} from 'apollo/mutations/DELETE_TEST';
+import {showMessage} from 'react-native-flash-message';
 
 const AdminTestListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
 
   const [addTestModalVisible, setAddTestModalVisible] = useState(false);
+  const [editTestModal, setEditTestModal] = useState(null);
 
   const {loading, data, refetch, fetchMore} = useQuery(TESTS, {
     variables: {offset: 0},
   });
+
+  const [deleteTest] = useMutation(DELETE_TEST, {
+    onCompleted: () => {
+      showMessage({
+        message: 'Your Article successfully deleted',
+        type: 'success',
+      });
+    },
+    onError: () => {
+      showMessage({
+        message: 'Not able to delete',
+        type: 'danger',
+      });
+    },
+    refetchQueries: ['tests'],
+  });
+
+  const deleteHandler = useCallback(
+    testId =>
+      Alert.alert('Delete Article', 'Are you want to delete article', [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () =>
+            deleteTest({
+              variables: {testId},
+            }),
+        },
+      ]),
+    [deleteTest],
+  );
 
   const width = Dimensions.get('window').width;
   // console.log(width);
@@ -55,6 +96,17 @@ const AdminTestListScreen = () => {
             </Text>
           </View>
         </ImageBackground>
+        <Button
+          onPress={() => setEditTestModal(item)}
+          title="Edit"
+          color="#841584"
+        />
+        <Button
+          title={'Delete'}
+          onPress={() => {
+            deleteHandler(item._id);
+          }}
+        />
       </View>
     ),
     [],
@@ -136,6 +188,12 @@ const AdminTestListScreen = () => {
         visible={addTestModalVisible}
         onClose={() => {
           setAddTestModalVisible(null);
+        }}
+      />
+      <EditTestModal
+        test={editTestModal}
+        onClose={() => {
+          setEditTestModal(null);
         }}
       />
     </>

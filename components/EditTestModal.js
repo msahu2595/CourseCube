@@ -1,15 +1,16 @@
-import {useMutation} from '@apollo/client';
-import {tw} from '@lib';
-import {ADD_TEST} from 'apollo/mutations/ADD_TEST';
-import {Formik} from 'formik';
 import React from 'react';
-import {Text, View} from 'react-native';
-import {showMessage} from 'react-native-flash-message';
-import {CCButton, CCModal, CCTextInput} from './Common';
 import * as yup from 'yup';
+import {Formik} from 'formik';
+import tw from '@lib/tailwind';
+import {Text, View} from 'react-native';
+import {EDIT_ARTICLE} from '@mutations';
+import {useMutation} from '@apollo/client';
+import {showMessage} from 'react-native-flash-message';
+import {CCModal, CCButton, CCTextInput} from './Common';
 import {TimePicker} from 'react-native-simple-time-picker';
+import {EDIT_TEST} from 'apollo/mutations/EDIT_TEST';
 
-const AddTestValidationSchema = yup.object({
+const EditTestValidationSchema = yup.object({
   title: yup.string().required('Required title'),
   duration: yup.object().shape({
     hours: yup
@@ -31,43 +32,45 @@ const AddTestValidationSchema = yup.object({
   instructions: yup.string().required('Instructions Required'),
 });
 
-const AddTestModal = ({visible, onClose}) => {
-  const [addTest, {loading}] = useMutation(ADD_TEST, {
+const EditTestModal = ({test, onClose}) => {
+  const [editTest, {loading}] = useMutation(EDIT_TEST, {
     onCompleted: data => {
       console.log(data);
       onClose();
       showMessage({
-        message: 'Your Test successfully Added',
+        message: 'Your Article Successfully edited.',
         type: 'success',
       });
     },
     onError: err => {
       console.log(err);
       showMessage({
-        message: 'we have got some error. please try again!',
+        message: 'We have got some error. Please try again!',
         type: 'danger',
       });
     },
     refetchQueries: ['tests'],
   });
 
+  console.log(test);
+
   return (
-    <CCModal title="Add Test " visible={visible} onClose={onClose}>
+    <CCModal title="Edit Test" visible={!!test} onClose={onClose}>
       <Formik
         initialValues={{
-          title: '',
-          instructions: '',
+          title: test?.title,
+          instructions: test?.instructions,
           duration: {
             hours: '1',
             minutes: '0',
             seconds: '0',
           },
         }}
-        validationSchema={AddTestValidationSchema}
+        validationSchema={EditTestValidationSchema}
         onSubmit={values => {
-          console.log('VAlue', values);
-          addTest({
+          editTest({
             variables: {
+              testId: values._id,
               testInput: {
                 title: values.title,
                 instructions: values.instructions,
@@ -79,8 +82,8 @@ const AddTestModal = ({visible, onClose}) => {
         {({
           handleChange,
           handleBlur,
-          setFieldValue,
           handleSubmit,
+          setFieldValue,
           values,
           errors,
           touched,
@@ -99,7 +102,7 @@ const AddTestModal = ({visible, onClose}) => {
               />
               <CCTextInput
                 required
-                label="Instructions"
+                label="Instruction"
                 errors={errors}
                 touched={touched}
                 onChangeText={handleChange('instructions')}
@@ -128,10 +131,7 @@ const AddTestModal = ({visible, onClose}) => {
             <CCButton
               label="Submit"
               disabled={loading}
-              onPress={() => {
-                console.log('onPress', values);
-                handleSubmit();
-              }}
+              onPress={handleSubmit}
             />
           </>
         )}
@@ -140,4 +140,4 @@ const AddTestModal = ({visible, onClose}) => {
   );
 };
 
-export default AddTestModal;
+export default EditTestModal;
