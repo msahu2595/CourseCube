@@ -129,8 +129,8 @@ const AddTestScreen = () => {
                     setFieldValue('duration', newValue);
                   }}
                 />
-                {errors.duration && touched.title && (
-                  <Text>{errors.title}</Text>
+                {errors.duration && touched.duration && (
+                  <Text>{errors.duration}</Text>
                 )}
                 <Text style={tw`mx-2`}>Instruction :</Text>
                 <View
