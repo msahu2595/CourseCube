@@ -22,11 +22,15 @@ import {useNavigation} from '@react-navigation/native';
 import EditVideoModal from 'components/EditVideoModal';
 import {DELETE_VIDEO} from 'apollo/mutations/DELETE_VIDEO';
 import {showMessage} from 'react-native-flash-message';
+import AddContentModal from 'components/AddContentModal';
+import AddVideoModal from 'components/AddVideoModal';
 
 const AdminVideoListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
   const [editVideoModal, setEditVideoModal] = useState(null);
+  const [addContentModal, setAddContentModal] = useState(null);
+  const [addVideoModalVisible, setAddVideoModalVisible] = useState(false);
 
   const navigation = useNavigation();
 
@@ -103,6 +107,11 @@ const AdminVideoListScreen = () => {
             onPress={() => navigation.navigate('AddContentScreen', item)}
           />
           <Button
+            onPress={() => setAddContentModal(item)}
+            title="Add content"
+            color="green"
+          />
+          <Button
             onPress={() => setEditVideoModal(item)}
             title="Edit"
             color="#841584"
@@ -123,7 +132,7 @@ const AdminVideoListScreen = () => {
   return (
     <>
       <View style={tw`flex-1`}>
-        <View style={tw`flex-row`}>
+        <View style={tw`flex-row items-center m-2`}>
           <View
             style={tw`flex-1 flex-row m-2 justify-between rounded-lg px-2 items-center border`}>
             <TextInput
@@ -159,6 +168,13 @@ const AdminVideoListScreen = () => {
             }}
             value={isEnabled}
           />
+          <TouchableOpacity onPress={() => setAddVideoModalVisible(true)}>
+            <MaterialIcons
+              name="add-circle"
+              size={40}
+              color={tw.color('blue-600')}
+            />
+          </TouchableOpacity>
         </View>
         <FlatList
           bounces={true}
@@ -183,10 +199,22 @@ const AdminVideoListScreen = () => {
           }
         />
       </View>
+      <AddVideoModal
+        visible={addVideoModalVisible}
+        onClose={() => {
+          setAddVideoModalVisible(false);
+        }}
+      />
       <EditVideoModal
         video={editVideoModal}
         onClose={() => {
           setEditVideoModal(null);
+        }}
+      />
+      <AddContentModal
+        content={addContentModal}
+        onClose={() => {
+          setAddContentModal(null);
         }}
       />
     </>

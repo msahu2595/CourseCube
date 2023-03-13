@@ -16,10 +16,13 @@ import {
 import tw from '@lib/tailwind';
 import {TESTS} from '@queries';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AddTestModal from 'components/AddTestModal';
 
 const AdminTestListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
+
+  const [addTestModalVisible, setAddTestModalVisible] = useState(false);
 
   const {loading, data, refetch, fetchMore} = useQuery(TESTS, {
     variables: {offset: 0},
@@ -58,68 +61,84 @@ const AdminTestListScreen = () => {
   );
 
   return (
-    <View style={tw`flex-1`}>
-      <View style={tw`flex-row`}>
-        <View
-          style={tw`flex-1 flex-row m-2 justify-between rounded-lg px-2 items-center border`}>
-          <TextInput
-            placeholder="Search"
-            onChangeText={text => {
-              console.log('text', text);
-              setSearch(text);
-              if (text.length > 2) {
-                refetch({search: text});
-              } else {
-                refetch({search: ''});
-              }
-            }}
-            value={search}
-          />
+    <>
+      <View style={tw`flex-1`}>
+        <View style={tw`flex-row items-center m-2`}>
+          <View
+            style={tw`flex-1 flex-row m-2 justify-between rounded-lg px-2 items-center border`}>
+            <TextInput
+              placeholder="Search"
+              onChangeText={text => {
+                console.log('text', text);
+                setSearch(text);
+                if (text.length > 2) {
+                  refetch({search: text});
+                } else {
+                  refetch({search: ''});
+                }
+              }}
+              value={search}
+            />
 
-          <TouchableOpacity
-            onPress={() => {
-              setSearch('');
-              refetch({search: ''});
-            }}>
-            <MaterialIcons name="clear" size={20} color={tw.color('black')} />
+            <TouchableOpacity
+              onPress={() => {
+                setSearch('');
+                refetch({search: ''});
+              }}>
+              <MaterialIcons name="clear" size={20} color={tw.color('black')} />
+            </TouchableOpacity>
+          </View>
+
+          <Switch
+            trackColor={{false: '#767577', true: '#81b0ff'}}
+            thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={value => {
+              setIsEnabled(value);
+              refetch({filter: {enable: !value}});
+            }}
+            value={isEnabled}
+          />
+          <TouchableOpacity onPress={() => setAddTestModalVisible(true)}>
+            <MaterialIcons
+              name="add-circle"
+              size={40}
+              color={tw.color('blue-600')}
+            />
           </TouchableOpacity>
         </View>
 
-        <Switch
-          trackColor={{false: '#767577', true: '#81b0ff'}}
-          thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={value => {
-            setIsEnabled(value);
-            refetch({filter: {enable: !value}});
+        <FlatList
+          bounces={true}
+          data={data?.tests?.payload}
+          renderItem={({item}) => <Item item={item} />}
+          keyExtractor={item => item._id}
+          numColumns={2}
+          columnWrapperStyle={tw`justify-between`}
+          contentContainerStyle={tw`p-1`}
+          ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+          onEndReached={() => {
+            console.log('reached end');
+            fetchMore({
+              variables: {
+                offset: data?.tests?.payload.length,
+                limit: 10,
+              },
+            });
           }}
-          value={isEnabled}
+          refreshControl={
+            <RefreshControl refreshing={loading} onRefresh={refetch} />
+          }
         />
       </View>
 
-      <FlatList
-        bounces={true}
-        data={data?.tests?.payload}
-        renderItem={({item}) => <Item item={item} />}
-        keyExtractor={item => item._id}
-        numColumns={2}
-        columnWrapperStyle={tw`justify-between`}
-        contentContainerStyle={tw`p-1`}
-        ItemSeparatorComponent={() => <View style={tw`h-2`} />}
-        onEndReached={() => {
-          console.log('reached end');
-          fetchMore({
-            variables: {
-              offset: data?.tests?.payload.length,
-              limit: 10,
-            },
-          });
+      <AddTestModal
+        visible={addTestModalVisible}
+        onClose={() => {
+          setAddTestModalVisible(null);
         }}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={refetch} />
-        }
       />
-    </View>
+    </>
   );
 };
 
