@@ -1,3 +1,4 @@
+import React from 'react';
 const {useMutation} = require('@apollo/client');
 const {EDIT_ADVERT} = require('@mutations');
 import {Formik} from 'formik';
@@ -5,16 +6,25 @@ import * as Yup from 'yup';
 import tw from '@lib/tailwind';
 import {showMessage} from 'react-native-flash-message';
 import {CCModal} from './Common/CCModal';
-import {FlatList, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const EditAdvertValidationSchema = Yup.object().shape({
-  image: Yup.string().url('invalid image URL'),
-  link: Yup.string().url('invalid link'),
-  type: Yup.string().required('please select advert type'),
+  image: Yup.string()
+    .url('Invalid image URL')
+    .required('Please enter image url'),
+  link: Yup.string().url('Invalid link').nullable(),
+  type: Yup.string().required('Please select advert type'),
 });
 
-const EditAdvertModal = ({adverts, onClose}) => {
+const EditAdvertModal = ({advert, onClose}) => {
   const [editAdvert, {loading}] = useMutation(EDIT_ADVERT, {
     onCompleted: data => {
       console.log('onCompleted', data);
@@ -33,28 +43,25 @@ const EditAdvertModal = ({adverts, onClose}) => {
     },
     refetchQueries: ['adverts'],
   });
-  console.log('advertMOdal', adverts);
+  console.log('advertMOdal', advert);
 
   return (
-    <CCModal title="Edit Advert" visible={!!adverts} onClose={onClose}>
+    <CCModal title="Edit Advert" visible={!!advert} onClose={onClose}>
       <Formik
         initialValues={{
-          image: adverts?.image,
-          link: adverts?.link,
-          type: adverts?.type,
+          image: advert?.image,
+          link: advert?.link,
+          type: advert?.type,
         }}
         validationSchema={EditAdvertValidationSchema}
         onSubmit={values => {
-          console.log(values);
-          editAdvert({
-            variables: {
-              advertInput: {
-                image: values.image,
-                type: values.type,
-                link: values.link,
-              },
-            },
-          });
+          console.log('onSubmit', values);
+          const advertInput = {type: values.type, image: values.image};
+          if (values.link) {
+            advertInput.link = values.link;
+          }
+          console.log({advertInput});
+          editAdvert({variables: {advertId: advert._id, advertInput}});
         }}>
         {({
           handleChange,
@@ -132,7 +139,7 @@ const EditAdvertModal = ({adverts, onClose}) => {
                 disabled={loading}
                 title="Submit"
                 onPress={() => {
-                  console.log(values);
+                  console.log('onPress', values);
                   handleSubmit();
                 }}
                 style={tw`bg-blue-800 rounded-lg p-2`}>
