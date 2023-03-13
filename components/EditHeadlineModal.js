@@ -1,171 +1,20 @@
+import React from 'react';
 import * as Yup from 'yup';
+import {Formik} from 'formik';
 import tw from '@lib/tailwind';
-import {HEADLINES} from '@queries';
-import {CREATE_HEADLINE} from '@mutations';
-import {useMutation, useQuery} from '@apollo/client';
-import React, {useCallback, useRef, useState} from 'react';
-import {NotificationItem, SafeAreaContainer} from '@components';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {CCModal} from './Common';
+import {useMutation} from '@apollo/client';
+import {showMessage} from 'react-native-flash-message';
+import {EDIT_HEADLINE} from 'apollo/mutations/EDIT_HEADLINE';
 import {
   ActivityIndicator,
-  Alert,
-  Button,
-  FlatList,
-  Modal,
-  Pressable,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Formik} from 'formik';
-import {showMessage} from 'react-native-flash-message';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import EditHeadlineModal from 'components/EditHeadlineModal';
-import {DELETE_HEADLINE} from 'apollo/mutations/DELETE_HEADLINE';
-
-const Separator = () => <View style={tw`h-2`} />;
-
-const AdminHeadlineListScreen = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const searchInputRef = useRef(null);
-  const [editHeadlineModal, setEditHeadlineModal] = useState(null);
-  const {loading, error, data, refetch, fetchMore} = useQuery(HEADLINES);
-
-  const [deleteHeadline] = useMutation(DELETE_HEADLINE, {
-    onCompleted: () => {
-      showMessage({
-        message: 'Your article successfully deleted',
-        type: 'success',
-      });
-    },
-    onError: error => {
-      console.log('onError', error.message);
-      showMessage({
-        message: 'Not able to delete',
-        type: 'error',
-      });
-    },
-    refetchQueries: ['headlines'],
-  });
-
-  const deleteHandler = useCallback(
-    headlineId =>
-      Alert.alert('Delete Advert', 'Are you sure want to delete advert', [
-        {
-          text: 'cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () =>
-            deleteHeadline({
-              variables: {headlineId},
-            }),
-        },
-      ]),
-    [deleteHeadline],
-  );
-
-  const renderItem = useCallback(
-    ({item, index}) => {
-      return (
-        <View index={index} {...item}>
-          <NotificationItem index={index} {...item} />
-          <View style={tw`flex flex-row justify-evenly`}>
-            <Button
-              onPress={() => setEditHeadlineModal(item)}
-              title="Edit"
-              color="#841584"
-            />
-            <Button
-              title={'delete'}
-              color="red"
-              onPress={() => {
-                deleteHandler(item._id);
-              }}
-            />
-          </View>
-        </View>
-      );
-    },
-    [deleteHandler],
-  );
-
-  if (error) return <Text>Error: {error.message}</Text>;
-
-  return (
-    <SafeAreaContainer>
-      <View style={tw`flex-row`}>
-        <View style={tw`flex-1 flex-row border rounded-lg items-center m-2`}>
-          <TextInput
-            ref={searchInputRef}
-            placeholder="Enter name to search"
-            style={tw`flex-1`}
-            onChangeText={text => {
-              if (text.length > 2) {
-                refetch({search: text});
-              } else {
-                refetch({search: ''});
-              }
-            }}
-          />
-          <TouchableOpacity
-            onPress={() => {
-              searchInputRef.current?.clear();
-              refetch({search: ''});
-            }}>
-            <MaterialIcons
-              name="clear"
-              size={25}
-              style={tw`p-1 items-center`}
-            />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <Pressable onPress={() => setModalVisible(true)}>
-            <MaterialCommunityIcons
-              name="plus"
-              size={30}
-              style={tw`pt-4 pr-2 items-center`}
-            />
-          </Pressable>
-        </View>
-      </View>
-      <FlatList
-        data={data?.headlines?.payload}
-        renderItem={renderItem}
-        keyExtractor={item => item._id}
-        ItemSeparatorComponent={Separator}
-        horizontal={false}
-        numColumns={2}
-        columnWrapperStyle={tw`justify-between`}
-        contentContainerStyle={tw`p-1`}
-        refreshing={loading}
-        onRefresh={refetch}
-        onEndReached={() =>
-          fetchMore({
-            variables: {
-              offset: data?.headlines?.payload.length,
-              limit: 10,
-            },
-          })
-        }
-      />
-      <AddHeadlineModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-      />
-      <EditHeadlineModal
-        headline={editHeadlineModal}
-        onClose={() => setEditHeadlineModal(null)}
-      />
-    </SafeAreaContainer>
-  );
-};
-
-export default AdminHeadlineListScreen;
 
 const ValidationSchema = Yup.object().shape({
   description: Yup.string().required('description is required'),
@@ -173,15 +22,15 @@ const ValidationSchema = Yup.object().shape({
   link: Yup.string().url('invalid link'),
 });
 
-const AddHeadlineModal = ({visible, onClose}) => {
-  const [createHeadline, {loading: mutationLoading}] = useMutation(
-    CREATE_HEADLINE,
+const EditHeadlineModal = ({headline, onClose}) => {
+  const [editHeadline, {loading: mutationLoading}] = useMutation(
+    EDIT_HEADLINE,
     {
       onCompleted: data => {
         console.log('onCompleted', data);
         onClose();
         showMessage({
-          message: 'Haedline Added Successfully.',
+          message: 'Headline Edited Successfully.',
           type: 'success',
         });
       },
@@ -192,22 +41,19 @@ const AddHeadlineModal = ({visible, onClose}) => {
           type: 'error',
         });
       },
+      refetchQueries: ['headlines'],
     },
   );
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}>
+    <CCModal title="Edit Headline" visible={!!headline} onClose={onClose}>
       <View style={tw`flex-1 items-center justify-center`}>
         <View style={tw`bg-slate-100`}>
           <View style={tw`m-1 shadow p-1`}>
             <Formik
               initialValues={{
-                description: '',
-                image: '',
-                link: '',
+                description: headline?.description,
+                image: headline?.image,
+                link: headline?.link,
               }}
               validationSchema={ValidationSchema}
               onSubmit={values => {
@@ -219,7 +65,7 @@ const AddHeadlineModal = ({visible, onClose}) => {
                 if (values.link) {
                   headlineInput.link = values.link;
                 }
-                createHeadline({variables: {headlineInput}});
+                editHeadline({variables: {headlineInput}});
               }}>
               {({
                 handleChange,
@@ -233,7 +79,7 @@ const AddHeadlineModal = ({visible, onClose}) => {
                   <View style={tw`flex-row`}>
                     <Text
                       style={tw`flex-1 text-center font-popBold text-lg m-4`}>
-                      Create Headline
+                      Edit Headline
                     </Text>
                     <TouchableOpacity onPress={onClose}>
                       <MaterialIcons
@@ -326,6 +172,8 @@ const AddHeadlineModal = ({visible, onClose}) => {
           </View>
         </View>
       </View>
-    </Modal>
+    </CCModal>
   );
 };
+
+export default EditHeadlineModal;
