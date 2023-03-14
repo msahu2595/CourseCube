@@ -63,8 +63,8 @@ const AddVideoModal = ({visible, onClose}) => {
               <CCTextInput
                 required
                 label="Video"
-                errors={errors}
-                touched={touched}
+                error={errors.videoLink}
+                touched={touched.videoLink}
                 onChangeText={handleChange('videoLink')}
                 onBlur={handleBlur('videoLink')}
                 value={values.videoLink}
@@ -75,7 +75,7 @@ const AddVideoModal = ({visible, onClose}) => {
               label="Submit"
               disabled={loading}
               onPress={() => {
-                console.log('onpress', values);
+                console.log('onPress', values);
                 handleSubmit();
               }}
             />

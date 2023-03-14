@@ -17,9 +17,7 @@ import tw from '@lib/tailwind';
 
 GoogleSignin.configure({
   webClientId:
-    '712761607011-pen5ucovsnc3pm7uf6hgic9k63s3bq6a.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
-  offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-  forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+    '712761607011-pen5ucovsnc3pm7uf6hgic9k63s3bq6a.apps.googleusercontent.com',
 });
 
 const LoginIntroScreen = ({navigation}) => {

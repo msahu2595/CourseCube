@@ -1,9 +1,16 @@
 import {tw} from '@lib';
 import React, {memo} from 'react';
-import {Dimensions, Modal, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  Modal,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 export const CCModal = memo(
   ({visible = false, title = 'Modal', onClose, children}) => (
@@ -18,6 +25,7 @@ export const CCModal = memo(
           style={tw.style('bg-white rounded-lg px-3 pt-2 pb-3', {
             width: width - 64,
             maxWidth: 480,
+            maxHeight: height - height * 0.2,
           })}>
           <View style={tw`flex-row justify-between items-center`}>
             <Text style={tw`text-lg text-black font-avReg`}>{title}</Text>
@@ -29,7 +37,7 @@ export const CCModal = memo(
               />
             </TouchableOpacity>
           </View>
-          {children}
+          <ScrollView>{children}</ScrollView>
         </View>
       </View>
     </Modal>

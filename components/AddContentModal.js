@@ -1,19 +1,19 @@
 import React from 'react';
+import {
+  Text,
+  View,
+  Button,
+  Switch,
+  TextInput,
+  ImageBackground,
+} from 'react-native';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import tw from '@lib/tailwind';
-import {
-  Button,
-  ImageBackground,
-  Switch,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {CCModal, CCTextInput} from './Common';
+import {ADD_CONTENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCModal, CCButton, CCTextInput} from './Common';
-import {ADD_CONTENT} from '@mutations';
 
 const AddContentValidationSchema = yup.object({
   subject: yup.string().required('required'),
@@ -48,7 +48,7 @@ const AddContentModal = ({content, onClose}) => {
 
   //   console.log(content, 'hello');
   return (
-    <CCModal title="Edit content" visible={!!content} onClose={onClose}>
+    <CCModal title="Add Content" visible={!!content} onClose={onClose}>
       <View style={tw.style(` rounded-lg bg-gray-200 `)}>
         <ImageBackground
           source={{
@@ -76,13 +76,13 @@ const AddContentModal = ({content, onClose}) => {
 
       <Formik
         initialValues={{
+          type: content?.__typename,
           subject: '',
           image: '',
           title: '',
-          type: content?.__typename,
+          description: '',
           media: content?._id,
           paid: false,
-          description: '',
           language: 'HI',
         }}
         validationSchema={AddContentValidationSchema}
@@ -112,67 +112,75 @@ const AddContentModal = ({content, onClose}) => {
           errors,
           touched,
         }) => (
-          <View>
-            <TextInput
-              onChangeText={handleChange('subject')}
-              onBlur={handleBlur('subject')}
-              value={values.subject}
-              placeholder="Subject"
-            />
-            {errors.subject && touched.subject ? (
-              <Text>{errors.subject}</Text>
-            ) : null}
-            <TextInput
-              onChangeText={handleChange('image')}
-              onBlur={handleBlur('image')}
-              value={values.image}
-              placeholder="image"
-            />
-            {errors.image && touched.image ? <Text>{errors.image}</Text> : null}
-            <TextInput
-              onChangeText={handleChange('title')}
-              onBlur={handleBlur('title')}
-              value={values.title}
-              placeholder="title"
-            />
-            {errors.title && touched.title ? <Text>{errors.title}</Text> : null}
-            <View style={tw`flex-1 flex-row  justify-between items-center `}>
-              <Text> Content paid </Text>
-              <Switch
-                trackColor={{false: '#767577', true: '#81b0ff'}}
-                thumbColor={values.paid ? '#f5dd4b' : '#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={value => {
-                  console.log(value);
-                  setFieldValue('paid', value);
+          <>
+            <View style={tw`py-2`}>
+              <CCTextInput
+                required
+                label="Subject"
+                error={errors.subject}
+                touched={touched.subject}
+                onChangeText={handleChange('subject')}
+                onBlur={handleBlur('subject')}
+                value={values.subject}
+                editable={!loading}
+              />
+
+              <CCTextInput
+                required
+                label="Image"
+                error={errors.image}
+                touched={touched.image}
+                onChangeText={handleChange('image')}
+                onBlur={handleBlur('image')}
+                value={values.image}
+                editable={!loading}
+              />
+              <CCTextInput
+                required
+                label="Title"
+                error={errors.title}
+                touched={touched.title}
+                onChangeText={handleChange('title')}
+                onBlur={handleBlur('title')}
+                value={values.title}
+                editable={!loading}
+              />
+              <View style={tw`flex-1 flex-row  justify-between items-center `}>
+                <Text> Content paid </Text>
+              </View>
+              {errors.paid && touched.paid ? <Text>{errors.paid}</Text> : null}
+              <CCTextInput
+                required
+                label="Description"
+                error={errors.description}
+                touched={touched.description}
+                onChangeText={handleChange('description')}
+                onBlur={handleBlur('description')}
+                value={values.description}
+                editable={!loading}
+                multiline={true}
+                numberOfLines={4}
+              />
+              <CCTextInput
+                required
+                label="Language"
+                error={errors.language}
+                touched={touched.language}
+                onChangeText={handleChange('language')}
+                onBlur={handleBlur('language')}
+                value={values.language}
+                editable={!loading}
+              />
+
+              <Button
+                onPress={() => {
+                  console.log('handleSubmit', values);
+                  handleSubmit();
                 }}
-                value={values.paid}
+                title="Submit"
               />
             </View>
-            {errors.paid && touched.paid ? <Text>{errors.paid}</Text> : null}
-            <TextInput
-              onChangeText={handleChange('description')}
-              onBlur={handleBlur('description')}
-              value={values.description}
-              placeholder="description"
-            />
-            <TextInput
-              onChangeText={handleChange('language')}
-              onBlur={handleBlur('language')}
-              value={values.language}
-              placeholder="language"
-            />
-            {errors.language && touched.language ? (
-              <Text>{errors.language}</Text>
-            ) : null}
-            <Button
-              onPress={() => {
-                console.log('handleSubmit', values);
-                handleSubmit();
-              }}
-              title="Submit"
-            />
-          </View>
+          </>
         )}
       </Formik>
     </CCModal>

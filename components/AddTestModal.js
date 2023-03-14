@@ -3,11 +3,11 @@ import {tw} from '@lib';
 import {ADD_TEST} from 'apollo/mutations/ADD_TEST';
 import {Formik} from 'formik';
 import React from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {CCButton, CCModal, CCTextInput} from './Common';
 import * as yup from 'yup';
-import {TimePicker} from 'react-native-simple-time-picker';
+import {CCDuration} from './Common/CCDuration';
 
 const AddTestValidationSchema = yup.object({
   title: yup.string().required('Required title'),
@@ -29,6 +29,7 @@ const AddTestValidationSchema = yup.object({
       .required('Seconds Required'),
   }),
   instructions: yup.string().required('Instructions Required'),
+  thumbnail: yup.string().url(),
 });
 
 const AddTestModal = ({visible, onClose}) => {
@@ -57,24 +58,25 @@ const AddTestModal = ({visible, onClose}) => {
         initialValues={{
           title: '',
           instructions: '',
+          thumbnail: '',
           duration: {
-            hours: '1',
-            minutes: '0',
-            seconds: '0',
+            hours: 1,
+            minutes: 0,
+            seconds: 0,
           },
         }}
         validationSchema={AddTestValidationSchema}
         onSubmit={values => {
-          console.log('VAlue', values);
-          addTest({
-            variables: {
-              testInput: {
-                title: values.title,
-                instructions: values.instructions,
-                duration: `PT${values.duration.hours}H${values.duration.minutes}M${values.duration.seconds}S`,
-              },
-            },
-          });
+          console.log('values', values);
+          const testInput = {
+            title: values.title,
+            instructions: values.instructions,
+            duration: `PT${values.duration.hours}H${values.duration.minutes}M${values.duration.seconds}S`,
+          };
+          if (values.thumbnail) {
+            testInput.thumbnail = values.thumbnail;
+          }
+          addTest({variables: {testInput}});
         }}>
         {({
           handleChange,
@@ -90,18 +92,27 @@ const AddTestModal = ({visible, onClose}) => {
               <CCTextInput
                 required
                 label="Title"
-                errors={errors}
-                touched={touched}
+                error={errors.title}
+                touched={touched.title}
                 onChangeText={handleChange('title')}
                 onBlur={handleBlur('title')}
                 value={values.title}
                 editable={!loading}
               />
               <CCTextInput
+                label="Thumbnail"
+                error={errors.thumbnail}
+                touched={touched.thumbnail}
+                onChangeText={handleChange('thumbnail')}
+                onBlur={handleBlur('thumbnail')}
+                value={values.thumbnail}
+                editable={!loading}
+              />
+              <CCTextInput
                 required
                 label="Instructions"
-                errors={errors}
-                touched={touched}
+                error={errors.instructions}
+                touched={touched.instructions}
                 onChangeText={handleChange('instructions')}
                 onBlur={handleBlur('instructions')}
                 value={values.instructions}
@@ -109,21 +120,16 @@ const AddTestModal = ({visible, onClose}) => {
                 multiline={true}
                 numberOfLines={4}
               />
-              <TimePicker
+              <CCDuration
+                required
+                label="Duration"
                 value={values.duration}
-                maxHours={5}
-                minutesInterval={5}
-                hoursUnit="Hours"
-                minutesUnit="Minutes"
+                error={errors.duration}
+                touched={touched.duration}
                 onChange={newValue => {
                   setFieldValue('duration', newValue);
                 }}
               />
-              {errors.duration && touched.duration ? (
-                <Text style={tw`text-sm text-red-600 font-avReg p-1`}>
-                  {errors.duration}
-                </Text>
-              ) : null}
             </View>
             <CCButton
               label="Submit"

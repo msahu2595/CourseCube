@@ -70,34 +70,35 @@ const AddDocumentModal = ({visible, onClose}) => {
               <CCTextInput
                 required
                 label="Title"
-                errors={errors}
-                touched={touched}
+                error={errors.title}
+                touched={touched.title}
                 onChangeText={handleChange('title')}
                 onBlur={handleBlur('title')}
                 value={values.title}
                 editable={!loading}
+                style={tw`text-black`}
               />
               <CCTextInput
                 required
                 label="url"
-                errors={errors}
-                touched={touched}
+                error={errors.url}
+                touched={touched.url}
                 onChangeText={handleChange('url')}
                 onBlur={handleBlur('url')}
                 value={values.url}
                 editable={!loading}
-                multiline={true}
-                numberOfLines={4}
+                style={tw`text-black`}
               />
               <CCTextInput
                 required
                 label="Pages"
-                errors={errors}
-                touched={touched}
+                error={errors.pages}
+                touched={touched.pages}
                 onChangeText={handleChange('pages')}
                 onBlur={handleBlur('pages')}
                 value={values.pages}
                 editable={!loading}
+                style={tw`text-black`}
               />
             </View>
             <CCButton

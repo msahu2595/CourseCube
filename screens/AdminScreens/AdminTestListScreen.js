@@ -22,6 +22,7 @@ import AddTestModal from 'components/AddTestModal';
 import EditTestModal from 'components/EditTestModal';
 import {DELETE_TEST} from 'apollo/mutations/DELETE_TEST';
 import {showMessage} from 'react-native-flash-message';
+import AddContentModal from 'components/AddContentModal';
 
 const AdminTestListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -29,6 +30,7 @@ const AdminTestListScreen = () => {
 
   const [addTestModalVisible, setAddTestModalVisible] = useState(false);
   const [editTestModal, setEditTestModal] = useState(null);
+  const [addContentModal, setAddContentModal] = useState(null);
 
   const {loading, data, refetch, fetchMore} = useQuery(TESTS, {
     variables: {offset: 0},
@@ -96,6 +98,11 @@ const AdminTestListScreen = () => {
             </Text>
           </View>
         </ImageBackground>
+        <Button
+          onPress={() => setAddContentModal(item)}
+          title="Add content"
+          color="green"
+        />
         <Button
           onPress={() => setEditTestModal(item)}
           title="Edit"
@@ -194,6 +201,12 @@ const AdminTestListScreen = () => {
         test={editTestModal}
         onClose={() => {
           setEditTestModal(null);
+        }}
+      />
+      <AddContentModal
+        content={addContentModal}
+        onClose={() => {
+          setAddContentModal(null);
         }}
       />
     </>

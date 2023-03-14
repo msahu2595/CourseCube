@@ -22,12 +22,14 @@ import AddDocumentModal from 'components/AddDocumentModal';
 import EditDocumentModal from 'components/EditDocumentModal';
 import {DELETE_DOCUMENT} from 'apollo/mutations/DELETE_DOCUMENT';
 import {showMessage} from 'react-native-flash-message';
+import AddContentModal from 'components/AddContentModal';
 
 const AdminDocumentListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
   const [addDocsModalVisible, setAddDocsModalVisible] = useState(false);
   const [editDocumentModal, setEditDocumentModal] = useState(null);
+  const [addContentModal, setAddContentModal] = useState(null);
 
   const {loading, data, refetch, fetchMore} = useQuery(DOCUMENTS, {
     variables: {offset: 0},
@@ -95,6 +97,11 @@ const AdminDocumentListScreen = () => {
             </Text>
           </View>
         </ImageBackground>
+        <Button
+          onPress={() => setAddContentModal(item)}
+          title="Add content"
+          color="green"
+        />
         <Button
           onPress={() => setEditDocumentModal(item)}
           title="Edit"
@@ -192,6 +199,12 @@ const AdminDocumentListScreen = () => {
         document={editDocumentModal}
         onClose={() => {
           setEditDocumentModal(null);
+        }}
+      />
+      <AddContentModal
+        content={addContentModal}
+        onClose={() => {
+          setAddContentModal(null);
         }}
       />
     </>

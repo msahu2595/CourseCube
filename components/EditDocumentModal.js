@@ -43,7 +43,6 @@ const EditDocumentModal = ({document, onClose}) => {
     <CCModal title="Edit Document" visible={!!document} onClose={onClose}>
       <Formik
         initialValues={{
-          id: document?._id,
           title: document?.title,
           url: document?.url,
           pages: document?.pages,
@@ -52,8 +51,7 @@ const EditDocumentModal = ({document, onClose}) => {
         onSubmit={values => {
           editDocument({
             variables: {
-              documentId: values._id,
-
+              documentId: document._id,
               documentInput: {
                 title: values.title,
                 url: values.url,
@@ -81,6 +79,7 @@ const EditDocumentModal = ({document, onClose}) => {
                 onBlur={handleBlur('title')}
                 value={values.title}
                 editable={!loading}
+                style={tw`text-black`}
               />
 
               <CCTextInput
@@ -92,6 +91,7 @@ const EditDocumentModal = ({document, onClose}) => {
                 onBlur={handleBlur('url')}
                 value={values.url}
                 editable={!loading}
+                style={tw`text-black`}
               />
               <CCTextInput
                 required
@@ -102,6 +102,7 @@ const EditDocumentModal = ({document, onClose}) => {
                 onBlur={handleBlur('pages')}
                 value={values.pages}
                 editable={!loading}
+                style={tw`text-black`}
               />
             </View>
             <CCButton

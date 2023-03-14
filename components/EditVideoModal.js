@@ -66,8 +66,8 @@ const EditVideoModal = ({video, onClose}) => {
               <CCTextInput
                 required
                 label="Title"
-                errors={errors}
-                touched={touched}
+                error={errors.title}
+                touched={touched.title}
                 onChangeText={handleChange('title')}
                 onBlur={handleBlur('title')}
                 value={values.title}
@@ -79,8 +79,8 @@ const EditVideoModal = ({video, onClose}) => {
               <CCTextInput
                 required
                 label="Thumbnail"
-                errors={errors}
-                touched={touched}
+                error={errors.thumbnail}
+                touched={touched.thumbnail}
                 onChangeText={handleChange('thumbnail')}
                 onBlur={handleBlur('thumbnail')}
                 value={values.thumbnail}
