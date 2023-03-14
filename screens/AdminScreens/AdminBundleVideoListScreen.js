@@ -1,5 +1,5 @@
 import tw from 'twrnc';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   View,
   Text,
@@ -9,18 +9,57 @@ import {
   TextInput,
   TouchableOpacity,
   Switch,
+  Button,
+  Alert,
 } from 'react-native';
 import {BUNDLE_CONTENTS} from '@queries';
-import {useQuery} from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
+import {showMessage} from 'react-native-flash-message';
+import {DELETE_BUNDLE_CONTENTS} from 'apollo/mutations/DELETE_BUNDLE_CONTENT';
 
 const Separator = () => <View style={tw`h-2`} />;
 
 const width = Dimensions.get('window').width;
 
-const Item = props => {
-  console.log(props);
+const Item = item => {
+  const [deleteBundleContent] = useMutation(DELETE_BUNDLE_CONTENTS, {
+    onCompleted: () => {
+      showMessage({
+        message: 'Your Video successfully deleted',
+        type: 'success',
+      });
+    },
+    onError: error => {
+      console.log('onError', error.message);
+      showMessage({
+        message: 'Not able to delete',
+        type: 'error',
+      });
+    },
+    refetchQueries: ['bundleContents'],
+  });
+
+  const deleteHandler = useCallback(
+    bundleContentId =>
+      Alert.alert('Delete Video', 'Are you sure want to delete Video', [
+        {
+          text: 'cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () =>
+            deleteBundleContent({
+              variables: {bundleContentId},
+            }),
+        },
+      ]),
+    [deleteBundleContent],
+  );
+  console.log(item);
   return (
     <View
       style={tw.style('flex flex-col rounded-lg bg-white', {
@@ -30,19 +69,26 @@ const Item = props => {
         numberOfLines={1}
         ellipsizeMode="tail"
         style={tw`text-[14px] p-2 font-bold text-red-600`}>
-        {props.item.title}
+        {item.title}
       </Text>
       <Image
         source={{
-          uri: props.item.image,
+          uri: item.image,
         }}
         style={tw`h-60 rounded-lg`}
       />
       <View style={tw`h-24 flex justify-between p-2`}>
-        <Text style={tw`text-xs font-bold text-blue-800`}>
-          {props.item.subject}
-        </Text>
+        <Text style={tw`text-xs font-bold text-blue-800`}>{item.subject}</Text>
       </View>
+      {item.enable && (
+        <Button
+          title={'delete'}
+          color="red"
+          onPress={() => {
+            deleteHandler(item._id);
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -102,7 +148,7 @@ function AdminBundleVideoListScreen() {
       </View>
       <FlatList
         data={data?.bundleContents?.payload}
-        renderItem={({item}) => <Item item={item} />}
+        renderItem={({item}) => <Item {...item} />}
         keyExtractor={item => item._id}
         ItemSeparatorComponent={Separator}
         horizontal={false}
