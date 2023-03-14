@@ -1,28 +1,28 @@
 import React from 'react';
 import * as Yup from 'yup';
-import {Formik} from 'formik';
 import tw from '@lib/tailwind';
-import {CCButton, CCModal, CCTextInput} from './Common';
 import {useMutation} from '@apollo/client';
+import {CREATE_HEADLINE} from '@mutations';
 import {showMessage} from 'react-native-flash-message';
-import {EDIT_HEADLINE} from 'apollo/mutations/EDIT_HEADLINE';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator} from 'react-native';
+import {Formik} from 'formik';
+import {CCButton, CCModal, CCTextInput} from './Common';
 
 const ValidationSchema = Yup.object().shape({
   description: Yup.string().required('description is required'),
-  image: Yup.string().url('invalid image URL').nullable(),
-  link: Yup.string().url('invalid link').nullable(),
+  image: Yup.string().url('invalid image URL'),
+  link: Yup.string().url('invalid link'),
 });
 
-const EditHeadlineModal = ({headline, onClose}) => {
-  const [editHeadline, {loading: mutationLoading}] = useMutation(
-    EDIT_HEADLINE,
+const CreateHeadlineModal = ({visible, onClose}) => {
+  const [createHeadline, {loading: mutationLoading}] = useMutation(
+    CREATE_HEADLINE,
     {
       onCompleted: data => {
         console.log('onCompleted', data);
         onClose();
         showMessage({
-          message: 'Headline Edited Successfully.',
+          message: 'Haedline Added Successfully.',
           type: 'success',
         });
       },
@@ -33,20 +33,19 @@ const EditHeadlineModal = ({headline, onClose}) => {
           type: 'error',
         });
       },
-      refetchQueries: ['headlines'],
     },
   );
   return (
-    <CCModal title="Edit Headline" visible={!!headline} onClose={onClose}>
+    <CCModal title="Create Headline" visible={!!visible} onClose={onClose}>
       <Formik
         initialValues={{
-          description: headline?.description,
-          image: headline?.image,
-          link: headline?.link,
+          description: '',
+          image: '',
+          link: '',
         }}
         validationSchema={ValidationSchema}
         onSubmit={values => {
-          console.log('formik Submit', values);
+          console.log('formik submit', values);
           const headlineInput = {description: values.description};
           if (values.image) {
             headlineInput.image = values.image;
@@ -54,7 +53,7 @@ const EditHeadlineModal = ({headline, onClose}) => {
           if (values.link) {
             headlineInput.link = values.link;
           }
-          editHeadline({variables: {headlineInput, headlineId: headline._id}});
+          createHeadline({variables: {headlineInput}});
         }}>
         {({
           handleChange,
@@ -96,19 +95,14 @@ const EditHeadlineModal = ({headline, onClose}) => {
               value={values.link}
               onBlur={handleBlur('link')}
             />
-            <View style={tw`m-3 shadow-sm pt-4`}>
-              <CCButton
-                label="Submit"
-                disabled={mutationLoading}
-                onPress={() => {
-                  console.log('onpress', values);
-                  handleSubmit();
-                }}
-              />
-              {mutationLoading && (
-                <ActivityIndicator animating={true} size="small" />
-              )}
-            </View>
+            <CCButton
+              label="Submit"
+              disabled={mutationLoading}
+              onPress={() => {
+                console.log('onpress', values);
+                handleSubmit();
+              }}
+            />
           </>
         )}
       </Formik>
@@ -116,4 +110,4 @@ const EditHeadlineModal = ({headline, onClose}) => {
   );
 };
 
-export default EditHeadlineModal;
+export default CreateHeadlineModal;

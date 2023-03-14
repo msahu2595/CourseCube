@@ -23,6 +23,7 @@ import {showMessage} from 'react-native-flash-message';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import EditHeadlineModal from 'components/EditHeadlineModal';
 import {DELETE_HEADLINE} from 'apollo/mutations/DELETE_HEADLINE';
+import CreateHeadlineModal from 'components/CreateHeadlineModal';
 
 const Separator = () => <View style={tw`h-2`} />;
 
@@ -153,7 +154,7 @@ const AdminHeadlineListScreen = () => {
           })
         }
       />
-      <AddHeadlineModal
+      <CreateHeadlineModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
       />
