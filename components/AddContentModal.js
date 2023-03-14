@@ -14,6 +14,8 @@ import {CCModal, CCTextInput} from './Common';
 import {ADD_CONTENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
+import RadioForm, {RadioButton} from 'react-native-simple-radio-button';
+import CCRadio from './Common/CCRadio';
 
 const AddContentValidationSchema = yup.object({
   subject: yup.string().required('required'),
@@ -23,6 +25,7 @@ const AddContentValidationSchema = yup.object({
   media: yup.string().required('required'),
   paid: yup.boolean().required('required'),
   description: yup.string().required('required'),
+  highlight: yup.string(),
   language: yup.string().oneOf(['HI', 'EN']).required('required'),
 });
 
@@ -32,7 +35,7 @@ const AddContentModal = ({content, onClose}) => {
       console.log(data);
       onClose();
       showMessage({
-        message: 'Your content Successfully edited.',
+        message: 'Your content Successfully Added.',
         type: 'success',
       });
     },
@@ -81,6 +84,7 @@ const AddContentModal = ({content, onClose}) => {
           image: '',
           title: '',
           description: '',
+          highlight: '',
           media: content?._id,
           paid: false,
           language: 'HI',
@@ -97,6 +101,7 @@ const AddContentModal = ({content, onClose}) => {
                 media: values.media,
                 type: values.type,
                 paid: values.paid,
+                highlight: values.highlight,
                 description: values.description,
                 language: values.language,
               },
@@ -145,10 +150,6 @@ const AddContentModal = ({content, onClose}) => {
                 value={values.title}
                 editable={!loading}
               />
-              <View style={tw`flex-1 flex-row  justify-between items-center `}>
-                <Text> Content paid </Text>
-              </View>
-              {errors.paid && touched.paid ? <Text>{errors.paid}</Text> : null}
               <CCTextInput
                 required
                 label="Description"
@@ -162,6 +163,15 @@ const AddContentModal = ({content, onClose}) => {
                 numberOfLines={4}
               />
               <CCTextInput
+                label="Highlight"
+                error={errors.highlight}
+                touched={touched.highlight}
+                onChangeText={handleChange('highlight')}
+                onBlur={handleBlur('highlight')}
+                value={values.highlight}
+                editable={!loading}
+              />
+              <CCRadio
                 required
                 label="Language"
                 error={errors.language}

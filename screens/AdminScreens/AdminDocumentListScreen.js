@@ -121,7 +121,7 @@ const AdminDocumentListScreen = () => {
   return (
     <>
       <View style={tw`flex-1`}>
-        <View style={tw`flex-row`}>
+        <View style={tw`flex-row items-center m-2`}>
           <View
             style={tw`flex-1 flex-row m-2 justify-between rounded-lg px-2 items-center border`}>
             <TextInput
