@@ -10,11 +10,11 @@ import {
   ActivityIndicator,
   FlatList,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {CCButton, CCTextInput} from './Common';
 
 const EditAdvertValidationSchema = Yup.object().shape({
   image: Yup.string()
@@ -98,57 +98,37 @@ const EditAdvertModal = ({advert, onClose}) => {
               />
             </View>
             {errors.type && touched.type && <Text>{errors.type}</Text>}
-            <Text style={tw`pt-4 mx-2`}>Image Link (required!) :</Text>
-            <View style={tw`mt-2 flex flex-row border border-black rounded-lg`}>
-              <MaterialCommunityIcons
-                style={tw`border-r p-1 border-b-black`}
-                name="link"
-                color="#4F8EF7"
-                size={25}
-              />
-              <TextInput
-                editable={!loading}
-                placeholder="Enter image link"
-                onChangeText={handleChange('image')}
-                value={values.image}
-                onBlur={handleBlur('image')}
-                style={tw`h-10 w-80 p-2 bg-white font-popLight`}
-              />
-            </View>
-            {errors.image && touched.image && <Text>{errors.image}</Text>}
-            <Text style={tw`pt-4 mx-2`}>Reference Link:</Text>
-            <View style={tw`mt-2 flex flex-row border border-black rounded-lg`}>
-              <MaterialCommunityIcons
-                style={tw`border-r p-1 border-b-black`}
-                name="link"
-                color="#4F8EF7"
-                size={25}
-              />
-              <TextInput
-                editable={!loading}
-                placeholder="Enter Reference link"
-                onChangeText={handleChange('link')}
-                value={values.link}
-                onBlur={handleBlur('link')}
-                style={tw`h-10 w-80 p-2 bg-white font-popLight`}
-              />
-            </View>
-            {/* {errors.link && touched.link && <Text>{errors.link}</Text>} */}
-            <View style={tw`m-3 shadow-sm pt-4`}>
-              <TouchableOpacity
-                disabled={loading}
-                title="Submit"
-                onPress={() => {
-                  console.log('onPress', values);
-                  handleSubmit();
-                }}
-                style={tw`bg-blue-800 rounded-lg p-2`}>
-                <Text style={tw`text-white text-center text-base font-popSemi`}>
-                  Submit
-                </Text>
-                {loading && <ActivityIndicator animating={true} size="small" />}
-              </TouchableOpacity>
-            </View>
+            <CCTextInput
+              required
+              label="Image Link"
+              errors={errors}
+              touched={touched}
+              editable={!loading}
+              placeholder="Enter image link"
+              onChangeText={handleChange('image')}
+              value={values.image}
+              onBlur={handleBlur('image')}
+            />
+            <CCTextInput
+              label="Reference Link"
+              errors={errors}
+              touched={touched}
+              editable={!loading}
+              placeholder="Enter Reference link"
+              onChangeText={handleChange('link')}
+              value={values.link}
+              onBlur={handleBlur('link')}
+            />
+
+            <CCButton
+              disabled={loading}
+              label="Submit"
+              onPress={() => {
+                console.log('onPress', values);
+                handleSubmit();
+              }}
+            />
+            {loading && <ActivityIndicator animating={true} size="small" />}
           </View>
         )}
       </Formik>
