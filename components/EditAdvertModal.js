@@ -1,11 +1,10 @@
 import React from 'react';
-const {useMutation} = require('@apollo/client');
-const {EDIT_ADVERT} = require('@mutations');
-import {Formik} from 'formik';
 import * as Yup from 'yup';
+import {Formik} from 'formik';
 import tw from '@lib/tailwind';
-import {showMessage} from 'react-native-flash-message';
-import {CCModal} from './Common/CCModal';
+import {EDIT_ADVERT} from '@mutations';
+import {useMutation} from '@apollo/client';
+import {CCModal, CCButton, CCTextInput} from './Common';
 import {
   ActivityIndicator,
   FlatList,
@@ -13,8 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {CCButton, CCTextInput} from './Common';
+import {showMessage} from 'react-native-flash-message';
 
 const EditAdvertValidationSchema = Yup.object().shape({
   image: Yup.string()
