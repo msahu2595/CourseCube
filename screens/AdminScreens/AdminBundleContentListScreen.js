@@ -1,8 +1,8 @@
 import React from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import AdminBundleDocumentListScreen from './AdminBundleDocumentListScreen';
-import AdminBundleVideoListScreen from './AdminBundleVideoListScreen';
-import AdminBundleTestListScreen from './AdminBundleTestListScreen';
+import AdminBundleContentDocumentListScreen from './AdminBundleContentDocumentListScreen';
+import AdminBundleContentTestListScreen from './AdminBundleContentTestListScreen';
+import AdminBundleContentVideoListScreen from './AdminBundleContentVideoListScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -17,16 +17,16 @@ const AdminBundleContentListScreen = () => {
       <Tab.Screen
         tabBarShowLabel={false}
         name="Document"
-        component={AdminBundleDocumentListScreen}
+        component={AdminBundleContentDocumentListScreen}
       />
       <Tab.Screen
         tabBarShowLabel={false}
         name="Video"
-        component={AdminBundleVideoListScreen}
+        component={AdminBundleContentVideoListScreen}
       />
       <Tab.Screen
         name="Test"
-        component={AdminBundleTestListScreen}
+        component={AdminBundleContentTestListScreen}
         tabBarShowLabel={false}
       />
     </Tab.Navigator>

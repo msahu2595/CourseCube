@@ -9,8 +9,8 @@ import {
   TextInput,
   TouchableOpacity,
   Switch,
-  Alert,
   Button,
+  Alert,
 } from 'react-native';
 import {BUNDLE_CONTENTS} from '@queries';
 import {useMutation, useQuery} from '@apollo/client';
@@ -23,23 +23,11 @@ const Separator = () => <View style={tw`h-2`} />;
 
 const width = Dimensions.get('window').width;
 
-const AdminBundleDocumentListScreen = () => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [search, setSearch] = useState('');
-
-  const {loading, error, data, refetch, fetchMore} = useQuery(BUNDLE_CONTENTS, {
-    variables: {
-      filter: {
-        type: 'Document',
-      },
-      bundleId: '6402198917b9fcec1454dbd6',
-    },
-  });
-
+const Item = item => {
   const [deleteBundleContent] = useMutation(DELETE_BUNDLE_CONTENTS, {
     onCompleted: () => {
       showMessage({
-        message: 'Your article successfully deleted',
+        message: 'Your Video successfully deleted',
         type: 'success',
       });
     },
@@ -55,7 +43,7 @@ const AdminBundleDocumentListScreen = () => {
 
   const deleteHandler = useCallback(
     bundleContentId =>
-      Alert.alert('Delete document', 'Are you sure want to delete document', [
+      Alert.alert('Delete Video', 'Are you sure want to delete Video', [
         {
           text: 'cancel',
           onPress: () => console.log('Cancel Pressed'),
@@ -71,42 +59,52 @@ const AdminBundleDocumentListScreen = () => {
       ]),
     [deleteBundleContent],
   );
-  const Item = item => {
-    console.log(item);
-    return (
-      <View
-        style={tw.style('flex flex-col rounded-lg bg-white', {
-          width: width / 2 - 8,
-        })}>
-        <Text
-          numberOfLines={1}
-          ellipsizeMode="tail"
-          style={tw`text-[14px] p-2 font-bold text-red-600`}>
-          {item.title}
-        </Text>
-        <Image
-          source={{
-            uri: item.image,
-          }}
-          style={tw`h-60 rounded-lg`}
-        />
-        <View style={tw`h-24 flex justify-between p-2`}>
-          <Text style={tw`text-xs font-bold text-blue-800`}>
-            {item.subject}
-          </Text>
-        </View>
-        {item.enable && (
-          <Button
-            title={'delete'}
-            color="red"
-            onPress={() => {
-              deleteHandler(item._id);
-            }}
-          />
-        )}
+  console.log(item);
+  return (
+    <View
+      style={tw.style('flex flex-col rounded-lg bg-white', {
+        width: width / 2 - 8,
+      })}>
+      <Text
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        style={tw`text-[14px] p-2 font-bold text-red-600`}>
+        {item.title}
+      </Text>
+      <Image
+        source={{
+          uri: item.image,
+        }}
+        style={tw`h-60 rounded-lg`}
+      />
+      <View style={tw`h-24 flex justify-between p-2`}>
+        <Text style={tw`text-xs font-bold text-blue-800`}>{item.subject}</Text>
       </View>
-    );
-  };
+      {item.enable && (
+        <Button
+          title={'delete'}
+          color="red"
+          onPress={() => {
+            deleteHandler(item._id);
+          }}
+        />
+      )}
+    </View>
+  );
+};
+
+function AdminBundleContentVideoListScreen() {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [search, setSearch] = useState('');
+
+  const {loading, error, data, refetch, fetchMore} = useQuery(BUNDLE_CONTENTS, {
+    variables: {
+      filter: {
+        type: 'Video',
+      },
+      bundleId: '6402198917b9fcec1454dbd6',
+    },
+  });
 
   console.log(data);
 
@@ -143,7 +141,7 @@ const AdminBundleDocumentListScreen = () => {
           ios_backgroundColor="#3e3e3e"
           onValueChange={value => {
             setIsEnabled(value);
-            refetch({filter: {type: 'Document', enable: !value}});
+            refetch({filter: {type: 'Video', enable: !value}});
           }}
           value={isEnabled}
         />
@@ -170,6 +168,6 @@ const AdminBundleDocumentListScreen = () => {
       />
     </SafeAreaContainer>
   );
-};
+}
 
-export default AdminBundleDocumentListScreen;
+export default AdminBundleContentVideoListScreen;

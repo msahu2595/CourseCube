@@ -9,8 +9,8 @@ import {
   TextInput,
   TouchableOpacity,
   Switch,
-  Button,
   Alert,
+  Button,
 } from 'react-native';
 import {BUNDLE_CONTENTS} from '@queries';
 import {useMutation, useQuery} from '@apollo/client';
@@ -23,11 +23,23 @@ const Separator = () => <View style={tw`h-2`} />;
 
 const width = Dimensions.get('window').width;
 
-const Item = item => {
+const AdminBundleContentDocumentListScreen = () => {
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [search, setSearch] = useState('');
+
+  const {loading, error, data, refetch, fetchMore} = useQuery(BUNDLE_CONTENTS, {
+    variables: {
+      filter: {
+        type: 'Document',
+      },
+      bundleId: '6402198917b9fcec1454dbd6',
+    },
+  });
+
   const [deleteBundleContent] = useMutation(DELETE_BUNDLE_CONTENTS, {
     onCompleted: () => {
       showMessage({
-        message: 'Your Video successfully deleted',
+        message: 'Your article successfully deleted',
         type: 'success',
       });
     },
@@ -43,7 +55,7 @@ const Item = item => {
 
   const deleteHandler = useCallback(
     bundleContentId =>
-      Alert.alert('Delete Video', 'Are you sure want to delete Video', [
+      Alert.alert('Delete document', 'Are you sure want to delete document', [
         {
           text: 'cancel',
           onPress: () => console.log('Cancel Pressed'),
@@ -59,52 +71,42 @@ const Item = item => {
       ]),
     [deleteBundleContent],
   );
-  console.log(item);
-  return (
-    <View
-      style={tw.style('flex flex-col rounded-lg bg-white', {
-        width: width / 2 - 8,
-      })}>
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={tw`text-[14px] p-2 font-bold text-red-600`}>
-        {item.title}
-      </Text>
-      <Image
-        source={{
-          uri: item.image,
-        }}
-        style={tw`h-60 rounded-lg`}
-      />
-      <View style={tw`h-24 flex justify-between p-2`}>
-        <Text style={tw`text-xs font-bold text-blue-800`}>{item.subject}</Text>
-      </View>
-      {item.enable && (
-        <Button
-          title={'delete'}
-          color="red"
-          onPress={() => {
-            deleteHandler(item._id);
+  const Item = item => {
+    console.log(item);
+    return (
+      <View
+        style={tw.style('flex flex-col rounded-lg bg-white', {
+          width: width / 2 - 8,
+        })}>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={tw`text-[14px] p-2 font-bold text-red-600`}>
+          {item.title}
+        </Text>
+        <Image
+          source={{
+            uri: item.image,
           }}
+          style={tw`h-60 rounded-lg`}
         />
-      )}
-    </View>
-  );
-};
-
-function AdminBundleVideoListScreen() {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [search, setSearch] = useState('');
-
-  const {loading, error, data, refetch, fetchMore} = useQuery(BUNDLE_CONTENTS, {
-    variables: {
-      filter: {
-        type: 'Video',
-      },
-      bundleId: '6402198917b9fcec1454dbd6',
-    },
-  });
+        <View style={tw`h-24 flex justify-between p-2`}>
+          <Text style={tw`text-xs font-bold text-blue-800`}>
+            {item.subject}
+          </Text>
+        </View>
+        {item.enable && (
+          <Button
+            title={'delete'}
+            color="red"
+            onPress={() => {
+              deleteHandler(item._id);
+            }}
+          />
+        )}
+      </View>
+    );
+  };
 
   console.log(data);
 
@@ -141,7 +143,7 @@ function AdminBundleVideoListScreen() {
           ios_backgroundColor="#3e3e3e"
           onValueChange={value => {
             setIsEnabled(value);
-            refetch({filter: {type: 'Video', enable: !value}});
+            refetch({filter: {type: 'Document', enable: !value}});
           }}
           value={isEnabled}
         />
@@ -168,6 +170,6 @@ function AdminBundleVideoListScreen() {
       />
     </SafeAreaContainer>
   );
-}
+};
 
-export default AdminBundleVideoListScreen;
+export default AdminBundleContentDocumentListScreen;

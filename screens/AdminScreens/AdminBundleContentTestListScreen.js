@@ -12,7 +12,7 @@ import {
   Alert,
   Button,
 } from 'react-native';
-import {BUNDLES, BUNDLE_CONTENTS} from '@queries';
+import {BUNDLE_CONTENTS} from '@queries';
 import {useMutation, useQuery} from '@apollo/client';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
@@ -92,7 +92,7 @@ const Item = item => {
   );
 };
 
-function AdminBundleTestListScreen() {
+function AdminBundleContentTestListScreen() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
 
@@ -169,4 +169,4 @@ function AdminBundleTestListScreen() {
   );
 }
 
-export default AdminBundleTestListScreen;
+export default AdminBundleContentTestListScreen;
