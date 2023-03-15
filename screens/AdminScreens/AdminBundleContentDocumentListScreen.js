@@ -1,5 +1,4 @@
-import tw from 'twrnc';
-import React, {useCallback, useState} from 'react';
+import tw from '@lib/tailwind';
 import {
   View,
   Text,
@@ -13,10 +12,12 @@ import {
   Button,
 } from 'react-native';
 import {BUNDLE_CONTENTS} from '@queries';
-import {useMutation, useQuery} from '@apollo/client';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
+import React, {useCallback, useState} from 'react';
+import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
+import EditBundleContentModal from 'components/EditBundleContentModal';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {DELETE_BUNDLE_CONTENTS} from 'apollo/mutations/DELETE_BUNDLE_CONTENT';
 
 const Separator = () => <View style={tw`h-2`} />;
@@ -26,6 +27,7 @@ const width = Dimensions.get('window').width;
 const AdminBundleContentDocumentListScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
+  const [editBundleContentModal, setEditBundleContentModal] = useState(null);
 
   const {loading, error, data, refetch, fetchMore} = useQuery(BUNDLE_CONTENTS, {
     variables: {
@@ -55,7 +57,7 @@ const AdminBundleContentDocumentListScreen = () => {
 
   const deleteHandler = useCallback(
     bundleContentId =>
-      Alert.alert('Delete document', 'Are you sure want to delete document', [
+      Alert.alert('Delete Content', 'Are you sure want to delete Content', [
         {
           text: 'cancel',
           onPress: () => console.log('Cancel Pressed'),
@@ -97,6 +99,13 @@ const AdminBundleContentDocumentListScreen = () => {
         </View>
         {item.enable && (
           <Button
+            onPress={() => setEditBundleContentModal(item)}
+            title={'edit'}
+            color="#841584"
+          />
+        )}
+        {item.enable && (
+          <Button
             title={'delete'}
             color="red"
             onPress={() => {
@@ -108,7 +117,7 @@ const AdminBundleContentDocumentListScreen = () => {
     );
   };
 
-  console.log(data);
+  // console.log(data);
 
   if (error) return <Text>Error: {error.message}</Text>;
 
@@ -167,6 +176,12 @@ const AdminBundleContentDocumentListScreen = () => {
             },
           })
         }
+      />
+      <EditBundleContentModal
+        bundleContent={editBundleContentModal}
+        onClose={() => {
+          setEditBundleContentModal(null);
+        }}
       />
     </SafeAreaContainer>
   );

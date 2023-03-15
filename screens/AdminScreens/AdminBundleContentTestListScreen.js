@@ -18,83 +18,16 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
 import {DELETE_BUNDLE_CONTENTS} from 'apollo/mutations/DELETE_BUNDLE_CONTENT';
 import {showMessage} from 'react-native-flash-message';
+import EditBundleContentModal from 'components/EditBundleContentModal';
 
 const Separator = () => <View style={tw`h-2`} />;
 
 const width = Dimensions.get('window').width;
 
-const Item = item => {
-  const [deleteBundleContent] = useMutation(DELETE_BUNDLE_CONTENTS, {
-    onCompleted: () => {
-      showMessage({
-        message: 'Your test successfully deleted',
-        type: 'success',
-      });
-    },
-    onError: error => {
-      console.log('onError', error.message);
-      showMessage({
-        message: 'Not able to delete',
-        type: 'error',
-      });
-    },
-    refetchQueries: ['bundleContents'],
-  });
-
-  const deleteHandler = useCallback(
-    bundleContentId =>
-      Alert.alert('Delete document', 'Are you sure want to delete test', [
-        {
-          text: 'cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () =>
-            deleteBundleContent({
-              variables: {bundleContentId},
-            }),
-        },
-      ]),
-    [deleteBundleContent],
-  );
-  return (
-    <View
-      style={tw.style('flex flex-col rounded-lg bg-white', {
-        width: width / 2 - 8,
-      })}>
-      <Text
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        style={tw`text-[14px] p-2 font-bold text-red-600`}>
-        {item.title}
-      </Text>
-      <Image
-        source={{
-          uri: item.image,
-        }}
-        style={tw`h-60 rounded-lg`}
-      />
-      <View style={tw`h-24 flex justify-between p-2`}>
-        <Text style={tw`text-xs font-bold text-blue-800`}>{item.subject}</Text>
-      </View>
-      {item.enable && (
-        <Button
-          title={'delete'}
-          color="red"
-          onPress={() => {
-            deleteHandler(item._id);
-          }}
-        />
-      )}
-    </View>
-  );
-};
-
 function AdminBundleContentTestListScreen() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
+  const [editBundleContentModal, setEditBundleContentModal] = useState(null);
 
   const {loading, error, data, refetch, fetchMore} = useQuery(BUNDLE_CONTENTS, {
     variables: {
@@ -104,6 +37,84 @@ function AdminBundleContentTestListScreen() {
       bundleId: '6402198917b9fcec1454dbd6',
     },
   });
+
+  const Item = item => {
+    const [deleteBundleContent] = useMutation(DELETE_BUNDLE_CONTENTS, {
+      onCompleted: () => {
+        showMessage({
+          message: 'Your test successfully deleted',
+          type: 'success',
+        });
+      },
+      onError: error => {
+        console.log('onError', error.message);
+        showMessage({
+          message: 'Not able to delete',
+          type: 'error',
+        });
+      },
+      refetchQueries: ['bundleContents'],
+    });
+
+    const deleteHandler = useCallback(
+      bundleContentId =>
+        Alert.alert('Delete Content', 'Are you sure want to delete Content', [
+          {
+            text: 'cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: () =>
+              deleteBundleContent({
+                variables: {bundleContentId},
+              }),
+          },
+        ]),
+      [deleteBundleContent],
+    );
+    return (
+      <View
+        style={tw.style('flex flex-col rounded-lg bg-white', {
+          width: width / 2 - 8,
+        })}>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={tw`text-[14px] p-2 font-bold text-red-600`}>
+          {item.title}
+        </Text>
+        <Image
+          source={{
+            uri: item.image,
+          }}
+          style={tw`h-60 rounded-lg`}
+        />
+        <View style={tw`h-24 flex justify-between p-2`}>
+          <Text style={tw`text-xs font-bold text-blue-800`}>
+            {item.subject}
+          </Text>
+        </View>
+        {item.enable && (
+          <Button
+            onPress={() => setEditBundleContentModal(item)}
+            title={'edit'}
+            color="#841584"
+          />
+        )}
+        {item.enable && (
+          <Button
+            title={'delete'}
+            color="red"
+            onPress={() => {
+              deleteHandler(item._id);
+            }}
+          />
+        )}
+      </View>
+    );
+  };
 
   console.log(data);
 
@@ -164,6 +175,12 @@ function AdminBundleContentTestListScreen() {
             },
           })
         }
+      />
+      <EditBundleContentModal
+        bundleContent={editBundleContentModal}
+        onClose={() => {
+          setEditBundleContentModal(null);
+        }}
       />
     </SafeAreaContainer>
   );

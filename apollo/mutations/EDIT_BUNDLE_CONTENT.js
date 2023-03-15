@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client';
 
 export const EDIT_BUNDLE_CONTENT = gql`
-  mutation EditBundleContent(
+  mutation editBundleContent(
     $bundleContentId: ID!
     $bundleContentInput: BundleContentInput!
   ) {
