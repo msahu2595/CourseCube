@@ -12,6 +12,7 @@ import {
   Linking,
   RefreshControl,
   Switch,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -65,14 +66,16 @@ const AdminWebsiteListScreen = () => {
 
   const Item = useCallback(
     ({item}) => (
-      <View style={tw`p-2`}>
-        <Button
-          title={item.name}
+      <View style={tw`p-2 flex-row justify-between `}>
+        <TouchableOpacity
           onPress={() => {
             Linking.openURL(item.link);
-          }}
-        />
-        <View style={tw`flex-row  justify-around  `}>
+          }}>
+          <View style={tw`  h-8 rounded-lg self-start bg-blue-600 ml-5 `}>
+            <Text style={tw`px-2 text-white`}>{item.name}</Text>
+          </View>
+        </TouchableOpacity>
+        <View style={tw`flex-row mx-2  `}>
           <Button
             onPress={() => setEditWebsiteModal(item)}
             title="Edit"
@@ -140,11 +143,13 @@ const AdminWebsiteListScreen = () => {
           bounces={true}
           data={data?.websites?.payload}
           renderItem={({item}) => <Item item={item} />}
+          ListHeaderComponent={() => <View style={tw`h-2`} />}
+          ListFooterComponent={() => <View style={tw`h-2`} />}
           onEndReached={() => {
             console.log('reached end');
             fetchMore({
               variables: {
-                offset: data?.videos?.payload.length,
+                offset: data?.websites?.payload.length,
                 limit: 10,
               },
             });
