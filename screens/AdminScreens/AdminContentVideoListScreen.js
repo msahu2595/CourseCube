@@ -6,43 +6,19 @@ import {
   TextInput,
   TouchableOpacity,
   Switch,
+  Alert,
+  Button,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import tw from '@lib/tailwind';
 import {CONTENTS} from '@queries';
-import {useQuery} from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
+import {DELETE_CONTENT} from 'apollo/mutations/DELETE_CONTENT';
+import {showMessage} from 'react-native-flash-message';
 
 const separator = () => <View style={tw`h-2`} />;
-
-const Item = props => {
-  console.log(props);
-  return (
-    <View style={tw`flex-row pb-2 px-2 rounded-lg`}>
-      <Image
-        source={{
-          uri: props.item.image,
-        }}
-        style={tw`w-44 h-24 rounded-lg`}
-      />
-      <View style={tw`flex justify-between px-1`}>
-        <Text style={tw`text-xs font-bold`}>{props.item.subject}</Text>
-        <Text
-          numberOfLines={2}
-          ellipsizeMode="tail"
-          style={tw`text-[14px] font-bold`}>
-          {props.item.title}
-        </Text>
-        <View style={tw`flex-row`}>
-          <Text style={tw`text-[10px]`}>{props.item.media.time} | </Text>
-          <Text style={tw`text-[10px]`}>{props.item.likes} likes |</Text>
-          <Text style={tw`text-[10px]`}>{props.item.createdAt}</Text>
-        </View>
-      </View>
-    </View>
-  );
-};
 
 function AdminContentVideoListScreen() {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -55,6 +31,79 @@ function AdminContentVideoListScreen() {
       },
     },
   });
+
+  console.log('dataaaaa', data);
+
+  const [deleteContent] = useMutation(DELETE_CONTENT, {
+    onCompleted: () => {
+      showMessage({
+        message: 'Your Content successfully deleted',
+        type: 'success',
+      });
+    },
+    onError: () => {
+      showMessage({
+        message: 'Not able to delete',
+        type: 'danger',
+      });
+    },
+    refetchQueries: ['contents'],
+  });
+
+  const deleteHandler = useCallback(
+    contentId =>
+      Alert.alert('Delete Content', 'Are you want to delete content', [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () =>
+            deleteContent({
+              variables: {contentId},
+            }),
+        },
+      ]),
+    [deleteContent],
+  );
+
+  const Item = item => {
+    console.log(item);
+    return (
+      <View style={tw`flex-row pb-2 px-2 rounded-lg`}>
+        <Image
+          source={{
+            uri: item.image,
+          }}
+          style={tw`w-44 h-24 rounded-lg`}
+        />
+        <View style={tw`flex justify-between px-1`}>
+          <Text style={tw`text-xs font-bold`}>{item.subject}</Text>
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={tw`text-[14px] font-bold`}>
+            {item.title}
+          </Text>
+          <View style={tw`flex-row`}>
+            <Text style={tw`text-[10px]`}>{item.media.time} | </Text>
+            <Text style={tw`text-[10px]`}>{item.likes} likes |</Text>
+            <Text style={tw`text-[10px]`}>{item.createdAt}</Text>
+          </View>
+          {item.enable && (
+            <Button
+              title={'Delete'}
+              onPress={() => {
+                deleteHandler(item._id);
+              }}
+            />
+          )}
+        </View>
+      </View>
+    );
+  };
 
   return (
     <SafeAreaContainer>
@@ -99,7 +148,7 @@ function AdminContentVideoListScreen() {
       ) : (
         <FlatList
           data={data?.contents?.payload}
-          renderItem={({item}) => <Item item={item} />}
+          renderItem={({item}) => <Item {...item} />}
           keyExtractor={item => item._id}
           ItemSeparatorComponent={separator}
           refreshing={loading}

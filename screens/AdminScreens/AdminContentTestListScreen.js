@@ -1,5 +1,5 @@
 import tw from 'twrnc';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   View,
   Text,
@@ -9,18 +9,57 @@ import {
   TextInput,
   TouchableOpacity,
   Switch,
+  Alert,
+  Button,
 } from 'react-native';
 import {CONTENTS} from '@queries';
-import {useQuery} from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
+import {DELETE_CONTENT} from 'apollo/mutations/DELETE_CONTENT';
+import {showMessage} from 'react-native-flash-message';
 
 const Separator = () => <View style={tw`h-2`} />;
 
 const width = Dimensions.get('window').width;
 
-const Item = props => {
-  console.log(props);
+const Item = item => {
+  const [deleteContent] = useMutation(DELETE_CONTENT, {
+    onCompleted: () => {
+      showMessage({
+        message: 'Your Content successfully deleted',
+        type: 'success',
+      });
+    },
+    onError: () => {
+      showMessage({
+        message: 'Not able to delete',
+        type: 'danger',
+      });
+    },
+    refetchQueries: ['contents'],
+  });
+
+  const deleteHandler = useCallback(
+    contentId =>
+      Alert.alert('Delete Content', 'Are you want to delete contents', [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () =>
+            deleteContent({
+              variables: {contentId},
+            }),
+        },
+      ]),
+    [deleteContent],
+  );
+
+  console.log(item);
   return (
     <View
       style={tw.style(`flex flex-col rounded-lg bg-white`, {
@@ -28,34 +67,38 @@ const Item = props => {
       })}>
       <Image
         source={{
-          uri: props.item.image,
+          uri: item.image,
         }}
         style={tw`h-44 rounded-lg`}
       />
       <View style={tw`h-24 flex justify-between p-2`}>
-        <Text style={tw`text-xs font-bold text-red-700`}>
-          {props.item.subject}
-        </Text>
+        <Text style={tw`text-xs font-bold text-red-700`}>{item.subject}</Text>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           style={tw`text-[14px] font-bold text-black`}>
-          {props.item.title}
+          {item.title}
         </Text>
         <View>
-          <Text style={tw`text-[10px]`}>
-            {props.item.likes} likes | 180 attempts
-          </Text>
+          <Text style={tw`text-[10px]`}>{item.likes} likes | 180 attempts</Text>
         </View>
         <View style={tw`flex-row px-1 pb-1 flex justify-between `}>
           <Text
             style={tw`text-[10px] shadow bg-orange-200 text-red-700 rounded-sm`}>
-            ${props.item.price}
+            ${item.price}
           </Text>
 
-          <Text style={tw`text-[10px]`}>{props.item.offer}%off</Text>
+          <Text style={tw`text-[10px]`}>{item.offer}%off</Text>
         </View>
       </View>
+      {item.enable && (
+        <Button
+          title={'Delete'}
+          onPress={() => {
+            deleteHandler(item._id);
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -114,7 +157,7 @@ function AdminContentTestListScreen() {
       </View>
       <FlatList
         data={data?.contents?.payload}
-        renderItem={({item}) => <Item item={item} />}
+        renderItem={({item}) => <Item {...item} />}
         keyExtractor={item => item.id}
         ItemSeparatorComponent={Separator}
         horizontal={false}

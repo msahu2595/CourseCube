@@ -1,29 +1,14 @@
 import {gql} from '@apollo/client';
 
 export const CONTENTS = gql`
-  query contents(
+  query Contents(
     $offset: Int
     $limit: Int
     $search: String
     $filter: ContentsFilterInput
   ) {
     contents(offset: $offset, limit: $limit, search: $search, filter: $filter) {
-      code
-      success
-      message
-      token
-      offset
-      limit
-      search
-      filter {
-        paid
-        type
-        language
-        visible
-        enable
-      }
       payload {
-        __typename
         _id
         categories
         exams
@@ -33,35 +18,37 @@ export const CONTENTS = gql`
         title
         media {
           ... on Video {
-            __typename
             _id
             title
             thumbnail
-            link
             time
-            urls {
-              url
-              format
-            }
+            link
             enable
             createdAt
             updatedAt
           }
           ... on Test {
-            __typename
             _id
             title
             thumbnail
             instructions
             duration
+            questions {
+              _id
+              question
+              image
+              passage
+              options
+              answerIndex
+              mark
+              negativeMark
+            }
             totalMarks
-            negativeMark
             enable
             createdAt
             updatedAt
           }
           ... on Document {
-            __typename
             _id
             title
             thumbnail
