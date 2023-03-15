@@ -8,7 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 
 const menu = [
   {name: 'My Courses', icon: 'book-open', screen: ''},
-  {name: 'Downloads', icon: 'download', screen: ''},
+  {name: 'Downloads', icon: 'download', screen: 'AdminWebsiteListScreen'},
   {name: 'Bookmarks', icon: 'bookmark', screen: ''},
   {name: 'Payments', icon: 'credit-card', screen: 'AdminArticleListScreen'},
   {name: 'Settings', icon: 'settings', screen: 'SettingsScreen'},

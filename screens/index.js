@@ -4,6 +4,7 @@ import {
   AdminDocumentListScreen,
   AdminTestListScreen,
   AdminArticleListScreen,
+  AdminWebsiteListScreen,
   AddContentScreen,
 } from './AdminScreens';
 import {
@@ -76,6 +77,7 @@ export {
   AdminTestListScreen,
   AdminDocumentListScreen,
   AdminArticleListScreen,
+  AdminWebsiteListScreen,
   AddContentScreen,
   LoginIntroScreen,
   MobileNumberScreen,

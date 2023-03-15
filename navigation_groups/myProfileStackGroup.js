@@ -14,6 +14,7 @@ import {
 import {TextInput, TouchableOpacity, View} from 'react-native';
 // Icon Import
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AdminWebsiteListScreen from 'screens/AdminScreens/AdminWebsiteListScreen';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -66,6 +67,11 @@ const myProfileStackGroup = () => {
         name="AdminArticleListScreen"
         component={AdminArticleListScreen}
         options={{title: 'Articles'}}
+      />
+      <Stack.Screen
+        name="AdminWebsiteListScreen"
+        component={AdminWebsiteListScreen}
+        options={{title: 'Website '}}
       />
     </Stack.Group>
   );

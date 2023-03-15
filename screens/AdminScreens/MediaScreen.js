@@ -6,7 +6,6 @@ import {
   AdminVideoListScreen,
   AdminTestListScreen,
   AdminDocumentListScreen,
-  AdminArticleListScreen,
 } from '@screens';
 
 const Tab = createMaterialTopTabNavigator();
