@@ -102,10 +102,10 @@ const AdminVideoListScreen = () => {
         </ImageBackground>
 
         <View style={tw`flex  justify-between  `}>
-          <Button
+          {/* <Button
             title="Add Videos"
             onPress={() => navigation.navigate('AddContentScreen', item)}
-          />
+          /> */}
           <Button
             onPress={() => setAddContentModal(item)}
             title="Add content"

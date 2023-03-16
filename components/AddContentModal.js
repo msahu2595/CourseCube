@@ -46,7 +46,7 @@ const AddContentModal = ({content, onClose}) => {
         type: 'danger',
       });
     },
-    refetchQueries: ['AddContent'],
+    refetchQueries: ['contents'],
   });
 
   //   console.log(content, 'hello');
@@ -111,7 +111,6 @@ const AddContentModal = ({content, onClose}) => {
         {({
           handleChange,
           handleBlur,
-          setFieldValue,
           handleSubmit,
           values,
           errors,
@@ -174,12 +173,12 @@ const AddContentModal = ({content, onClose}) => {
               <CCRadio
                 required
                 label="Language"
-                error={errors.language}
-                touched={touched.language}
-                onChangeText={handleChange('language')}
-                onBlur={handleBlur('language')}
+                onPress={handleChange('language')}
                 value={values.language}
-                editable={!loading}
+                radio_props={[
+                  {label: 'Hindi', value: 'HI'},
+                  {label: 'English', value: 'EN'},
+                ]}
               />
 
               <Button
