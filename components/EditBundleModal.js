@@ -4,10 +4,9 @@ import React from 'react';
 import {showMessage} from 'react-native-flash-message';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
-import {CCButton, CCModal, CCTextInput} from './Common';
+import {CCButton, CCModal, CCRadio, CCTextInput} from './Common';
 import {EDIT_BUNDLE} from 'apollo/mutations/EDIT_BUNDLE';
 import {ScrollView} from 'react-native';
-import CCRadio from './Common/CCRadio';
 
 const ValidationSchema = Yup.object().shape({
   description: Yup.string(),

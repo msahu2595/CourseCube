@@ -3,7 +3,7 @@ import React from 'react';
 import {Text, View} from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
 
-const CCRadio = ({label, required = false, error, touched, ...rest}) => {
+export const CCRadio = ({label, required = false, error, touched, ...rest}) => {
   return (
     <View style={tw`mb-1`}>
       <Text style={tw`text-sm text-gray-600 font-avReg p-1`}>
@@ -28,5 +28,3 @@ const CCRadio = ({label, required = false, error, touched, ...rest}) => {
     </View>
   );
 };
-
-export default CCRadio;
