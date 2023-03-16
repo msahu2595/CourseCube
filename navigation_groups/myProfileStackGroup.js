@@ -78,7 +78,7 @@ const myProfileStackGroup = () => {
       <Stack.Screen
         name="AdminAddBundleScreen"
         component={AdminAddBundleScreen}
-        options={{headerTitle: 'Admin Add Bundle List'}}
+        options={{headerTitle: 'Admin Add Bundle'}}
       />
       <Stack.Screen
         name="AdminBundleListScreen"
