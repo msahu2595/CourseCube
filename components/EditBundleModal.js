@@ -9,21 +9,17 @@ import {EDIT_BUNDLE} from 'apollo/mutations/EDIT_BUNDLE';
 import {ScrollView} from 'react-native';
 
 const ValidationSchema = Yup.object().shape({
-  subject: Yup.string(),
-  image: Yup.string(),
-  paid: Yup.string(),
-  price: Yup.string(),
-  offer: Yup.string(),
-  offerType: Yup.string(),
-  instructors: Yup.string(),
-  language: Yup.string(),
   description: Yup.string(),
+  subject: Yup.string().nullable(),
+  image: Yup.string().url(),
+  paid: Yup.string(),
+  price: Yup.number().nullable(),
+  offer: Yup.string().nullable(),
+  offerType: Yup.string().nullable(),
   validity: Yup.string(),
+  language: Yup.string(),
   type: Yup.string(),
-  title: Yup.string()
-    .min(2, 'Too Short!')
-    .max(50, 'Too Long!')
-    .required('Required title'),
+  title: Yup.string().required('Required title'),
 });
 
 const EditBundleModal = ({bundle, onClose}) => {
@@ -57,7 +53,6 @@ const EditBundleModal = ({bundle, onClose}) => {
             price: bundle?.price,
             offer: bundle?.offer,
             offerType: bundle?.offerType,
-            instructors: bundle?.instructors,
             language: bundle?.language,
             description: bundle?.description,
             validity: bundle?.validity,
@@ -67,23 +62,32 @@ const EditBundleModal = ({bundle, onClose}) => {
           validationSchema={ValidationSchema}
           onSubmit={values => {
             console.log('onsubmit', values);
+            const bundleInput = {
+              subject: values.subject,
+              image: values.image,
+              paid: values.paid === 'true' ? true : false,
+              language: values.language,
+              description: values.description,
+              validity: values.validity,
+              type: values.type,
+              title: values.title,
+            };
+            if (values.price) {
+              bundleInput.price = parseInt(values.price, 10);
+            }
+            if (values.offer) {
+              bundleInput.offer = values.offer;
+            }
+            if (values.offerType) {
+              bundleInput.offerType = values.offerType;
+            }
+            if (values.subject) {
+              bundleInput.subject = values.subject;
+            }
             editBundle({
               variables: {
                 bundleId: bundle._id,
-                bundleInput: {
-                  subject: values.subject,
-                  image: values.image,
-                  paid: values.paid,
-                  price: values.price,
-                  offer: values.offer,
-                  offerType: values.offerType,
-                  instructors: values.instructors,
-                  language: values.language,
-                  description: values.description,
-                  validity: values.validity,
-                  type: values.type,
-                  title: values.title,
-                },
+                bundleInput,
               },
             });
           }}>
@@ -158,16 +162,6 @@ const EditBundleModal = ({bundle, onClose}) => {
                 onChangeText={handleChange('offerType')}
                 onBlur={handleBlur('offerType')}
                 value={values.offerType}
-              />
-
-              <CCTextInput
-                label="instructors"
-                errors={errors}
-                touched={touched}
-                placeholder="Enter instructors"
-                onChangeText={handleChange('instructors')}
-                onBlur={handleBlur('instructors')}
-                value={values.instructors}
               />
 
               <CCTextInput

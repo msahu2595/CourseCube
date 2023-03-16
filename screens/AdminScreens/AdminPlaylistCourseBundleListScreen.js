@@ -1,5 +1,5 @@
 import tw from 'twrnc';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {
   View,
   Text,
@@ -9,18 +9,60 @@ import {
   TextInput,
   TouchableOpacity,
   Switch,
+  Button,
+  Alert,
 } from 'react-native';
 import {BUNDLES} from '@queries';
-import {useQuery} from '@apollo/client';
+import {useMutation, useQuery} from '@apollo/client';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
+import {showMessage} from 'react-native-flash-message';
+import {DELETE_BUNDLE} from 'apollo/mutations/DELETE_BUNDLE';
+import EditBundleModal from 'components/EditBundleModal';
 
 const Separator = () => <View style={tw`h-2`} />;
 
 const width = Dimensions.get('window').width;
 
-const Item = props => {
-  console.log(props);
+const Item = item => {
+  const [editBundleModal, setEditBundleModal] = useState(null);
+  const [deleteBundle] = useMutation(DELETE_BUNDLE, {
+    onCompleted: () => {
+      showMessage({
+        message: 'Your Playlist successfully deleted',
+        type: 'success',
+      });
+    },
+    onError: error => {
+      console.log('onError', error.message);
+      showMessage({
+        message: 'Not able to delete',
+        type: 'error',
+      });
+    },
+    refetchQueries: ['bundles'],
+  });
+
+  const deleteHandler = useCallback(
+    bundleId =>
+      Alert.alert('Delete Course', 'Are you sure want to delete Course', [
+        {
+          text: 'cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () =>
+            deleteBundle({
+              variables: {bundleId},
+            }),
+        },
+      ]),
+    [deleteBundle],
+  );
+
+  console.log(item);
   return (
     <View
       style={tw.style('flex flex-col rounded-lg bg-white', {
@@ -28,24 +70,48 @@ const Item = props => {
       })}>
       <Image
         source={{
-          uri: props.item.image,
+          uri: item.image,
         }}
         style={tw`h-60 rounded-lg`}
       />
       <View style={tw`h-24 flex justify-between p-2`}>
-        <Text style={tw`text-xs font-bold`}>{props.item.description}</Text>
-        <Text style={tw`text-xs font-bold`}>{props.item.exams}</Text>
-        <Text style={tw`text-xs font-bold`}>{props.item.instructors}</Text>
-        <Text style={tw`text-xs font-bold`}>{props.item.language}</Text>
-        <Text style={tw`text-xs font-bold`}>{props.item.subject}</Text>
-        <Text style={tw`text-xs font-bold text-red-700`}>{props.title}</Text>
+        <Text style={tw`text-xs font-bold`}>{item.description}</Text>
+        <Text style={tw`text-xs font-bold`}>{item.exams}</Text>
+        <Text style={tw`text-xs font-bold`}>{item.instructors}</Text>
+        <Text style={tw`text-xs font-bold`}>{item.language}</Text>
+        <Text style={tw`text-xs font-bold`}>{item.subject}</Text>
+        <Text style={tw`text-xs font-bold text-red-700`}>{item.title}</Text>
         <Text
           numberOfLines={1}
           ellipsizeMode="tail"
           style={tw`text-[14px] font-bold text-black`}>
-          {props.item.title}
+          {item.title}
         </Text>
       </View>
+      <View>
+        {item.enable && (
+          <Button
+            onPress={() => setEditBundleModal(item)}
+            title={'edit'}
+            color="#841584"
+          />
+        )}
+        {item.enable && (
+          <Button
+            title={'delete'}
+            color="red"
+            onPress={() => {
+              deleteHandler(item._id);
+            }}
+          />
+        )}
+      </View>
+      <EditBundleModal
+        bundle={editBundleModal}
+        onClose={() => {
+          setEditBundleModal(null);
+        }}
+      />
     </View>
   );
 };
@@ -104,7 +170,7 @@ function AdminPlaylistCourseBundleListScreen() {
       </View>
       <FlatList
         data={data?.bundles?.payload}
-        renderItem={({item}) => <Item item={item} />}
+        renderItem={({item}) => <Item {...item} />}
         keyExtractor={item => item._id}
         ItemSeparatorComponent={Separator}
         horizontal={false}

@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client';
 
 export const ADD_TEST = gql`
-  mutation AddTest($testInput: TestInput!) {
+  mutation addTest($testInput: TestInput!) {
     addTest(testInput: $testInput) {
       payload {
         _id

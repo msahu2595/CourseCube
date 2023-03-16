@@ -158,7 +158,7 @@ const AddTestScreen = () => {
                   onBlur={handleBlur('totalMarks')}
                   value={values.totalMarks}
                   keyboardType="numeric"
-                  style={tw`h-10 w-80 font-popLight`}
+                  style={tw`h-10 w-80 font-popLight border`}
                 />
                 {errors.totalMarks && touched.totalMarks && (
                   <Text>{errors.totalMarks}</Text>
