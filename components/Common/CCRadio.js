@@ -3,14 +3,7 @@ import React from 'react';
 import {Text, View} from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
 
-const CCRadio = ({
-  label,
-  required = false,
-  error,
-  touched,
-  onChangeText,
-  ...rest
-}) => {
+const CCRadio = ({label, required = false, error, touched, ...rest}) => {
   return (
     <View style={tw`mb-1`}>
       <Text style={tw`text-sm text-gray-600 font-avReg p-1`}>
@@ -21,11 +14,12 @@ const CCRadio = ({
         <RadioForm
           formHorizontal={true}
           initial={0}
-          radio_props={[
-            {label: 'Hindi', value: 'HI'},
-            {label: 'English', value: 'EN'},
-          ]}
-          onPress={onChangeText}
+          //   radio_props={[
+          //     {label: 'Hindi', value: 'HI'},
+          //     {label: 'English', value: 'EN'},
+          //   ]}
+          //   onPress={onChangeText}
+          {...rest}
         />
       </View>
       {error && touched ? (

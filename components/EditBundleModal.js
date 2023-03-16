@@ -7,6 +7,7 @@ import {Formik} from 'formik';
 import {CCButton, CCModal, CCTextInput} from './Common';
 import {EDIT_BUNDLE} from 'apollo/mutations/EDIT_BUNDLE';
 import {ScrollView} from 'react-native';
+import CCRadio from './Common/CCRadio';
 
 const ValidationSchema = Yup.object().shape({
   description: Yup.string(),
@@ -174,14 +175,17 @@ const EditBundleModal = ({bundle, onClose}) => {
                 value={values.validity}
               />
 
-              <CCTextInput
+              <CCRadio
                 label="Language"
                 errors={errors}
                 touched={touched}
+                radio_props={[
+                  {label: 'Hindi   ', value: 'HI'},
+                  {label: 'English', value: 'EN'},
+                ]}
                 placeholder="Enter language"
-                onChangeText={handleChange('language')}
+                onPress={handleChange('language')}
                 value={values.language}
-                onBlur={handleBlur('language')}
               />
 
               <CCTextInput
