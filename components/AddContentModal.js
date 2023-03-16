@@ -15,7 +15,10 @@ import {ADD_CONTENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import RadioForm, {RadioButton} from 'react-native-simple-radio-button';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+
 import CCRadio from './Common/CCRadio';
+import CCCheckBox from './Common/CCCheckBox';
 
 const AddContentValidationSchema = yup.object({
   subject: yup.string().required('required'),
@@ -30,6 +33,8 @@ const AddContentValidationSchema = yup.object({
 });
 
 const AddContentModal = ({content, onClose}) => {
+  const [paid, setPaid] = React.useState(false);
+
   const [AddContent, {loading}] = useMutation(ADD_CONTENT, {
     onCompleted: data => {
       console.log(data);
@@ -110,6 +115,7 @@ const AddContentModal = ({content, onClose}) => {
         }}>
         {({
           handleChange,
+          setFieldValue,
           handleBlur,
           handleSubmit,
           values,
@@ -169,6 +175,14 @@ const AddContentModal = ({content, onClose}) => {
                 onBlur={handleBlur('highlight')}
                 value={values.highlight}
                 editable={!loading}
+              />
+              <CCCheckBox
+                required
+                label="Paid"
+                onPress={value => {
+                  setFieldValue('paid', value);
+                }}
+                value={values.paid}
               />
               <CCRadio
                 required
