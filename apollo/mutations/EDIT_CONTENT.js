@@ -1,13 +1,8 @@
 import {gql} from '@apollo/client';
 
-export const CONTENTS = gql`
-  query contents(
-    $offset: Int
-    $limit: Int
-    $search: String
-    $filter: ContentsFilterInput
-  ) {
-    contents(offset: $offset, limit: $limit, search: $search, filter: $filter) {
+export const EDIT_CONTENT = gql`
+  mutation EditContent($contentId: ID!, $contentInput: ContentInput!) {
+    editContent(contentId: $contentId, contentInput: $contentInput) {
       payload {
         _id
         categories

@@ -11,3 +11,5 @@ export * from './CREATE_QUESTION';
 export * from './ADD_DOCUMENT';
 export * from './ADD_VIDEOS';
 export * from './ADD_BUNDLE';
+export * from './ADD_CONTENT';
+export * from './EDIT_CONTENT';

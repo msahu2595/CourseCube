@@ -17,12 +17,14 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
 import {DELETE_CONTENT} from 'apollo/mutations/DELETE_CONTENT';
 import {showMessage} from 'react-native-flash-message';
+import EditContentModal from 'components/EditContentModal';
 
 const separator = () => <View style={tw`h-2`} />;
 
 function AdminContentVideoListScreen() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
+  const [editContentModal, setEditContentModal] = useState(null);
 
   const {loading, error, data, refetch, fetchMore} = useQuery(CONTENTS, {
     variables: {
@@ -100,70 +102,83 @@ function AdminContentVideoListScreen() {
               }}
             />
           )}
+          <Button
+            onPress={() => setEditContentModal(item)}
+            title="Edit"
+            color="#841584"
+          />
         </View>
       </View>
     );
   };
 
   return (
-    <SafeAreaContainer>
-      <View style={tw`flex-row m-2`}>
-        <View style={tw`flex-1 flex-row items-center border rounded-lg`}>
-          <TextInput
-            placeholder="Enter name to search"
-            style={tw`flex-1`}
-            value={search}
-            onChangeText={text => {
-              setSearch(text);
-              if (text.length > 2) {
-                refetch({search: text});
-              } else {
+    <>
+      <SafeAreaContainer>
+        <View style={tw`flex-row m-2`}>
+          <View style={tw`flex-1 flex-row items-center border rounded-lg`}>
+            <TextInput
+              placeholder="Enter name to search"
+              style={tw`flex-1`}
+              value={search}
+              onChangeText={text => {
+                setSearch(text);
+                if (text.length > 2) {
+                  refetch({search: text});
+                } else {
+                  refetch({search: ''});
+                }
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => {
+                setSearch('');
                 refetch({search: ''});
-              }
+              }}>
+              <MaterialCommunityIcons name="clear" size={25} style={tw`p-1`} />
+            </TouchableOpacity>
+          </View>
+          <Switch
+            trackColor={{false: '#767577', true: '#81b0ff'}}
+            thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={value => {
+              setIsEnabled(value);
+              refetch({filter: {type: 'Video', enable: !value}});
             }}
+            value={isEnabled}
           />
-          <TouchableOpacity
-            onPress={() => {
-              setSearch('');
-              refetch({search: ''});
-            }}>
-            <MaterialCommunityIcons name="clear" size={25} style={tw`p-1`} />
-          </TouchableOpacity>
         </View>
-        <Switch
-          trackColor={{false: '#767577', true: '#81b0ff'}}
-          thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={value => {
-            setIsEnabled(value);
-            refetch({filter: {type: 'Video', enable: !value}});
-          }}
-          value={isEnabled}
-        />
-      </View>
-      {loading ? (
-        <Text>Loading...</Text>
-      ) : error ? (
-        <Text>Error: {error.message}</Text>
-      ) : (
-        <FlatList
-          data={data?.contents?.payload}
-          renderItem={({item}) => <Item {...item} />}
-          keyExtractor={item => item._id}
-          ItemSeparatorComponent={separator}
-          refreshing={loading}
-          onRefresh={refetch}
-          onEndReached={() =>
-            fetchMore({
-              variables: {
-                offset: data?.contents?.payload.length,
-                limit: 10,
-              },
-            })
-          }
-        />
-      )}
-    </SafeAreaContainer>
+        {loading ? (
+          <Text>Loading...</Text>
+        ) : error ? (
+          <Text>Error: {error.message}</Text>
+        ) : (
+          <FlatList
+            data={data?.contents?.payload}
+            renderItem={({item}) => <Item {...item} />}
+            keyExtractor={item => item._id}
+            ItemSeparatorComponent={separator}
+            refreshing={loading}
+            onRefresh={refetch}
+            onEndReached={() =>
+              fetchMore({
+                variables: {
+                  offset: data?.contents?.payload.length,
+                  limit: 10,
+                },
+              })
+            }
+          />
+        )}
+      </SafeAreaContainer>
+      <EditContentModal
+        content={editContentModal}
+        onClose={() => {
+          setEditContentModal(null);
+        }}
+      />
+    </>
   );
 }
 

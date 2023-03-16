@@ -7,7 +7,7 @@ export const CCTextInput = memo(
     <View style={tw`mb-1`}>
       <Text style={tw`text-sm text-gray-600 font-avReg p-1`}>
         {label}
-        {required && <Text style={tw`text-red-600`}>*</Text>}
+        {/* {required && <Text style={tw`text-red-600`}>*</Text>} */}
       </Text>
       <TextInput
         style={tw.style('border border-gray-300 rounded-lg px-2', {
@@ -15,11 +15,11 @@ export const CCTextInput = memo(
         })}
         {...rest}
       />
-      {errors.title && touched.title ? (
+      {/* {errors.title && touched.title ? (
         <Text style={tw`text-sm text-red-600 font-avReg p-1`}>
           {errors.title}
         </Text>
-      ) : null}
+      ) : null} */}
     </View>
   ),
 );

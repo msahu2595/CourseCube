@@ -18,6 +18,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
 import {DELETE_CONTENT} from 'apollo/mutations/DELETE_CONTENT';
 import {showMessage} from 'react-native-flash-message';
+import EditContentModal from 'components/EditContentModal';
 
 const Separator = () => <View style={tw`h-2`} />;
 
@@ -106,6 +107,7 @@ const Item = item => {
 function AdminContentTestListScreen() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
+  const [editContentModal, setEditContentModal] = useState(null);
 
   const {loading, error, data, refetch, fetchMore} = useQuery(CONTENTS, {
     variables: {
@@ -120,62 +122,81 @@ function AdminContentTestListScreen() {
   if (loading) return null;
   if (error) return <Text>Error: {error.message}</Text>;
   return (
-    <SafeAreaContainer>
-      <View style={tw`flex-row m-2`}>
-        <View style={tw`flex-1 flex-row items-center border rounded-lg`}>
-          <TextInput
-            placeholder="Enter name to search"
-            style={tw`flex-1`}
-            value={search}
-            onChangeText={text => {
-              setSearch(text);
-              if (text.length > 2) {
-                refetch({search: text});
-              } else {
+    <>
+      <SafeAreaContainer>
+        <View style={tw`flex-row m-2`}>
+          <View style={tw`flex-1 flex-row items-center border rounded-lg`}>
+            <TextInput
+              placeholder="Enter name to search"
+              style={tw`flex-1`}
+              value={search}
+              onChangeText={text => {
+                setSearch(text);
+                if (text.length > 2) {
+                  refetch({search: text});
+                } else {
+                  refetch({search: ''});
+                }
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => {
+                setSearch('');
                 refetch({search: ''});
-              }
+              }}>
+              <MaterialCommunityIcons name="clear" size={25} style={tw`p-1`} />
+            </TouchableOpacity>
+          </View>
+          <Switch
+            trackColor={{false: '#767577', true: '#81b0ff'}}
+            thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={value => {
+              setIsEnabled(value);
+              refetch({filter: {type: 'Test', enable: !value}});
             }}
+            value={isEnabled}
           />
-          <TouchableOpacity
-            onPress={() => {
-              setSearch('');
-              refetch({search: ''});
-            }}>
-            <MaterialCommunityIcons name="clear" size={25} style={tw`p-1`} />
-          </TouchableOpacity>
         </View>
-        <Switch
-          trackColor={{false: '#767577', true: '#81b0ff'}}
-          thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={value => {
-            setIsEnabled(value);
-            refetch({filter: {type: 'Test', enable: !value}});
+        <FlatList
+          data={data?.contents?.payload}
+          renderItem={({item}) => {
+            return (
+              <View>
+                <Item {...item} />
+                <Button
+                  onPress={() => setEditContentModal(item)}
+                  title="Edit"
+                  color="#841584"
+                />
+              </View>
+            );
           }}
-          value={isEnabled}
+          keyExtractor={item => item.id}
+          ItemSeparatorComponent={Separator}
+          horizontal={false}
+          numColumns={2}
+          columnWrapperStyle={tw`justify-between`}
+          contentContainerStyle={tw`p-1`}
+          refreshing={loading}
+          onRefresh={refetch}
+          onEndReached={() =>
+            fetchMore({
+              variables: {
+                offset: data?.contents?.payload.length,
+                limit: 10,
+              },
+            })
+          }
         />
-      </View>
-      <FlatList
-        data={data?.contents?.payload}
-        renderItem={({item}) => <Item {...item} />}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={Separator}
-        horizontal={false}
-        numColumns={2}
-        columnWrapperStyle={tw`justify-between`}
-        contentContainerStyle={tw`p-1`}
-        refreshing={loading}
-        onRefresh={refetch}
-        onEndReached={() =>
-          fetchMore({
-            variables: {
-              offset: data?.contents?.payload.length,
-              limit: 10,
-            },
-          })
-        }
+      </SafeAreaContainer>
+      <EditContentModal
+        content={editContentModal}
+        onClose={() => {
+          setEditContentModal(null);
+        }}
       />
-    </SafeAreaContainer>
+    </>
   );
 }
 
