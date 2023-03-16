@@ -26,16 +26,7 @@ const AdminAdvertListScreen = () => {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [editAdvertModal, setEditAdvertModal] = useState(null);
-  const {loading, error, data, refetch, fetchMore} = useQuery(
-    ADVERTS,
-    //    {
-    //   variables: {
-    //     filter: {
-    //       type: '',
-    //     },
-    //   },
-    // }
-  );
+  const {loading, error, data, refetch, fetchMore} = useQuery(ADVERTS);
 
   const [deleteAdvert] = useMutation(DELETE_ADVERT, {
     onCompleted: () => {
