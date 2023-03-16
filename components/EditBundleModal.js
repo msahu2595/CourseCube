@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import {Formik} from 'formik';
 import {CCButton, CCModal, CCTextInput} from './Common';
 import {EDIT_BUNDLE} from 'apollo/mutations/EDIT_BUNDLE';
+import {ScrollView} from 'react-native';
 
 const ValidationSchema = Yup.object().shape({
   subject: Yup.string(),
@@ -94,7 +95,7 @@ const EditBundleModal = ({bundle, onClose}) => {
             errors,
             touched,
           }) => (
-            <>
+            <ScrollView>
               <CCTextInput
                 label="Description"
                 errors={errors}
@@ -203,7 +204,7 @@ const EditBundleModal = ({bundle, onClose}) => {
                 errors={errors}
                 touched={touched}
                 placeholder="Enter  title"
-                onChangeText={handleChange(' title')}
+                onChangeText={handleChange('title')}
                 value={values.title}
                 onBlur={handleBlur(' title')}
               />
@@ -215,7 +216,7 @@ const EditBundleModal = ({bundle, onClose}) => {
                   handleSubmit();
                 }}
               />
-            </>
+            </ScrollView>
           )}
         </Formik>
       </CCModal>
