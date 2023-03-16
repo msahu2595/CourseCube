@@ -1,13 +1,11 @@
 import {useMutation} from '@apollo/client';
-import {Text, View} from 'react-native';
 import {SafeAreaContainer} from '@components';
 import React from 'react';
-import tw from '@lib/tailwind';
 import {showMessage} from 'react-native-flash-message';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
 import {EDIT_BUNDLE_CONTENT} from 'apollo/mutations/EDIT_BUNDLE_CONTENT';
-import {CCButton, CCModal, CCTextInput} from './Common';
+import {CCButton, CCModal, CCRadio, CCTextInput} from './Common';
 
 const ValidationSchema = Yup.object().shape({
   description: Yup.string(),
@@ -98,14 +96,17 @@ const EditBundleContentModal = ({bundleContent, onClose}) => {
                 value={values.image}
               />
 
-              <CCTextInput
+              <CCRadio
                 label="Language"
                 errors={errors}
                 touched={touched}
+                radio_props={[
+                  {label: 'Hindi   ', value: 'HI'},
+                  {label: 'English', value: 'EN'},
+                ]}
                 placeholder="Enter language"
-                onChangeText={handleChange('language')}
+                onPress={handleChange('language')}
                 value={values.language}
-                onBlur={handleBlur('language')}
               />
 
               <CCTextInput
