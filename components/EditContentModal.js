@@ -21,7 +21,7 @@ const AddContentValidationSchema = yup.object({
 });
 
 const EditContentModal = ({content, onClose}) => {
-  const [AddContent, {loading}] = useMutation(EDIT_CONTENT, {
+  const [EditContent, {loading}] = useMutation(EDIT_CONTENT, {
     onCompleted: data => {
       console.log(data);
       onClose();
@@ -83,7 +83,7 @@ const EditContentModal = ({content, onClose}) => {
         validationSchema={AddContentValidationSchema}
         onSubmit={values => {
           console.log('value', values);
-          AddContent({
+          EditContent({
             variables: {
               contentId: content._id,
               contentInput: {
