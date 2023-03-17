@@ -4,9 +4,18 @@ import React from 'react';
 import {showMessage} from 'react-native-flash-message';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
-import {CCButton, CCModal, CCRadio, CCTextInput} from './Common';
+import {CCButton, CCCheckBox, CCModal, CCRadio, CCTextInput} from './Common';
 import {EDIT_BUNDLE} from 'apollo/mutations/EDIT_BUNDLE';
-import {ScrollView} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
+import {tw} from '@lib';
+
+const TextComp = () => (
+  <View style={tw`mx-2 flex-1`}>
+    <Text style={tw`flex-1 text-justify`}>
+      If ticked, course is immediately available to users.
+    </Text>
+  </View>
+);
 
 const ValidationSchema = Yup.object().shape({
   description: Yup.string(),
@@ -44,7 +53,7 @@ const EditBundleModal = ({bundle, onClose}) => {
 
   return (
     <SafeAreaContainer>
-      <CCModal title="Edit Content" visible={!!bundle} onClose={onClose}>
+      <CCModal title="Edit Courses" visible={!!bundle} onClose={onClose}>
         <Formik
           initialValues={{
             subject: bundle?.subject,
@@ -58,6 +67,7 @@ const EditBundleModal = ({bundle, onClose}) => {
             validity: bundle?.validity,
             type: bundle?.type,
             title: bundle?.title,
+            visible: bundle?.visible,
           }}
           validationSchema={ValidationSchema}
           onSubmit={values => {
@@ -71,6 +81,7 @@ const EditBundleModal = ({bundle, onClose}) => {
               validity: values.validity,
               type: values.type,
               title: values.title,
+              visible: values.visible,
             };
             if (values.price) {
               bundleInput.price = parseInt(values.price, 10);
@@ -95,24 +106,26 @@ const EditBundleModal = ({bundle, onClose}) => {
             handleChange,
             handleBlur,
             handleSubmit,
+            setFieldValue,
             values,
             errors,
             touched,
           }) => (
             <ScrollView>
               <CCTextInput
-                label="Description"
-                errors={errors}
-                touched={touched}
-                placeholder="Enter description"
-                onChangeText={handleChange('description')}
-                onBlur={handleBlur('description')}
-                value={values.description}
+                label=" Title"
+                error={errors.title}
+                touched={touched.title}
+                placeholder="Enter title"
+                onChangeText={handleChange('title')}
+                value={values.title}
+                onBlur={handleBlur(' title')}
               />
+
               <CCTextInput
                 label="Subject"
-                errors={errors}
-                touched={touched}
+                error={errors.subject}
+                touched={touched.subject}
                 placeholder="Enter subject"
                 onChangeText={handleChange('subject')}
                 onBlur={handleBlur('subject')}
@@ -120,90 +133,104 @@ const EditBundleModal = ({bundle, onClose}) => {
               />
               <CCTextInput
                 label="Image"
-                errors={errors}
-                touched={touched}
+                error={errors.image}
+                touched={touched.image}
                 placeholder="Enter image"
                 onChangeText={handleChange('image')}
                 onBlur={handleBlur('image')}
                 value={values.image}
               />
+              <CCRadio
+                label="Language"
+                radio_props={[
+                  {label: 'Hindi   ', value: 'HI'},
+                  {label: 'English', value: 'EN'},
+                ]}
+                onPress={handleChange('language')}
+                value={values.language}
+              />
+
+              <CCRadio
+                label="Type"
+                radio_props={[
+                  {label: 'Full Syllabus   ', value: 'FULL_COURSE'},
+                  {label: 'Subject  ', value: 'SUBJECT_COURSE'},
+                  {label: 'Playlist', value: 'PLAYLIST_COURSE'},
+                ]}
+                onPress={handleChange('type')}
+                value={values.type}
+                formHorizontal={false}
+              />
               <CCTextInput
-                label="paid"
-                errors={errors}
-                touched={touched}
-                placeholder="Enter paid"
-                onChangeText={handleChange('paid')}
-                onBlur={handleBlur('paid')}
+                label="Description"
+                error={errors.description}
+                touched={touched.description}
+                placeholder="Enter description"
+                onChangeText={handleChange('description')}
+                onBlur={handleBlur('description')}
+                value={values.description}
+                multiline={true}
+                numberOfLines={4}
+              />
+              <CCRadio
+                label="Paid"
                 value={values.paid}
+                radio_props={[
+                  {label: 'Free   ', value: false},
+                  {label: 'Paid', value: true},
+                ]}
+                onPress={value => {
+                  setFieldValue('paid', value);
+                }}
               />
-              <CCTextInput
-                label="price"
-                errors={errors}
-                touched={touched}
-                placeholder="Enter price"
-                onChangeText={handleChange('price')}
-                onBlur={handleBlur('price')}
-                value={values.price}
-              />
-              <CCTextInput
-                label="offer"
-                errors={errors}
-                touched={touched}
-                placeholder="Enter offer"
-                onChangeText={handleChange('offer')}
-                onBlur={handleBlur('offer')}
-                value={values.offer}
-              />
-              <CCTextInput
-                label="offerType"
-                errors={errors}
-                touched={touched}
-                placeholder="Enter offerType"
-                onChangeText={handleChange('offerType')}
-                onBlur={handleBlur('offerType')}
-                value={values.offerType}
-              />
+              {values.paid ? (
+                <>
+                  <CCTextInput
+                    label="Price"
+                    error={errors.price}
+                    touched={touched.price}
+                    placeholder="Enter price"
+                    onChangeText={handleChange('price')}
+                    onBlur={handleBlur('price')}
+                    value={values.price}
+                  />
+                  <CCTextInput
+                    label="Offer"
+                    error={errors.offer}
+                    touched={touched.offer}
+                    placeholder="Enter offer"
+                    onChangeText={handleChange('offer')}
+                    onBlur={handleBlur('offer')}
+                    value={values.offer}
+                  />
+                  <CCTextInput
+                    label="OfferType"
+                    error={errors.offerType}
+                    touched={touched.offerType}
+                    placeholder="Enter offerType"
+                    onChangeText={handleChange('offerType')}
+                    onBlur={handleBlur('offerType')}
+                    value={values.offerType}
+                  />
+                </>
+              ) : null}
 
               <CCTextInput
                 label="Validity"
-                errors={errors}
-                touched={touched}
+                error={errors.validity}
+                touched={touched.validity}
                 placeholder="Enter validity"
                 onChangeText={handleChange('validity')}
                 onBlur={handleBlur('validity')}
                 value={values.validity}
               />
 
-              <CCRadio
-                label="Language"
-                errors={errors}
-                touched={touched}
-                radio_props={[
-                  {label: 'Hindi   ', value: 'HI'},
-                  {label: 'English', value: 'EN'},
-                ]}
-                placeholder="Enter language"
-                onPress={handleChange('language')}
-                value={values.language}
-              />
-
-              <CCTextInput
-                label="Type"
-                errors={errors}
-                touched={touched}
-                placeholder="Enter type"
-                onChangeText={handleChange('type')}
-                value={values.type}
-                onBlur={handleBlur('type')}
-              />
-              <CCTextInput
-                label=" Title"
-                errors={errors}
-                touched={touched}
-                placeholder="Enter  title"
-                onChangeText={handleChange('title')}
-                value={values.title}
-                onBlur={handleBlur(' title')}
+              <CCCheckBox
+                onPress={value => {
+                  setFieldValue('visible', value);
+                }}
+                textComponent={<TextComp />}
+                isChecked={values.visible}
               />
               <CCButton
                 disabled={loading}

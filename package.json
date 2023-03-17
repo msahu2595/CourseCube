@@ -53,6 +53,7 @@
     "react-native": "0.70.5",
     "react-native-animated-tree-view": "^0.1.4",
     "react-native-blob-util": "^0.17.0",
+    "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-flash-message": "^0.3.1",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-pager-view": "^6.1.0",
