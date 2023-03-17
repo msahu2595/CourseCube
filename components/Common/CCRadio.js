@@ -15,6 +15,7 @@ export const CCRadio = ({label, required = false, error, touched, ...rest}) => {
           formHorizontal={true}
           initial={0}
           buttonColor={tw.color('blue-600')}
+          selectedButtonColor={tw.color('blue-600')}
           {...rest}
         />
       </View>
