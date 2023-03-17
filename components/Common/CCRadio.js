@@ -10,15 +10,11 @@ export const CCRadio = ({label, required = false, error, touched, ...rest}) => {
         {label}
         {required && <Text style={tw`text-red-600`}>*</Text>}
       </Text>
-      <View style={tw` `}>
+      <View style={tw`my-1`}>
         <RadioForm
           formHorizontal={true}
           initial={0}
-          //   radio_props={[
-          //     {label: 'Hindi', value: 'HI'},
-          //     {label: 'English', value: 'EN'},
-          //   ]}
-          //   onPress={onChangeText}
+          buttonColor={tw.color('blue-600')}
           {...rest}
         />
       </View>
