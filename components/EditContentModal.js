@@ -1,21 +1,12 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  Button,
-  Switch,
-  TextInput,
-  ImageBackground,
-  ScrollView,
-} from 'react-native';
+import {Text, View, Button, ImageBackground} from 'react-native';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import tw from '@lib/tailwind';
-import {CCModal, CCTextInput} from './Common';
-import {ADD_CONTENT, EDIT_CONTENT} from '@mutations';
+import {CCModal, CCRadio, CCTextInput} from './Common';
+import {EDIT_CONTENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import CCRadio from './Common/CCRadio';
 
 const AddContentValidationSchema = yup.object({
   subject: yup.string().required('required'),
@@ -177,10 +168,12 @@ const EditContentModal = ({content, onClose}) => {
                 label="Language"
                 error={errors.language}
                 touched={touched.language}
-                onChangeText={handleChange('language')}
-                onBlur={handleBlur('language')}
+                radio_props={[
+                  {label: 'Hindi   ', value: 'HI'},
+                  {label: 'English', value: 'EN'},
+                ]}
                 value={values.language}
-                editable={!loading}
+                onPress={handleChange('language')}
               />
 
               <Button
