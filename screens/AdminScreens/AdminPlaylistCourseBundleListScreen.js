@@ -11,14 +11,17 @@ import {
   Switch,
   Button,
   Alert,
+  Pressable,
 } from 'react-native';
 import {BUNDLES} from '@queries';
 import {useMutation, useQuery} from '@apollo/client';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
 import {showMessage} from 'react-native-flash-message';
 import {DELETE_BUNDLE} from 'apollo/mutations/DELETE_BUNDLE';
 import EditBundleModal from 'components/EditBundleModal';
+import AddBundleModal from 'components/AddBundleModal';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Separator = () => <View style={tw`h-2`} />;
 
@@ -74,7 +77,7 @@ const Item = item => {
         }}
         style={tw`h-60 rounded-lg`}
       />
-      <View style={tw`h-24 flex justify-between p-2`}>
+      <View style={tw`h-40 flex justify-between p-2`}>
         <Text style={tw`text-xs font-bold`}>{item.description}</Text>
         <Text style={tw`text-xs font-bold`}>{item.exams}</Text>
         <Text style={tw`text-xs font-bold`}>{item.instructors}</Text>
@@ -117,8 +120,9 @@ const Item = item => {
 };
 
 function AdminPlaylistCourseBundleListScreen() {
-  const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [addBundleModal, setAddBundleModal] = useState(false);
 
   const {loading, error, data, refetch, fetchMore} = useQuery(BUNDLES, {
     variables: {
@@ -154,7 +158,7 @@ function AdminPlaylistCourseBundleListScreen() {
               setSearch('');
               refetch({search: ''});
             }}>
-            <MaterialCommunityIcons name="clear" size={25} style={tw`p-1`} />
+            <MaterialIcons name="clear" size={25} style={tw`p-1`} />
           </TouchableOpacity>
         </View>
         <Switch
@@ -167,6 +171,18 @@ function AdminPlaylistCourseBundleListScreen() {
           }}
           value={isEnabled}
         />
+        <View
+          style={tw`bg-blue-500 h-8 rounded-full items-center justify-center`}>
+          <View>
+            <Pressable onPress={() => setAddBundleModal(true)}>
+              <MaterialCommunityIcons
+                name="plus"
+                size={30}
+                style={tw`items-center text-white`}
+              />
+            </Pressable>
+          </View>
+        </View>
       </View>
       <FlatList
         data={data?.bundles?.payload}
@@ -187,6 +203,12 @@ function AdminPlaylistCourseBundleListScreen() {
             },
           })
         }
+      />
+      <AddBundleModal
+        bundle={addBundleModal}
+        onClose={() => {
+          setAddBundleModal();
+        }}
       />
     </SafeAreaContainer>
   );
