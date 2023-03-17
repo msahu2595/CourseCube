@@ -36,9 +36,9 @@ const AdminArticleListScreen = () => {
         type: 'success',
       });
     },
-    onError: () => {
+    onError: err => {
       showMessage({
-        message: 'Not able to delete',
+        message: err?.message || 'Some unknown error occurred.',
         type: 'danger',
       });
     },
@@ -47,14 +47,13 @@ const AdminArticleListScreen = () => {
 
   const deleteHandler = useCallback(
     articleId =>
-      Alert.alert('Delete Article', 'Are you want to delete article', [
+      Alert.alert('Delete Article', 'Are you want to delete article?', [
         {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          text: 'No',
           style: 'cancel',
         },
         {
-          text: 'OK',
+          text: 'Yes',
           onPress: () =>
             deleteArticle({
               variables: {articleId},
@@ -70,17 +69,21 @@ const AdminArticleListScreen = () => {
         <View index={index} {...item}>
           <CurrentAffairItem index={index} {...item} />
           <View style={tw`flex flex-row justify-evenly `}>
-            <Button
-              onPress={() => setEditArticleModal(item)}
-              title="Edit"
-              color="#841584"
-            />
-            <Button
-              title={'Delete'}
-              onPress={() => {
-                deleteHandler(item._id);
-              }}
-            />
+            {item.enable && (
+              <Button
+                onPress={() => setEditArticleModal(item)}
+                title="Edit"
+                color="#841584"
+              />
+            )}
+            {item.enable && (
+              <Button
+                title={'Delete'}
+                onPress={() => {
+                  deleteHandler(item._id);
+                }}
+              />
+            )}
           </View>
         </View>
       );
@@ -89,11 +92,11 @@ const AdminArticleListScreen = () => {
   );
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    <Text>Loading...</Text>;
   }
 
   if (error) {
-    return <Text>Error! ${error.message}</Text>;
+    <Text>Error! ${error.message}</Text>;
   }
 
   return (
@@ -105,7 +108,6 @@ const AdminArticleListScreen = () => {
             <TextInput
               placeholder="Search"
               onChangeText={text => {
-                console.log('text', text);
                 setSearch(text);
                 if (text.length > 2) {
                   refetch({search: text});
@@ -163,7 +165,6 @@ const AdminArticleListScreen = () => {
               ListHeaderComponent={() => <View style={tw`h-2`} />}
               ListFooterComponent={() => <View style={tw`h-2`} />}
               onEndReached={() => {
-                console.log('reached end');
                 fetchMore({
                   variables: {
                     offset: data?.articles?.payload.length,

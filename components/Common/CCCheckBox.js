@@ -10,15 +10,14 @@ const CCCheckBox = ({label, required, ...rest}) => {
         {label}
         {required && <Text style={tw`text-red-600`}>*</Text>}
       </Text>
-      <View style={tw` `}>
-        <BouncyCheckbox
-          size={25}
-          fillColor="blue"
-          unfillColor="#FFFFFF"
-          text="Course is free"
-          {...rest}
-        />
-      </View>
+
+      <BouncyCheckbox
+        size={25}
+        fillColor="blue"
+        unfillColor="#FFFFFF"
+        text="Course is free"
+        {...rest}
+      />
     </View>
   );
 };

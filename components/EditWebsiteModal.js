@@ -19,7 +19,6 @@ const EditWebsiteValidationSchema = yup.object({
 const EditWebsiteModal = ({website, onClose}) => {
   const [editWebsite, {loading}] = useMutation(EDIT_WEBSITE, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your video Successfully edited.',
@@ -27,9 +26,8 @@ const EditWebsiteModal = ({website, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'We have got some error. Please try again!',
+        message: err?.message || 'Some unknown error occurred',
         type: 'danger',
       });
     },

@@ -4,7 +4,7 @@ import {ADD_WEBSITE} from 'apollo/mutations/ADD_WEBSITE';
 import React from 'react';
 import * as yup from 'yup';
 import {Formik} from 'formik';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {CCButton, CCModal, CCTextInput} from './Common';
 
@@ -19,7 +19,6 @@ const AddSWebsiteValidationSchema = yup.object({
 const AddWebsiteModal = ({visible, onClose}) => {
   const [addWebsite, {loading}] = useMutation(ADD_WEBSITE, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your website Successfully added.',
@@ -27,9 +26,8 @@ const AddWebsiteModal = ({visible, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'We have got some error. Please try again!',
+        message: err.message || 'Some unknown error occurred ',
         type: 'danger',
       });
     },
@@ -45,7 +43,6 @@ const AddWebsiteModal = ({visible, onClose}) => {
         }}
         validationSchema={AddSWebsiteValidationSchema}
         onSubmit={values => {
-          console.log(values);
           addWebsite({
             variables: {
               websiteInput: {
@@ -90,7 +87,6 @@ const AddWebsiteModal = ({visible, onClose}) => {
               label="Submit"
               disabled={loading}
               onPress={() => {
-                console.log('onPress', values);
                 handleSubmit();
               }}
             />

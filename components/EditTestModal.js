@@ -35,7 +35,6 @@ const EditTestValidationSchema = yup.object({
 const EditTestModal = ({test, onClose}) => {
   const [editTest, {loading}] = useMutation(EDIT_TEST, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your Article Successfully edited.',
@@ -43,16 +42,13 @@ const EditTestModal = ({test, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'We have got some error. Please try again!',
+        message: err?.message || 'Some unknown error occurred',
         type: 'danger',
       });
     },
     refetchQueries: ['tests'],
   });
-
-  console.log(test);
 
   return (
     <CCModal title="Edit Test" visible={!!test} onClose={onClose}>
@@ -69,7 +65,6 @@ const EditTestModal = ({test, onClose}) => {
         }}
         validationSchema={EditTestValidationSchema}
         onSubmit={values => {
-          console.log('values', values);
           const testInput = {
             title: values.title,
             instructions: values.instructions,
@@ -100,7 +95,6 @@ const EditTestModal = ({test, onClose}) => {
                 onBlur={handleBlur('title')}
                 value={values.title}
                 editable={!loading}
-                style={tw`text-black`}
               />
               <CCTextInput
                 label="Thumbnail"
@@ -110,7 +104,6 @@ const EditTestModal = ({test, onClose}) => {
                 onBlur={handleBlur('thumbnail')}
                 value={values.thumbnail}
                 editable={!loading}
-                style={tw`text-black`}
               />
               <CCTextInput
                 required
@@ -123,7 +116,6 @@ const EditTestModal = ({test, onClose}) => {
                 editable={!loading}
                 multiline={true}
                 numberOfLines={4}
-                style={tw`text-black`}
               />
 
               <CCDuration

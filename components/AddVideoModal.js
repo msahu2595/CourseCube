@@ -18,7 +18,6 @@ const AddVideoValidationSchema = yup.object({
 const AddVideoModal = ({visible, onClose}) => {
   const [addVideo, {loading}] = useMutation(ADD_VIDEO, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your video Successfully added.',
@@ -26,9 +25,8 @@ const AddVideoModal = ({visible, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'We have got some error. Please try again!',
+        message: err?.message || 'Some unknown error occurred.',
         type: 'danger',
       });
     },
@@ -43,7 +41,6 @@ const AddVideoModal = ({visible, onClose}) => {
         }}
         validationSchema={AddVideoValidationSchema}
         onSubmit={values => {
-          console.log(values);
           addVideo({
             variables: {
               videoLink: values.videoLink,
@@ -75,7 +72,6 @@ const AddVideoModal = ({visible, onClose}) => {
               label="Submit"
               disabled={loading}
               onPress={() => {
-                console.log('onPress', values);
                 handleSubmit();
               }}
             />

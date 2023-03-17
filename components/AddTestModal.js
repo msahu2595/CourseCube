@@ -35,7 +35,6 @@ const AddTestValidationSchema = yup.object({
 const AddTestModal = ({visible, onClose}) => {
   const [addTest, {loading}] = useMutation(ADD_TEST, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your Test successfully Added',
@@ -43,9 +42,8 @@ const AddTestModal = ({visible, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'we have got some error. please try again!',
+        message: err?.message || 'Some unknown error occurred.',
         type: 'danger',
       });
     },
@@ -67,7 +65,6 @@ const AddTestModal = ({visible, onClose}) => {
         }}
         validationSchema={AddTestValidationSchema}
         onSubmit={values => {
-          console.log('values', values);
           const testInput = {
             title: values.title,
             instructions: values.instructions,
@@ -135,7 +132,6 @@ const AddTestModal = ({visible, onClose}) => {
               label="Submit"
               disabled={loading}
               onPress={() => {
-                console.log('onPress', values);
                 handleSubmit();
               }}
             />

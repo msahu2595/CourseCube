@@ -20,7 +20,6 @@ const EditDocumentValidationSchema = yup.object({
 const EditDocumentModal = ({document, onClose}) => {
   const [editDocument, {loading}] = useMutation(EDIT_DOCUMENT, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your Document Successfully edited.',
@@ -28,16 +27,13 @@ const EditDocumentModal = ({document, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'We have got some error. Please try again!',
+        message: err?.message || 'Some unknown error occurred',
         type: 'danger',
       });
     },
-    refetchQueries: ['Documents'],
+    refetchQueries: ['documents'],
   });
-
-  console.log(document, !document, !!document);
 
   return (
     <CCModal title="Edit Document" visible={!!document} onClose={onClose}>
@@ -79,7 +75,6 @@ const EditDocumentModal = ({document, onClose}) => {
                 onBlur={handleBlur('title')}
                 value={values.title}
                 editable={!loading}
-                style={tw`text-black`}
               />
 
               <CCTextInput
@@ -91,7 +86,6 @@ const EditDocumentModal = ({document, onClose}) => {
                 onBlur={handleBlur('url')}
                 value={values.url}
                 editable={!loading}
-                style={tw`text-black`}
               />
               <CCTextInput
                 required
@@ -102,7 +96,6 @@ const EditDocumentModal = ({document, onClose}) => {
                 onBlur={handleBlur('pages')}
                 value={values.pages}
                 editable={!loading}
-                style={tw`text-black`}
               />
             </View>
             <CCButton

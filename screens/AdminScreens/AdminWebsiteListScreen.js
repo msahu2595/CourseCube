@@ -21,7 +21,7 @@ import {showMessage} from 'react-native-flash-message';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const AdminWebsiteListScreen = () => {
-  const {loading, data, errors, refetch, fetchMore} = useQuery(WEBSITES);
+  const {loading, data, refetch, fetchMore} = useQuery(WEBSITES);
   const [search, setSearch] = useState('');
   const [isEnabled, setIsEnabled] = useState(false);
   const [addWebsiteModalVisible, setAddWebsiteModalVisible] = useState(false);
@@ -34,9 +34,9 @@ const AdminWebsiteListScreen = () => {
         type: 'success',
       });
     },
-    onError: () => {
+    onError: err => {
       showMessage({
-        message: 'Not able to delete',
+        message: err?.message || 'Some unknown error occurred.',
         type: 'danger',
       });
     },
@@ -45,14 +45,13 @@ const AdminWebsiteListScreen = () => {
 
   const deleteHandler = useCallback(
     websiteId =>
-      Alert.alert('Delete Website', 'Are you want to delete article', [
+      Alert.alert('Delete Website', 'Are you want to delete website ', [
         {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          text: 'No',
           style: 'cancel',
         },
         {
-          text: 'OK',
+          text: 'Yes',
           onPress: () =>
             deleteWebsite({
               variables: {websiteId},
@@ -61,8 +60,6 @@ const AdminWebsiteListScreen = () => {
       ]),
     [deleteWebsite],
   );
-
-  console.log(data?.websites?.payload);
 
   const Item = useCallback(
     ({item}) => (
@@ -76,18 +73,22 @@ const AdminWebsiteListScreen = () => {
           </View>
         </TouchableOpacity>
         <View style={tw`flex-row mx-2  `}>
-          <Button
-            onPress={() => setEditWebsiteModal(item)}
-            title="Edit"
-            color="#841584"
-          />
-          <Button
-            title={'Delete'}
-            color="red"
-            onPress={() => {
-              deleteHandler(item._id);
-            }}
-          />
+          {item.enable && (
+            <Button
+              onPress={() => setEditWebsiteModal(item)}
+              title="Edit"
+              color="#841584"
+            />
+          )}
+          {item.enable && (
+            <Button
+              title={'Delete'}
+              color="red"
+              onPress={() => {
+                deleteHandler(item._id);
+              }}
+            />
+          )}
         </View>
       </View>
     ),
@@ -103,7 +104,6 @@ const AdminWebsiteListScreen = () => {
             <TextInput
               placeholder="Search"
               onChangeText={text => {
-                console.log('text', text);
                 setSearch(text);
                 if (text.length > 2) {
                   refetch({search: text});
@@ -146,7 +146,6 @@ const AdminWebsiteListScreen = () => {
           ListHeaderComponent={() => <View style={tw`h-2`} />}
           ListFooterComponent={() => <View style={tw`h-2`} />}
           onEndReached={() => {
-            console.log('reached end');
             fetchMore({
               variables: {
                 offset: data?.websites?.payload.length,

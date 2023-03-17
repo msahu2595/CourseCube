@@ -9,18 +9,17 @@ import {CCModal, CCButton, CCTextInput} from './Common';
 import {ADD_DOCUMENT} from 'apollo/mutations/ADD_DOCUMENT';
 
 const AddDocumentsValidationSchema = yup.object({
-  title: yup.string().required('Please enter article title.'),
+  title: yup.string().required('Please enter Document title.'),
   url: yup
     .string()
     .url('invalid video url')
-    .required('Please enter article title.'),
+    .required('Please enter document title.'),
   pages: yup.number().required('Please enter pages name.'),
 });
 
 const AddDocumentModal = ({visible, onClose}) => {
   const [AddDocument, {loading}] = useMutation(ADD_DOCUMENT, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your documents Successfully added.',
@@ -28,9 +27,8 @@ const AddDocumentModal = ({visible, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'We have got some error. Please try again!',
+        message: err?.message || 'Some unknown error occurred.',
         type: 'danger',
       });
     },
@@ -52,7 +50,7 @@ const AddDocumentModal = ({visible, onClose}) => {
               documentInput: {
                 title: values.title,
                 url: values.url,
-                pages: values.pages,
+                pages: parseInt(values.pages, 10),
               },
             },
           });
@@ -76,7 +74,6 @@ const AddDocumentModal = ({visible, onClose}) => {
                 onBlur={handleBlur('title')}
                 value={values.title}
                 editable={!loading}
-                style={tw`text-black`}
               />
               <CCTextInput
                 required
@@ -87,7 +84,6 @@ const AddDocumentModal = ({visible, onClose}) => {
                 onBlur={handleBlur('url')}
                 value={values.url}
                 editable={!loading}
-                style={tw`text-black`}
               />
               <CCTextInput
                 required
@@ -98,14 +94,12 @@ const AddDocumentModal = ({visible, onClose}) => {
                 onBlur={handleBlur('pages')}
                 value={values.pages}
                 editable={!loading}
-                style={tw`text-black`}
               />
             </View>
             <CCButton
               label="Submit"
               disabled={loading}
               onPress={() => {
-                console.log('onPress', values);
                 handleSubmit();
               }}
             />

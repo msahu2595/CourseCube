@@ -5,8 +5,6 @@ import AdminDocumentListScreen from './AdminDocumentListScreen';
 import AdminArticleListScreen from './AdminArticleListScreen';
 import AdminWebsiteListScreen from './AdminWebsiteListScreen';
 
-import AddContentScreen from './AddContentScreen';
-
 export {
   MediaScreen,
   AdminVideoListScreen,
@@ -14,5 +12,4 @@ export {
   AdminDocumentListScreen,
   AdminArticleListScreen,
   AdminWebsiteListScreen,
-  AddContentScreen,
 };

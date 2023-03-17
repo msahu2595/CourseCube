@@ -17,7 +17,6 @@ const AddArticleValidationSchema = yup.object({
 const CreateArticleModal = ({visible, onClose}) => {
   const [createArticle, {loading}] = useMutation(CREATE_ARTICLE, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your Article Successfully added.',
@@ -25,9 +24,8 @@ const CreateArticleModal = ({visible, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'We have got some error. Please try again!',
+        message: err?.message || 'Some unknown error occurred',
         type: 'danger',
       });
     },

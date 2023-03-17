@@ -8,7 +8,6 @@ import {
   UserProfileScreen,
   LeaderboardScreen,
   UserSearchScreen,
-  AddContentScreen,
   AdminArticleListScreen,
 } from '@screens';
 import {TextInput, TouchableOpacity, View} from 'react-native';
@@ -58,11 +57,7 @@ const myProfileStackGroup = () => {
         component={MediaScreen}
         options={{headerTitle: 'Media'}}
       />
-      <Stack.Screen
-        name="AddContentScreen"
-        component={AddContentScreen}
-        options={{headerTitle: 'Add Content'}}
-      />
+
       <Stack.Screen
         name="AdminArticleListScreen"
         component={AdminArticleListScreen}

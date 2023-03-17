@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-/* eslint-disable react-hooks/exhaustive-deps */
 import {useMutation, useQuery} from '@apollo/client';
 import React, {useCallback, useState} from 'react';
 import {
@@ -39,13 +37,13 @@ const AdminTestListScreen = () => {
   const [deleteTest] = useMutation(DELETE_TEST, {
     onCompleted: () => {
       showMessage({
-        message: 'Your Article successfully deleted',
+        message: 'Your test successfully deleted',
         type: 'success',
       });
     },
-    onError: () => {
+    onError: err => {
       showMessage({
-        message: 'Not able to delete',
+        message: err?.message || 'Some unknown error occurred.',
         type: 'danger',
       });
     },
@@ -54,14 +52,13 @@ const AdminTestListScreen = () => {
 
   const deleteHandler = useCallback(
     testId =>
-      Alert.alert('Delete Article', 'Are you want to delete article', [
+      Alert.alert('Delete test', 'Are you want to delete test?', [
         {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          text: 'Yes',
           style: 'cancel',
         },
         {
-          text: 'OK',
+          text: 'No',
           onPress: () =>
             deleteTest({
               variables: {testId},
@@ -72,10 +69,9 @@ const AdminTestListScreen = () => {
   );
 
   const width = Dimensions.get('window').width;
-  // console.log(width);
   const Item = useCallback(
     ({item}) => (
-      <View style={tw.style(` rounded-lg bg-gray-200`, {width: width / 2 - 8})}>
+      <View style={tw.style(' rounded-lg bg-gray-200', {width: width / 2 - 8})}>
         <ImageBackground
           source={{
             uri: item.thumbnail,
@@ -98,25 +94,32 @@ const AdminTestListScreen = () => {
             </Text>
           </View>
         </ImageBackground>
-        <Button
-          onPress={() => setAddContentModal(item)}
-          title="Add content"
-          color="green"
-        />
-        <Button
-          onPress={() => setEditTestModal(item)}
-          title="Edit"
-          color="#841584"
-        />
-        <Button
-          title={'Delete'}
-          onPress={() => {
-            deleteHandler(item._id);
-          }}
-        />
+        {item.enable && (
+          <Button
+            onPress={() => setAddContentModal(item)}
+            title="Add content"
+            color="green"
+          />
+        )}
+
+        {item.enable && (
+          <Button
+            onPress={() => setEditTestModal(item)}
+            title="Edit"
+            color="#841584"
+          />
+        )}
+        {item.enable && (
+          <Button
+            title={'Delete'}
+            onPress={() => {
+              deleteHandler(item._id);
+            }}
+          />
+        )}
       </View>
     ),
-    [],
+    [deleteHandler, width],
   );
 
   return (
@@ -128,7 +131,6 @@ const AdminTestListScreen = () => {
             <TextInput
               placeholder="Search"
               onChangeText={text => {
-                console.log('text', text);
                 setSearch(text);
                 if (text.length > 2) {
                   refetch({search: text});
@@ -177,7 +179,6 @@ const AdminTestListScreen = () => {
           contentContainerStyle={tw`p-1`}
           ItemSeparatorComponent={() => <View style={tw`h-2`} />}
           onEndReached={() => {
-            console.log('reached end');
             fetchMore({
               variables: {
                 offset: data?.tests?.payload.length,

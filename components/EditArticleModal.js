@@ -17,7 +17,6 @@ const EditArticleValidationSchema = yup.object({
 const EditArticleModal = ({article, onClose}) => {
   const [editArticle, {loading}] = useMutation(EDIT_ARTICLE, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your Article Successfully edited.',
@@ -25,16 +24,13 @@ const EditArticleModal = ({article, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'We have got some error. Please try again!',
+        message: err?.message || 'Some unknown error occurred',
         type: 'danger',
       });
     },
     refetchQueries: ['articles'],
   });
-
-  console.log(article, !article, !!article);
 
   return (
     <CCModal title="Edit Article" visible={!!article} onClose={onClose}>

@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-/* eslint-disable react-hooks/exhaustive-deps */
 import {useMutation, useQuery} from '@apollo/client';
 import React, {useCallback, useState} from 'react';
 import {
@@ -18,7 +16,6 @@ import {
 import tw from '@lib/tailwind';
 import {VIDEOS} from '@queries';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
 import EditVideoModal from 'components/EditVideoModal';
 import {DELETE_VIDEO} from 'apollo/mutations/DELETE_VIDEO';
 import {showMessage} from 'react-native-flash-message';
@@ -32,8 +29,6 @@ const AdminVideoListScreen = () => {
   const [addContentModal, setAddContentModal] = useState(null);
   const [addVideoModalVisible, setAddVideoModalVisible] = useState(false);
 
-  const navigation = useNavigation();
-
   const {loading, data, refetch, fetchMore} = useQuery(VIDEOS, {
     variables: {offset: 0},
   });
@@ -41,29 +36,28 @@ const AdminVideoListScreen = () => {
   const [deleteVideo] = useMutation(DELETE_VIDEO, {
     onCompleted: () => {
       showMessage({
-        message: 'Your Article successfully deleted',
+        message: 'Your video successfully deleted',
         type: 'success',
       });
     },
-    onError: () => {
+    onError: err => {
       showMessage({
-        message: 'Not able to delete',
+        message: err?.message || 'Some unknown error occurred.',
         type: 'danger',
       });
     },
-    refetchQueries: ['articles'],
+    refetchQueries: ['videos'],
   });
 
   const deleteHandler = useCallback(
     videoId =>
-      Alert.alert('Delete Article', 'Are you want to delete article', [
+      Alert.alert('Delete video', 'Are you want to delete video?', [
         {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          text: 'No',
           style: 'cancel',
         },
         {
-          text: 'OK',
+          text: 'Yes',
           onPress: () =>
             deleteVideo({
               variables: {videoId},
@@ -74,10 +68,9 @@ const AdminVideoListScreen = () => {
   );
 
   const width = Dimensions.get('window').width;
-  // console.log(width);
   const Item = useCallback(
     ({item}) => (
-      <View style={tw.style(` rounded-lg bg-gray-200`, {width: width / 2 - 8})}>
+      <View style={tw.style(' rounded-lg bg-gray-200', {width: width / 2 - 8})}>
         <ImageBackground
           source={{
             uri: item.thumbnail,
@@ -102,31 +95,34 @@ const AdminVideoListScreen = () => {
         </ImageBackground>
 
         <View style={tw`flex  justify-between  `}>
-          {/* <Button
-            title="Add Videos"
-            onPress={() => navigation.navigate('AddContentScreen', item)}
-          /> */}
-          <Button
-            onPress={() => setAddContentModal(item)}
-            title="Add content"
-            color="green"
-          />
-          <Button
-            onPress={() => setEditVideoModal(item)}
-            title="Edit"
-            color="#841584"
-          />
-          <Button
-            title={'Delete'}
-            color="red"
-            onPress={() => {
-              deleteHandler(item._id);
-            }}
-          />
+          {item.enable && (
+            <Button
+              onPress={() => setAddContentModal(item)}
+              title="Add content"
+              color="green"
+            />
+          )}
+          {item.enable && (
+            <Button
+              onPress={() => setEditVideoModal(item)}
+              title="Edit"
+              color="#841584"
+            />
+          )}
+
+          {item.enable && (
+            <Button
+              title={'Delete'}
+              color="red"
+              onPress={() => {
+                deleteHandler(item._id);
+              }}
+            />
+          )}
         </View>
       </View>
     ),
-    [],
+    [deleteHandler, width],
   );
 
   return (
@@ -138,7 +134,6 @@ const AdminVideoListScreen = () => {
             <TextInput
               placeholder="Search"
               onChangeText={text => {
-                console.log('text', text);
                 setSearch(text);
                 if (text.length > 2) {
                   refetch({search: text});
@@ -186,7 +181,6 @@ const AdminVideoListScreen = () => {
           contentContainerStyle={tw`p-1`}
           ItemSeparatorComponent={() => <View style={tw`h-2`} />}
           onEndReached={() => {
-            console.log('reached end');
             fetchMore({
               variables: {
                 offset: data?.videos?.payload.length,

@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-/* eslint-disable react-hooks/exhaustive-deps */
 import {useMutation, useQuery} from '@apollo/client';
 import React, {useCallback, useState} from 'react';
 import {
@@ -42,9 +40,9 @@ const AdminDocumentListScreen = () => {
         type: 'success',
       });
     },
-    onError: () => {
+    onError: err => {
       showMessage({
-        message: 'Not able to delete',
+        message: err?.message || 'Some unknown error occurred.',
         type: 'danger',
       });
     },
@@ -53,14 +51,13 @@ const AdminDocumentListScreen = () => {
 
   const deleteHandler = useCallback(
     documentId =>
-      Alert.alert('Delete Document', 'Are you want to delete article', [
+      Alert.alert('Delete Document', 'Are you want to delete document?', [
         {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          text: 'No',
           style: 'cancel',
         },
         {
-          text: 'OK',
+          text: 'Yes',
           onPress: () =>
             deleteDocument({
               variables: {documentId},
@@ -71,51 +68,53 @@ const AdminDocumentListScreen = () => {
   );
 
   const width = Dimensions.get('window').width;
-  // console.log(width);
-  const Item = useCallback(
-    ({item}) => (
-      <View style={tw.style(` rounded-lg bg-gray-200`, {width: width / 2 - 8})}>
-        <ImageBackground
-          source={{
-            uri: item?.thumbnail,
-          }}
-          resizeMode="cover"
-          style={tw`h-40  justify-between`}>
-          <View style={tw` h-10 `}>
-            <Text
-              style={tw` self-end text-xs  text-white p-1 bg-black bg-opacity-40  rounded-bl-lg `}>
-              {item.time}
-            </Text>
-          </View>
-          <View
-            style={tw`bg-black bg-opacity-50 text-white p-1 h-10 justify-center`}>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={tw`text-xs px-1 text-white`}>
-              {item.title}
-            </Text>
-          </View>
-        </ImageBackground>
+  const Item = ({item}) => (
+    <View style={tw.style('rounded-lg bg-gray-200', {width: width / 2 - 8})}>
+      <ImageBackground
+        source={{
+          uri: item?.thumbnail,
+        }}
+        resizeMode="cover"
+        style={tw`h-40  justify-between`}>
+        <View style={tw` h-10 `}>
+          <Text
+            style={tw` self-end text-xs  text-white p-1 bg-black bg-opacity-40  rounded-bl-lg `}>
+            {item.time}
+          </Text>
+        </View>
+        <View
+          style={tw`bg-black bg-opacity-50 text-white p-1 h-10 justify-center`}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={tw`text-xs px-1 text-white`}>
+            {item.title}
+          </Text>
+        </View>
+      </ImageBackground>
+      {item.enable && (
         <Button
           onPress={() => setAddContentModal(item)}
           title="Add content"
           color="green"
         />
+      )}
+      {item.enable && (
         <Button
           onPress={() => setEditDocumentModal(item)}
           title="Edit"
           color="#841584"
         />
+      )}
+      {item.enable && (
         <Button
           title={'Delete'}
           onPress={() => {
             deleteHandler(item._id);
           }}
         />
-      </View>
-    ),
-    [],
+      )}
+    </View>
   );
 
   return (
@@ -127,7 +126,6 @@ const AdminDocumentListScreen = () => {
             <TextInput
               placeholder="Search"
               onChangeText={text => {
-                console.log('text', text);
                 setSearch(text);
                 if (text.length > 2) {
                   refetch({search: text});
@@ -176,7 +174,6 @@ const AdminDocumentListScreen = () => {
           contentContainerStyle={tw`p-1`}
           ItemSeparatorComponent={() => <View style={tw`h-2`} />}
           onEndReached={() => {
-            console.log('reached end');
             fetchMore({
               variables: {
                 offset: data?.documents?.payload.length,

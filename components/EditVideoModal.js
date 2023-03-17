@@ -16,7 +16,6 @@ const EditVideoValidationSchema = yup.object({
 const EditVideoModal = ({video, onClose}) => {
   const [editVideo, {loading}] = useMutation(EDIT_VIDEO, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your video Successfully edited.',
@@ -24,9 +23,8 @@ const EditVideoModal = ({video, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'We have got some error. Please try again!',
+        message: err?.message || 'Some unknown error occurred',
         type: 'danger',
       });
     },
