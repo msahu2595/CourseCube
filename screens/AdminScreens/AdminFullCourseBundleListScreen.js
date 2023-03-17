@@ -11,14 +11,17 @@ import {
   Switch,
   Button,
   Alert,
+  Pressable,
 } from 'react-native';
 import {BUNDLES} from '@queries';
 import {useMutation, useQuery} from '@apollo/client';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
 import EditBundleModal from 'components/EditBundleModal';
 import {DELETE_BUNDLE} from 'apollo/mutations/DELETE_BUNDLE';
 import {showMessage} from 'react-native-flash-message';
+import AddBundleModal from 'components/AddBundleModal';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Separator = () => <View style={tw`h-2`} />;
 
@@ -28,6 +31,7 @@ function AdminFullCourseBundleListScreen() {
   const [isEnabled, setIsEnabled] = useState(false);
   const [search, setSearch] = useState('');
   const [editBundleModal, setEditBundleModal] = useState(null);
+  const [addBundleModal, setAddBundleModal] = useState(false);
 
   const {loading, error, data, refetch, fetchMore} = useQuery(BUNDLES, {
     variables: {
@@ -56,7 +60,7 @@ function AdminFullCourseBundleListScreen() {
 
   const deleteHandler = useCallback(
     bundleId =>
-      Alert.alert('Delete Advert', 'Are you sure want to delete advert', [
+      Alert.alert('Delete Courses', 'Are you sure want to delete Courses', [
         {
           text: 'cancel',
           onPress: () => console.log('Cancel Pressed'),
@@ -142,7 +146,7 @@ function AdminFullCourseBundleListScreen() {
               setSearch('');
               refetch({search: ''});
             }}>
-            <MaterialCommunityIcons name="clear" size={25} style={tw`p-1`} />
+            <MaterialIcons name="clear" size={25} style={tw`p-1`} />
           </TouchableOpacity>
         </View>
         <Switch
@@ -155,6 +159,18 @@ function AdminFullCourseBundleListScreen() {
           }}
           value={isEnabled}
         />
+        <View
+          style={tw`bg-blue-500 h-8 rounded-full items-center justify-center`}>
+          <View>
+            <Pressable onPress={() => setAddBundleModal(true)}>
+              <MaterialCommunityIcons
+                name="plus"
+                size={30}
+                style={tw`items-center text-white`}
+              />
+            </Pressable>
+          </View>
+        </View>
       </View>
       <FlatList
         data={data?.bundles?.payload}
@@ -180,6 +196,12 @@ function AdminFullCourseBundleListScreen() {
         bundle={editBundleModal}
         onClose={() => {
           setEditBundleModal(null);
+        }}
+      />
+      <AddBundleModal
+        bundle={addBundleModal}
+        onClose={() => {
+          setAddBundleModal();
         }}
       />
     </SafeAreaContainer>

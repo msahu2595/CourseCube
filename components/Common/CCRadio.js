@@ -16,7 +16,7 @@ export const CCRadio = ({
     () => radio_props.findIndex(obj => obj.value === value),
     [radio_props, value],
   );
-  console.log({initial});
+
   return (
     <View style={tw`mb-1`}>
       {console.log(value)}
