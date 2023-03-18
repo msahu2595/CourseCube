@@ -1,8 +1,5 @@
 import tw from '@lib/tailwind';
 import {ADVERTS} from '@queries';
-import React, {useCallback, useState} from 'react';
-import {useMutation, useQuery} from '@apollo/client';
-import {AdvertItem, SafeAreaContainer} from '@components';
 import {
   Alert,
   Button,
@@ -13,12 +10,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import EditAdvertModal from 'components/EditAdvertModal';
-import CreateAdvertModal from 'components/CreateAdvertModal';
 import {DELETE_ADVERT} from '@mutations';
+import React, {useCallback, useState} from 'react';
+import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {onError} from '@apollo/client/link/error';
+import EditAdvertModal from 'components/EditAdvertModal';
+import {AdvertItem, SafeAreaContainer} from '@components';
+import CreateAdvertModal from 'components/CreateAdvertModal';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Separator = () => <View style={tw`h-2`} />;
 
@@ -31,7 +30,7 @@ const AdminAdvertListScreen = () => {
   const [deleteAdvert] = useMutation(DELETE_ADVERT, {
     onCompleted: () => {
       showMessage({
-        message: 'Your article successfully deleted',
+        message: 'Advertisement successfully deleted',
         type: 'success',
       });
     },
@@ -47,20 +46,24 @@ const AdminAdvertListScreen = () => {
 
   const deleteHandler = useCallback(
     advertId =>
-      Alert.alert('Delete Advert', 'Are you sure want to delete advert', [
-        {
-          text: 'cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () =>
-            deleteAdvert({
-              variables: {advertId},
-            }),
-        },
-      ]),
+      Alert.alert(
+        'Delete Advertisement',
+        'Are you sure want to delete advertisement',
+        [
+          {
+            text: 'cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: () =>
+              deleteAdvert({
+                variables: {advertId},
+              }),
+          },
+        ],
+      ),
     [deleteAdvert],
   );
 
