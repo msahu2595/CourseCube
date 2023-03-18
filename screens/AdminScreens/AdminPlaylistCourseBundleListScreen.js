@@ -1,5 +1,4 @@
 import tw from 'twrnc';
-import React, {useCallback, useState} from 'react';
 import {
   View,
   Text,
@@ -14,13 +13,14 @@ import {
   Pressable,
 } from 'react-native';
 import {BUNDLES} from '@queries';
-import {useMutation, useQuery} from '@apollo/client';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
-import {showMessage} from 'react-native-flash-message';
-import {DELETE_BUNDLE} from 'apollo/mutations/DELETE_BUNDLE';
-import EditBundleModal from 'components/EditBundleModal';
+import React, {useCallback, useState} from 'react';
+import {useMutation, useQuery} from '@apollo/client';
 import AddBundleModal from 'components/AddBundleModal';
+import {showMessage} from 'react-native-flash-message';
+import EditBundleModal from 'components/EditBundleModal';
+import {DELETE_BUNDLE} from 'apollo/mutations/DELETE_BUNDLE';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Separator = () => <View style={tw`h-2`} />;

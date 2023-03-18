@@ -11,9 +11,6 @@ import {
 import {TextInput, TouchableOpacity, View} from 'react-native';
 // Icon Import
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AddTestScreen from 'screens/AdminScreens/AddTestScreen';
-import AddDocumentsScreen from 'screens/AdminScreens/AddDocumentsScreen';
-import AddVideosScreen from 'screens/AdminScreens/AddVideosScreen';
 import AdminContentListScreen from 'screens/AdminScreens/AdminContentListScreen';
 import AdminAddBundleScreen from 'screens/AdminScreens/AdminAddBundleScreen';
 import AdminBundleListScreen from 'screens/AdminScreens/AdminBundleListScreen';
@@ -54,21 +51,6 @@ const myProfileStackGroup = () => {
         name="UserSearchScreen"
         component={UserSearchScreen}
         options={searchScreenOptions}
-      />
-      <Stack.Screen
-        name="AddTestScreen"
-        component={AddTestScreen}
-        options={{headerTitle: 'Add Test'}}
-      />
-      <Stack.Screen
-        name="AddDocumentScreen"
-        component={AddDocumentsScreen}
-        options={{headerTitle: 'Add Document'}}
-      />
-      <Stack.Screen
-        name="AddVideosScreen"
-        component={AddVideosScreen}
-        options={{headerTitle: 'Add Videos'}}
       />
       <Stack.Screen
         name="AdminContentListScreen"

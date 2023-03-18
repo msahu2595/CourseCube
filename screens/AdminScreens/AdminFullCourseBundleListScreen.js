@@ -1,5 +1,4 @@
 import tw from 'twrnc';
-import React, {useCallback, useState} from 'react';
 import {
   View,
   Text,
@@ -14,12 +13,13 @@ import {
   Pressable,
 } from 'react-native';
 import {BUNDLES} from '@queries';
-import {useMutation, useQuery} from '@apollo/client';
 import {SafeAreaContainer} from '@components';
+import React, {useCallback, useState} from 'react';
+import {useMutation, useQuery} from '@apollo/client';
+import AddBundleModal from 'components/AddBundleModal';
+import {showMessage} from 'react-native-flash-message';
 import EditBundleModal from 'components/EditBundleModal';
 import {DELETE_BUNDLE} from 'apollo/mutations/DELETE_BUNDLE';
-import {showMessage} from 'react-native-flash-message';
-import AddBundleModal from 'components/AddBundleModal';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -44,7 +44,7 @@ function AdminFullCourseBundleListScreen() {
   const [deleteBundle] = useMutation(DELETE_BUNDLE, {
     onCompleted: () => {
       showMessage({
-        message: 'Your FULL COURSE successfully deleted',
+        message: 'FULL COURSE successfully deleted',
         type: 'success',
       });
     },

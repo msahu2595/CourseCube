@@ -1,6 +1,6 @@
 import React from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import AdminFullCourseBundleListScreen from './AdminFullCourseBundleListScreen';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import AdminSubjectCourseBundleListScreen from './AdminSubjectCourseBundleListScreen';
 import AdminPlaylistCourseBundleListScreen from './AdminPlaylistCourseBundleListScreen';
 

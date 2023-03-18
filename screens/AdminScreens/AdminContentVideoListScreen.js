@@ -9,15 +9,15 @@ import {
   Alert,
   Button,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
 import tw from '@lib/tailwind';
 import {CONTENTS} from '@queries';
-import {useMutation, useQuery} from '@apollo/client';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
+import {DELETE_CONTENT} from '@mutations';
 import {SafeAreaContainer} from '@components';
-import {DELETE_CONTENT} from 'apollo/mutations/DELETE_CONTENT';
+import React, {useCallback, useState} from 'react';
+import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import EditContentModal from 'components/EditContentModal';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 
 const separator = () => <View style={tw`h-2`} />;
 

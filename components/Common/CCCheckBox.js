@@ -1,9 +1,9 @@
 import {tw} from '@lib';
-import React from 'react';
+import React, {memo} from 'react';
 import {Text, View} from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
-export const CCCheckBox = ({label, required, ...rest}) => {
+export const CCCheckBox = memo(({label, required, ...rest}) => {
   return (
     <View style={tw`mb-1`}>
       {label && (
@@ -22,4 +22,4 @@ export const CCCheckBox = ({label, required, ...rest}) => {
       </View>
     </View>
   );
-};
+});

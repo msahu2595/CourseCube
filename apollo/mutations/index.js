@@ -13,3 +13,4 @@ export * from './ADD_VIDEOS';
 export * from './ADD_BUNDLE';
 export * from './ADD_CONTENT';
 export * from './EDIT_CONTENT';
+export * from './DELETE_CONTENT';

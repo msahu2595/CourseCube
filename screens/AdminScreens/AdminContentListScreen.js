@@ -1,8 +1,8 @@
 import React from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import AdminContentVideoListScreen from './AdminContentVideoListScreen';
 import AdminContentTestListScreen from './AdminContentTestListScreen';
+import AdminContentVideoListScreen from './AdminContentVideoListScreen';
 import AdminContentDocumentListScreen from './AdminContentDocumentListScreen';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
 
