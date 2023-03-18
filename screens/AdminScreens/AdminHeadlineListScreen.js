@@ -1,11 +1,6 @@
 import * as Yup from 'yup';
 import tw from '@lib/tailwind';
 import {HEADLINES} from '@queries';
-import {CREATE_HEADLINE} from '@mutations';
-import {useMutation, useQuery} from '@apollo/client';
-import React, {useCallback, useRef, useState} from 'react';
-import {NotificationItem, SafeAreaContainer} from '@components';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   ActivityIndicator,
   Alert,
@@ -19,11 +14,15 @@ import {
   View,
 } from 'react-native';
 import {Formik} from 'formik';
+import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, {useCallback, useRef, useState} from 'react';
+import {CREATE_HEADLINE, DELETE_HEADLINE} from '@mutations';
 import EditHeadlineModal from 'components/EditHeadlineModal';
-import {DELETE_HEADLINE} from 'apollo/mutations/DELETE_HEADLINE';
+import {NotificationItem, SafeAreaContainer} from '@components';
 import CreateHeadlineModal from 'components/CreateHeadlineModal';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Separator = () => <View style={tw`h-2`} />;
 
