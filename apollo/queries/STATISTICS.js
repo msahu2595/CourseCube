@@ -1,11 +1,12 @@
 import {gql} from '@apollo/client';
 
 export const STATISTICS = gql`
-  query statistics {
-    statistics {
+  query statistics($userId: ID) {
+    statistics(userId: $userId) {
       code
       success
       message
+      token
       payload {
         __typename
         _id
