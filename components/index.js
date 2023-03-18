@@ -32,6 +32,8 @@ import CurrentAffairBar, {CurrentAffairItem} from './CurrentAffairBar';
 // App Advert Imports
 import {ShareApp, FollowUs, GetCallFromUs, GetSubscription} from './AppAdverts';
 //
+import MediaItem from './MediaItem';
+import MenuOptionItem from './MenuOptionItem';
 import LoadingIndicator from './LoadingIndicator';
 import NetworkStatusProvider from './NetworkStatusProvider';
 
@@ -80,6 +82,8 @@ export {
   GetCallFromUs,
   GetSubscription,
   //
+  MediaItem,
+  MenuOptionItem,
   LoadingIndicator,
   NetworkStatusProvider,
 };
