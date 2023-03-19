@@ -2,11 +2,11 @@ import {tw} from '@lib';
 import {LOGOUT} from '@mutations';
 import {Alert} from 'react-native';
 import React, {useCallback} from 'react';
-import {CCButton} from 'components/Common';
 import {useMutation} from '@apollo/client';
 import auth from '@react-native-firebase/auth';
+import {CCNavigationButton} from 'components/Common';
+import {loggedUserVar, storage} from 'apollo/client';
 import {SafeAreaContainer, LoadingIndicator} from '@components';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AdminHomeScreen = ({navigation}) => {
   const [logout, {loading}] = useMutation(LOGOUT, {
@@ -16,7 +16,8 @@ const AdminHomeScreen = ({navigation}) => {
         .signOut()
         .then(() => {
           console.log('User signed out!');
-          AsyncStorage.multiRemove(['token', 'refresh']);
+          storage.clearAll();
+          loggedUserVar(null);
         });
     },
     onError: err => {
@@ -25,7 +26,8 @@ const AdminHomeScreen = ({navigation}) => {
         .signOut()
         .then(() => {
           console.log('User signed out!');
-          AsyncStorage.multiRemove(['token', 'refresh']);
+          storage.clearAll();
+          loggedUserVar(null);
         });
     },
   });
@@ -46,46 +48,60 @@ const AdminHomeScreen = ({navigation}) => {
 
   return (
     <>
-      <SafeAreaContainer style={tw`py-1`}>
-        <CCButton
-          label="Advert"
+      <SafeAreaContainer style={tw`bg-white p-4`}>
+        <CCNavigationButton
+          name="Advert"
           onPress={null}
-          style={tw`mx-2 my-1 bg-blue-500`}
+          icon="file-text"
+          disabled={loading}
         />
-        <CCButton
-          label="Courses"
+        <CCNavigationButton
+          name="Courses"
           onPress={null}
-          style={tw`mx-2 my-1 bg-blue-500`}
+          icon="file-text"
+          disabled={loading}
         />
-        <CCButton
-          label="Contents"
+        <CCNavigationButton
+          name="Contents"
           onPress={null}
-          style={tw`mx-2 my-1 bg-blue-500`}
+          icon="file-text"
+          disabled={loading}
         />
-        <CCButton
-          label="Headlines"
+        <CCNavigationButton
+          name="Headlines"
           onPress={null}
-          style={tw`mx-2 my-1 bg-blue-500`}
+          icon="file-text"
+          disabled={loading}
         />
-        <CCButton
-          label="Articles"
+        <CCNavigationButton
+          name="Articles"
           onPress={() => navigation.navigate('AdminArticleListScreen')}
-          style={tw`mx-2 my-1 bg-blue-500`}
+          icon="file-text"
+          disabled={loading}
         />
-        <CCButton
-          label="Websites"
+        <CCNavigationButton
+          name="Websites"
           onPress={() => navigation.navigate('AdminWebsiteListScreen')}
-          style={tw`mx-2 my-1 bg-blue-500`}
+          icon="file-text"
+          disabled={loading}
         />
-        <CCButton
-          label="Media"
-          style={tw`mx-2 my-1 bg-blue-500`}
+        <CCNavigationButton
+          name="Media"
           onPress={() => navigation.navigate('MediaListTopTabNavigator')}
+          icon="file-text"
+          disabled={loading}
         />
-        <CCButton
-          label="Logout"
+        <CCNavigationButton
+          name="Logout"
           onPress={handleLogout}
-          style={tw`mx-2 my-1 bg-red-500`}
+          icon="log-out"
+          disabled={loading}
+        />
+        <CCNavigationButton
+          name="Login as a User"
+          onPress={() => navigation.navigate('MainBottomTabNavigator')}
+          icon="repeat"
+          disabled={loading}
         />
       </SafeAreaContainer>
       <LoadingIndicator loading={loading} />

@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {isLoggedInVar, loggedUserVar} from 'apollo/client';
 import messaging from '@react-native-firebase/messaging';
+import {loggedUserVar, storage} from 'apollo/client';
 import auth from '@react-native-firebase/auth';
 import {LoadingIndicator} from '@components';
 import {useMutation} from '@apollo/client';
@@ -21,7 +21,20 @@ GoogleSignin.configure({
     '712761607011-pen5ucovsnc3pm7uf6hgic9k63s3bq6a.apps.googleusercontent.com',
 });
 
-const LoginIntroScreen = ({navigation}) => {
+const LoginIntroScreen = () => {
+  const [googleLogIn, {loading}] = useMutation(GOOGLE_LOG_IN, {
+    onCompleted: data => {
+      storage.set('user', JSON.stringify(data?.googleLogIn?.payload));
+      loggedUserVar(data?.googleLogIn?.payload);
+    },
+    onError: err => {
+      console.log(err);
+      auth()
+        .signOut()
+        .then(() => console.log('User signed out!'));
+    },
+  });
+
   const signIn = async () => {
     try {
       const FCMToken =
@@ -38,20 +51,6 @@ const LoginIntroScreen = ({navigation}) => {
       console.log('GoogleSignin.signIn() error ==> ', error);
     }
   };
-
-  const [googleLogIn, {loading}] = useMutation(GOOGLE_LOG_IN, {
-    onCompleted: data => {
-      const {payload} = data?.googleLogIn;
-      loggedUserVar(payload);
-      isLoggedInVar(true);
-    },
-    onError: err => {
-      console.log(err);
-      auth()
-        .signOut()
-        .then(() => console.log('User signed out!'));
-    },
-  });
 
   return (
     <>

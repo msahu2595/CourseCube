@@ -1,23 +1,21 @@
 import {from, ApolloClient, createHttpLink, ApolloLink} from '@apollo/client';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {InMemoryCache, makeVar, gql} from '@apollo/client';
 import {setContext} from '@apollo/client/link/context';
 import {onError} from '@apollo/client/link/error';
+import {MMKV} from 'react-native-mmkv';
+
+export const storage = new MMKV();
 
 export const typeDefs = gql`
   extend type Query {
-    isLoggedIn: Boolean!
     me: User
     cartItems: [ID!]!
   }
 `;
 
-// Initializes to true if localStorage includes a 'token' key,
-// false otherwise
-export const isLoggedInVar = makeVar(!!AsyncStorage.getItem('token'));
-
 // Initializes logged in user
-export const loggedUserVar = makeVar(null);
+const user = storage.getString('user');
+export const loggedUserVar = makeVar(user ? JSON.parse(user) : null);
 
 // Initializes to an empty array
 export const cartItemsVar = makeVar([]);
@@ -76,11 +74,6 @@ export const cache = new InMemoryCache({
             };
           },
         },
-        isLoggedIn: {
-          read() {
-            return isLoggedInVar();
-          },
-        },
         me: {
           read() {
             return loggedUserVar();
@@ -97,18 +90,16 @@ export const cache = new InMemoryCache({
 });
 
 const authLink = setContext((_, {headers}) => {
-  return AsyncStorage.multiGet(['token', 'refresh']).then(res => {
-    if (res[0][1]) {
-      return {
-        headers: {
-          ...headers,
-          authorization: `Bearer ${res[0][1]}`,
-          'refresh-token': res[1][1],
-        },
-      };
-    }
-    return {headers};
-  });
+  if (storage.getString('token')) {
+    return {
+      headers: {
+        ...headers,
+        authorization: `Bearer ${storage.getString('token')}`,
+        'refresh-token': storage.getString('refresh'),
+      },
+    };
+  }
+  return {headers};
 });
 
 export const errorLink = onError(error => {
@@ -149,15 +140,6 @@ const httpLink = createHttpLink({
   uri: 'https://course-cube-server-python-env.onrender.com/',
 });
 
-async function singleSet(name, token) {
-  try {
-    await AsyncStorage.setItem(name, token);
-    console.log('SingleSet done.');
-  } catch (e) {
-    console.log(e);
-  }
-}
-
 const setTokenLink = new ApolloLink((operation, forward) => {
   return forward(operation).map(response => {
     console.log(`====${operation.operationName}=====`);
@@ -167,14 +149,17 @@ const setTokenLink = new ApolloLink((operation, forward) => {
           'Got new token ==> ',
           response?.data[operation.operationName]?.token,
         );
-        singleSet('token', response?.data[operation.operationName]?.token);
+        storage.set('token', response?.data[operation.operationName]?.token);
       }
       if (response?.data[operation.operationName]?.refresh) {
         console.log(
           'Got new refresh ==> ',
           response?.data[operation.operationName]?.refresh,
         );
-        singleSet('refresh', response?.data[operation.operationName]?.refresh);
+        storage.set(
+          'refresh',
+          response?.data[operation.operationName]?.refresh,
+        );
       }
     }
     console.log(`====${operation.operationName}=====`);

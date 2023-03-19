@@ -4,5 +4,14 @@ import {CCButton} from './CCButton';
 import {CCDuration} from './CCDuration';
 import {CCCheckBox} from './CCCheckBox';
 import {CCTextInput} from './CCTextInput';
+import {CCNavigationButton} from './CCNavigationButton';
 
-export {CCModal, CCButton, CCTextInput, CCRadio, CCCheckBox, CCDuration};
+export {
+  CCModal,
+  CCRadio,
+  CCButton,
+  CCDuration,
+  CCCheckBox,
+  CCTextInput,
+  CCNavigationButton,
+};
