@@ -3,10 +3,13 @@ import React from 'react';
 import {memo} from 'react';
 import {ActivityIndicator, Text, TouchableOpacity} from 'react-native';
 
-export const CCButton = memo(({label, loading, ...rest}) => (
+export const CCButton = memo(({label, loading, style, ...rest}) => (
   <TouchableOpacity
     {...rest}
-    style={tw`flex-row bg-blue-600 py-3 items-center justify-center rounded-lg `}>
+    style={tw.style(
+      'flex-row bg-blue-600 py-3 items-center justify-center rounded-lg',
+      style,
+    )}>
     <Text style={tw`text-sm text-white font-avReg`}>{label}</Text>
     {loading && (
       <ActivityIndicator

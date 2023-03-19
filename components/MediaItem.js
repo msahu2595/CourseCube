@@ -15,7 +15,7 @@ const MediaItem = memo(
       }}
       resizeMode="cover"
       style={tw.style('justify-between bg-gray-600', {
-        width: width / 2 - 8,
+        width: width / 2 - 6,
         aspectRatio: 16 / 9,
       })}>
       <View style={tw`justify-between flex-row`}>

@@ -1,6 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {from, ApolloClient, createHttpLink, ApolloLink} from '@apollo/client';
-import {offsetLimitPagination} from '@apollo/client/utilities';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {InMemoryCache, makeVar, gql} from '@apollo/client';
 import {setContext} from '@apollo/client/link/context';
 import {onError} from '@apollo/client/link/error';
@@ -128,7 +127,6 @@ export const errorLink = onError(error => {
       const unAuthenticate = networkError?.result?.errors.find(
         er => er.extensions.code === 'UNAUTHENTICATED',
       );
-
       if (unAuthenticate) {
         console.log('unAuthenticate', unAuthenticate);
       }

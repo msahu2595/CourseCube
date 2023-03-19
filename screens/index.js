@@ -1,4 +1,5 @@
 import {
+  AdminHomeScreen,
   AdminMediaScreen,
   AdminVideoListScreen,
   AdminDocumentListScreen,
@@ -71,6 +72,7 @@ import {
 } from './UserMenuScreens';
 
 export {
+  AdminHomeScreen,
   AdminMediaScreen,
   AdminVideoListScreen,
   AdminTestListScreen,

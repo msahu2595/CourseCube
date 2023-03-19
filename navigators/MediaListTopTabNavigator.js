@@ -1,4 +1,5 @@
 import React from 'react';
+import tw from '@lib/tailwind';
 import {
   AdminTestListScreen,
   AdminVideoListScreen,
@@ -9,10 +10,21 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 
 const Tab = createMaterialTopTabNavigator();
 
-const AdminMediaScreen = () => {
+const MediaListTopTabNavigator = props => {
   return (
-    <SafeAreaContainer statusBarStyle="dark-content">
-      <Tab.Navigator>
+    <SafeAreaContainer
+      statusBgColor={tw.color('blue-600')}
+      statusBarStyle="dark-content">
+      <Tab.Navigator
+        backBehavior="none"
+        screenOptions={{
+          swipeEnabled: true,
+          tabBarScrollEnabled: false,
+          tabBarStyle: tw`bg-blue-600`,
+          tabBarItemStyle: tw`px-0`,
+          tabBarIndicatorStyle: tw`bg-blue-200`,
+          tabBarLabelStyle: tw`font-avSemi text-xs text-white`,
+        }}>
         <Tab.Screen
           name="AdminVideoListScreen"
           component={AdminVideoListScreen}
@@ -33,4 +45,4 @@ const AdminMediaScreen = () => {
   );
 };
 
-export default AdminMediaScreen;
+export default MediaListTopTabNavigator;

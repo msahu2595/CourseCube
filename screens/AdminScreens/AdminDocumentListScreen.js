@@ -131,7 +131,7 @@ const AdminDocumentListScreen = () => {
           numColumns={2}
           columnWrapperStyle={tw`justify-between`}
           contentContainerStyle={tw`p-1`}
-          ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+          ItemSeparatorComponent={() => <View style={tw`h-1`} />}
           onEndReached={() => {
             fetchMore({
               variables: {

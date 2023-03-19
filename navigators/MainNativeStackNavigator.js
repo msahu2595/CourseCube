@@ -1,7 +1,9 @@
-import React, {useEffect, useState} from 'react';
 import auth from '@react-native-firebase/auth';
+import React, {useEffect, useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
+  adminStackGroup,
   authStackGroup,
   tabStackGroup,
   homeStackGroup,
@@ -12,13 +14,27 @@ import {
   userMenuStackGroup,
   settingStackGroup,
 } from '@navigation_groups';
+import {isLoggedInVar} from 'apollo/client';
+import {useReactiveVar} from '@apollo/client';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
 const MainNativeStackNavigator = () => {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
+  const me = useReactiveVar(isLoggedInVar);
   const [user, setUser] = useState();
+
+  console.log({me});
+  (async () => {
+    try {
+      const value = await AsyncStorage.getItem('token');
+      console.log('token', value);
+    } catch (e) {
+      // read error
+      console.log('Error...');
+    }
+  })();
 
   // Handle user state changes
   function onAuthStateChanged(newUser) {
@@ -44,6 +60,7 @@ const MainNativeStackNavigator = () => {
         authStackGroup()
       ) : (
         <React.Fragment>
+          {adminStackGroup()}
           {tabStackGroup()}
           {homeStackGroup()}
           {myProfileStackGroup()}
