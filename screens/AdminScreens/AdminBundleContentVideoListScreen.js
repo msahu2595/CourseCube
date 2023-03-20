@@ -1,5 +1,4 @@
 import tw from 'twrnc';
-import React, {useCallback, useState} from 'react';
 import {
   View,
   Text,
@@ -13,12 +12,13 @@ import {
   Alert,
 } from 'react-native';
 import {BUNDLE_CONTENTS} from '@queries';
-import {useMutation, useQuery} from '@apollo/client';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {SafeAreaContainer} from '@components';
+import {DELETE_BUNDLE_CONTENTS} from '@mutations';
+import React, {useCallback, useState} from 'react';
+import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {DELETE_BUNDLE_CONTENTS} from 'apollo/mutations/DELETE_BUNDLE_CONTENT';
 import EditBundleContentModal from 'components/EditBundleContentModal';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Separator = () => <View style={tw`h-2`} />;
 
@@ -42,7 +42,7 @@ function AdminBundleContentVideoListScreen() {
     const [deleteBundleContent] = useMutation(DELETE_BUNDLE_CONTENTS, {
       onCompleted: () => {
         showMessage({
-          message: 'Your Video successfully deleted',
+          message: 'Video successfully deleted',
           type: 'success',
         });
       },

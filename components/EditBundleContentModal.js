@@ -1,10 +1,10 @@
-import {useMutation} from '@apollo/client';
-import {SafeAreaContainer} from '@components';
 import React from 'react';
-import {showMessage} from 'react-native-flash-message';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
-import {EDIT_BUNDLE_CONTENT} from 'apollo/mutations/EDIT_BUNDLE_CONTENT';
+import {useMutation} from '@apollo/client';
+import {SafeAreaContainer} from '@components';
+import {EDIT_BUNDLE_CONTENT} from '@mutations';
+import {showMessage} from 'react-native-flash-message';
 import {CCButton, CCModal, CCRadio, CCTextInput} from './Common';
 
 const ValidationSchema = Yup.object().shape({
