@@ -11,12 +11,13 @@ import {CCModal, CCButton, CCTextInput} from './Common';
 const AddVideoValidationSchema = yup.object({
   videoLink: yup
     .string()
-    .url('Invalid video link.')
-    .required('Please enter video title.'),
+    .trim()
+    .matches('^(https?://youtu.be)/.+$', 'Link is not in the correct format.')
+    .required('Please enter video link.'),
 });
 
 const AddVideoModal = ({visible, onClose}) => {
-  const [addVideo, {loading}] = useMutation(ADD_VIDEO, {
+  const [addVideo, {loading: submitting}] = useMutation(ADD_VIDEO, {
     onCompleted: data => {
       onClose();
       showMessage({
@@ -26,7 +27,7 @@ const AddVideoModal = ({visible, onClose}) => {
     },
     onError: err => {
       showMessage({
-        message: err?.message || 'Some unknown error occurred.',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
         type: 'danger',
       });
     },
@@ -34,7 +35,11 @@ const AddVideoModal = ({visible, onClose}) => {
   });
 
   return (
-    <CCModal title="Add Video" visible={visible} onClose={onClose}>
+    <CCModal
+      title="Add Video"
+      visible={visible}
+      submitting={submitting}
+      onClose={onClose}>
       <Formik
         initialValues={{
           videoLink: '',
@@ -59,19 +64,21 @@ const AddVideoModal = ({visible, onClose}) => {
             <View style={tw`py-2`}>
               <CCTextInput
                 required
-                label="Video"
+                label="Link"
+                info="Example: https://youtu.be/-GsvRwiAl0Y"
                 error={errors.videoLink}
                 touched={touched.videoLink}
                 onChangeText={handleChange('videoLink')}
                 onBlur={handleBlur('videoLink')}
                 value={values.videoLink}
-                editable={!loading}
+                autoCapitalize="none"
+                editable={!submitting}
               />
             </View>
             <CCButton
               label="Submit"
-              loading={loading}
-              disabled={loading}
+              loading={submitting}
+              disabled={submitting}
               onPress={handleSubmit}
             />
           </>

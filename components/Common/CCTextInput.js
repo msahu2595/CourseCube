@@ -3,7 +3,7 @@ import React, {memo} from 'react';
 import {Text, TextInput, View} from 'react-native';
 
 export const CCTextInput = memo(
-  ({label, required = false, error, touched, ...rest}) => (
+  ({label, info, required = false, error, touched, ...rest}) => (
     <View style={tw`mb-1`}>
       <Text style={tw`text-sm text-gray-600 font-avReg p-1`}>
         {label}
@@ -18,6 +18,9 @@ export const CCTextInput = memo(
         )}
         {...rest}
       />
+      {info ? (
+        <Text style={tw`text-[10px] text-gray-400 font-avReg p-1`}>{info}</Text>
+      ) : null}
       {error && touched ? (
         <Text style={tw`text-sm text-red-600 font-avReg p-1`}>{error}</Text>
       ) : null}
