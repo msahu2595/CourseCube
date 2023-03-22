@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client';
 
 export const EDIT_DOCUMENT = gql`
-  mutation editDocument($documentId: ID!, $documentInput: DocumentEditInput!) {
+  mutation editDocument($documentId: ID!, $documentInput: DocumentInput!) {
     editDocument(documentId: $documentId, documentInput: $documentInput) {
       code
       success

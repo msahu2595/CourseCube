@@ -18,7 +18,7 @@ const AddVideoValidationSchema = yup.object({
 
 const AddVideoModal = ({visible, onClose}) => {
   const [addVideo, {loading: submitting}] = useMutation(ADD_VIDEO, {
-    onCompleted: data => {
+    onCompleted: () => {
       onClose();
       showMessage({
         message: 'Video is successfully added.',
@@ -71,8 +71,9 @@ const AddVideoModal = ({visible, onClose}) => {
                 onChangeText={handleChange('videoLink')}
                 onBlur={handleBlur('videoLink')}
                 value={values.videoLink}
-                autoCapitalize="none"
                 editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
               />
             </View>
             <CCButton

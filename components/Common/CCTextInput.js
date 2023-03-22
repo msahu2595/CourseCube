@@ -10,8 +10,12 @@ export const CCTextInput = memo(
         {required && <Text style={tw`text-red-600`}>*</Text>}
       </Text>
       <TextInput
+        autoCorrect={false}
+        placeholderTextColor={tw.color('gray-400')}
         style={tw.style(
-          'h-10 border border-gray-300 rounded-lg px-2 text-black ',
+          `min-h-${
+            rest?.multiline ? 10 * rest?.numberOfLines : 10
+          } border border-gray-300 rounded-lg px-2 text-black`,
           {
             textAlignVertical: rest?.multiline ? 'top' : 'center',
           },

@@ -9,13 +9,13 @@ import {showMessage} from 'react-native-flash-message';
 import {CCModal, CCButton, CCTextInput} from './Common';
 
 const EditVideoValidationSchema = yup.object({
-  title: yup.string().required('Please enter title.'),
-  thumbnail: yup.string().required('Please enter thumbnail .'),
+  title: yup.string().trim().required('Please enter video title.'),
+  thumbnail: yup.string().url('Thumbnail should be a link.').nullable(),
 });
 
 const EditVideoModal = ({video, onClose}) => {
-  const [editVideo, {loading}] = useMutation(EDIT_VIDEO, {
-    onCompleted: data => {
+  const [editVideo, {loading: submitting}] = useMutation(EDIT_VIDEO, {
+    onCompleted: () => {
       onClose();
       showMessage({
         message: 'Video is successfully edited.',
@@ -24,7 +24,7 @@ const EditVideoModal = ({video, onClose}) => {
     },
     onError: err => {
       showMessage({
-        message: err?.message || 'Some unknown error occurred',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
         type: 'danger',
       });
     },
@@ -32,7 +32,11 @@ const EditVideoModal = ({video, onClose}) => {
   });
 
   return (
-    <CCModal title="Edit video" visible={!!video} onClose={onClose}>
+    <CCModal
+      title="Edit Video"
+      visible={!!video}
+      submitting={submitting}
+      onClose={onClose}>
       <Formik
         initialValues={{
           title: video?.title,
@@ -40,15 +44,11 @@ const EditVideoModal = ({video, onClose}) => {
         }}
         validationSchema={EditVideoValidationSchema}
         onSubmit={values => {
-          editVideo({
-            variables: {
-              videoId: video?._id,
-              videoInput: {
-                title: values.title,
-                thumbnail: values.thumbnail,
-              },
-            },
-          });
+          const videoInput = {title: values.title};
+          if (values.thumbnail) {
+            videoInput.thumbnail = values.thumbnail;
+          }
+          editVideo({variables: {videoId: video?._id, videoInput}});
         }}>
         {({
           handleChange,
@@ -68,23 +68,25 @@ const EditVideoModal = ({video, onClose}) => {
                 onChangeText={handleChange('title')}
                 onBlur={handleBlur('title')}
                 value={values.title}
-                editable={!loading}
+                editable={!submitting}
               />
               <CCTextInput
-                required
                 label="Thumbnail"
                 error={errors.thumbnail}
                 touched={touched.thumbnail}
+                info="Example: https://picsum.photos/195/110"
                 onChangeText={handleChange('thumbnail')}
                 onBlur={handleBlur('thumbnail')}
                 value={values.thumbnail}
-                editable={!loading}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
               />
             </View>
             <CCButton
               label="Submit"
-              loading={loading}
-              disabled={loading}
+              loading={submitting}
+              disabled={submitting}
               onPress={handleSubmit}
             />
           </>

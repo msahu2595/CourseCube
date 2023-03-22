@@ -4,6 +4,7 @@ import {CCButton} from './CCButton';
 import {CCDuration} from './CCDuration';
 import {CCCheckBox} from './CCCheckBox';
 import {CCTextInput} from './CCTextInput';
+import {CCSearchInput} from './CCSearchInput';
 import {CCNavigationButton} from './CCNavigationButton';
 
 export {
@@ -13,5 +14,6 @@ export {
   CCDuration,
   CCCheckBox,
   CCTextInput,
+  CCSearchInput,
   CCNavigationButton,
 };

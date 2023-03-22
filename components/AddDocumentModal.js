@@ -10,16 +10,21 @@ import {CCModal, CCButton, CCTextInput} from './Common';
 
 const AddDocumentsValidationSchema = yup.object({
   title: yup.string().required('Please enter document title.'),
+  thumbnail: yup.string().url('Thumbnail should be a link.').nullable(),
   url: yup
     .string()
-    .url('Invalid video url')
-    .required('Please enter document url.'),
-  pages: yup.number().required('Please enter pages.'),
+    .url('URL is not in the correct format.')
+    .required('Please enter document URL.'),
+  pages: yup
+    .number()
+    .min(1, 'Document pages is too short.')
+    .max(999, 'Document pages is too long.')
+    .required('Please enter document pages.'),
 });
 
 const AddDocumentModal = ({visible, onClose}) => {
-  const [AddDocument, {loading}] = useMutation(ADD_DOCUMENT, {
-    onCompleted: data => {
+  const [addDocument, {loading: submitting}] = useMutation(ADD_DOCUMENT, {
+    onCompleted: () => {
       onClose();
       showMessage({
         message: 'Document is successfully added.',
@@ -28,7 +33,7 @@ const AddDocumentModal = ({visible, onClose}) => {
     },
     onError: err => {
       showMessage({
-        message: err?.message || 'Some unknown error occurred.',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
         type: 'danger',
       });
     },
@@ -36,24 +41,29 @@ const AddDocumentModal = ({visible, onClose}) => {
   });
 
   return (
-    <CCModal title="Create Document" visible={visible} onClose={onClose}>
+    <CCModal
+      title="Add Document"
+      visible={visible}
+      submitting={submitting}
+      onClose={onClose}>
       <Formik
         initialValues={{
           title: '',
+          thumbnail: '',
           url: '',
           pages: '',
         }}
         validationSchema={AddDocumentsValidationSchema}
         onSubmit={values => {
-          AddDocument({
-            variables: {
-              documentInput: {
-                title: values.title,
-                url: values.url,
-                pages: parseInt(values.pages, 10),
-              },
-            },
-          });
+          const documentInput = {
+            title: values.title,
+            url: values.url,
+            pages: parseInt(values.pages, 10),
+          };
+          if (values.thumbnail) {
+            documentInput.thumbnail = values.thumbnail;
+          }
+          addDocument({variables: {documentInput}});
         }}>
         {({
           handleChange,
@@ -73,33 +83,50 @@ const AddDocumentModal = ({visible, onClose}) => {
                 onChangeText={handleChange('title')}
                 onBlur={handleBlur('title')}
                 value={values.title}
-                editable={!loading}
+                editable={!submitting}
+              />
+              <CCTextInput
+                label="Thumbnail"
+                error={errors.thumbnail}
+                touched={touched.thumbnail}
+                info="Example: https://picsum.photos/195/110"
+                onChangeText={handleChange('thumbnail')}
+                onBlur={handleBlur('thumbnail')}
+                value={values.thumbnail}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
               />
               <CCTextInput
                 required
                 label="URL"
                 error={errors.url}
                 touched={touched.url}
+                info="Example: https://www.africau.edu/images/default/sample.pdf"
                 onChangeText={handleChange('url')}
                 onBlur={handleBlur('url')}
                 value={values.url}
-                editable={!loading}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
               />
               <CCTextInput
                 required
                 label="Pages"
                 error={errors.pages}
                 touched={touched.pages}
+                info="Min: 1 Page, Max: 999 Pages."
                 onChangeText={handleChange('pages')}
                 onBlur={handleBlur('pages')}
                 value={values.pages}
-                editable={!loading}
+                editable={!submitting}
+                keyboardType="number-pad"
               />
             </View>
             <CCButton
               label="Submit"
-              loading={loading}
-              disabled={loading}
+              loading={submitting}
+              disabled={submitting}
               onPress={handleSubmit}
             />
           </>
