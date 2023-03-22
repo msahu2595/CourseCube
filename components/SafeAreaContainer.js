@@ -6,11 +6,12 @@ import {FocusAwareStatusBar} from '@components';
 const SafeAreaContainer = ({
   statusBgColor = tw.color('white'),
   statusBarStyle = 'dark-content',
+  containerStyle = {},
+  style = {},
   children,
-  style,
 }) => {
   return (
-    <SafeAreaView style={tw`flex-1 bg-gray-100`}>
+    <SafeAreaView style={tw.style('flex-1 bg-gray-100', containerStyle)}>
       <FocusAwareStatusBar
         backgroundColor={statusBgColor}
         barStyle={statusBarStyle}
