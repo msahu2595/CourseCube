@@ -75,6 +75,7 @@ const SettingsScreen = () => {
       <ScrollView style={tw`bg-white`} contentContainerStyle={tw`p-4`}>
         {menu.map(({name, icon, screen}) => (
           <CCNavigationButton
+            key={name}
             name={name}
             icon={icon}
             disabled={loading}
