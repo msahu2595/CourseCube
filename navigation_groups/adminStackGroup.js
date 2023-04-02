@@ -4,6 +4,7 @@ import {
   AdminHomeScreen,
   AdminArticleListScreen,
   AdminWebsiteListScreen,
+  AdminTestQuestionListScreen,
 } from '@screens';
 import {MediaListTopTabNavigator} from '@navigators';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -45,6 +46,13 @@ const adminStackGroup = () => {
         component={MediaListTopTabNavigator}
         options={{
           headerTitle: 'Media',
+        }}
+      />
+      <Stack.Screen
+        name="AdminTestQuestionListScreen"
+        component={AdminTestQuestionListScreen}
+        options={{
+          headerTitle: 'Test Questions',
         }}
       />
     </Stack.Group>

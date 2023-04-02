@@ -1,11 +1,11 @@
 import {
   AdminHomeScreen,
-  AdminMediaScreen,
   AdminVideoListScreen,
   AdminDocumentListScreen,
   AdminTestListScreen,
   AdminArticleListScreen,
   AdminWebsiteListScreen,
+  AdminTestQuestionListScreen,
 } from './AdminScreens';
 import {
   LoginIntroScreen,
@@ -73,12 +73,12 @@ import {
 
 export {
   AdminHomeScreen,
-  AdminMediaScreen,
   AdminVideoListScreen,
   AdminTestListScreen,
   AdminDocumentListScreen,
   AdminArticleListScreen,
   AdminWebsiteListScreen,
+  AdminTestQuestionListScreen,
   LoginIntroScreen,
   MobileNumberScreen,
   OTPVerifyScreen,

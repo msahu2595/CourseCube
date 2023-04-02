@@ -4,6 +4,7 @@ export * from './ADVERTS';
 export * from './ARTICLE';
 export * from './ANSWERS';
 export * from './CONTENTS';
+export * from './TEST';
 export * from './TESTS';
 export * from './VIDEOS';
 export * from './CONTENT';

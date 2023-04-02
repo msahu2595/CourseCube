@@ -12,7 +12,7 @@ import {showMessage} from 'react-native-flash-message';
 import AddContentModal from 'components/AddContentModal';
 import {View, Alert, FlatList, RefreshControl} from 'react-native';
 
-const AdminTestListScreen = () => {
+const AdminTestListScreen = ({navigation}) => {
   const [search, setSearch] = useState('');
   const [addTestModal, setAddTestModal] = useState(false);
   const [editTestModal, setEditTestModal] = useState(null);
@@ -106,9 +106,12 @@ const AdminTestListScreen = () => {
             onSelect: () => setAddContentModal(item),
           },
           {
-            key: 'Add test question',
-            label: 'Add test question',
-            onSelect: null,
+            key: 'Questions',
+            label: 'Questions',
+            onSelect: () =>
+              navigation.navigate('AdminTestQuestionListScreen', {
+                testId: item._id,
+              }),
           },
           {key: 'Edit', label: 'Edit', onSelect: () => setEditTestModal(item)},
           {
@@ -120,7 +123,7 @@ const AdminTestListScreen = () => {
         ]}
       />
     ),
-    [deleteHandler],
+    [deleteHandler, navigation],
   );
 
   return (
