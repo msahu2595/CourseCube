@@ -149,14 +149,22 @@ const setTokenLink = new ApolloLink((operation, forward) => {
   return forward(operation).map(response => {
     console.log(`====${operation.operationName}=====`);
     if (response?.data && response?.data[operation.operationName]?.token) {
-      if (response?.data[operation.operationName]?.token) {
+      if (
+        response?.data[operation.operationName]?.token &&
+        response?.data[operation.operationName]?.token !==
+          storage.getString('token')
+      ) {
         console.log(
           'Got new token ==> ',
           response?.data[operation.operationName]?.token,
         );
         storage.set('token', response?.data[operation.operationName]?.token);
       }
-      if (response?.data[operation.operationName]?.refresh) {
+      if (
+        response?.data[operation.operationName]?.refresh &&
+        response?.data[operation.operationName]?.refresh !==
+          storage.getString('refresh')
+      ) {
         console.log(
           'Got new refresh ==> ',
           response?.data[operation.operationName]?.refresh,
