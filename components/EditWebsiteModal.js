@@ -10,11 +10,14 @@ import {CCButton, CCModal, CCTextInput} from './Common';
 
 const EditWebsiteValidationSchema = yup.object({
   name: yup.string().required('Please enter website name.'),
-  link: yup.string().url('invalid link').required('Please enter website link.'),
+  link: yup
+    .string()
+    .url('Link is not in the correct format.')
+    .required('Please enter website link.'),
 });
 
 const EditWebsiteModal = ({website, onClose}) => {
-  const [editWebsite, {loading}] = useMutation(EDIT_WEBSITE, {
+  const [editWebsite, {loading: submitting}] = useMutation(EDIT_WEBSITE, {
     onCompleted: () => {
       onClose();
       showMessage({
@@ -24,7 +27,7 @@ const EditWebsiteModal = ({website, onClose}) => {
     },
     onError: err => {
       showMessage({
-        message: err?.message || 'Some unknown error occurred',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
         type: 'danger',
       });
     },
@@ -32,21 +35,22 @@ const EditWebsiteModal = ({website, onClose}) => {
   });
 
   return (
-    <CCModal title="Edit Website" visible={!!website} onClose={onClose}>
+    <CCModal
+      title="Edit Website"
+      visible={!!website}
+      submitting={submitting}
+      onClose={onClose}>
       <Formik
         initialValues={{
           name: website?.name,
           link: website?.link,
         }}
         validationSchema={EditWebsiteValidationSchema}
-        onSubmit={values => {
+        onSubmit={websiteInput => {
           editWebsite({
             variables: {
               websiteId: website?._id,
-              websiteInput: {
-                name: values.name,
-                link: values.link,
-              },
+              websiteInput,
             },
           });
         }}>
@@ -68,23 +72,26 @@ const EditWebsiteModal = ({website, onClose}) => {
                 onChangeText={handleChange('name')}
                 onBlur={handleBlur('name')}
                 value={values.name}
-                editable={!loading}
+                editable={!submitting}
               />
               <CCTextInput
                 required
                 label="Link"
                 error={errors.link}
                 touched={touched.link}
+                info="Example: https://www.google.com/maps"
                 onChangeText={handleChange('link')}
                 onBlur={handleBlur('link')}
                 value={values.link}
-                editable={!loading}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
               />
             </View>
             <CCButton
               label="Submit"
-              loading={loading}
-              disabled={loading}
+              loading={submitting}
+              disabled={submitting}
               onPress={handleSubmit}
             />
           </>

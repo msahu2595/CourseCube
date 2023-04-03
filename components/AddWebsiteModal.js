@@ -8,13 +8,16 @@ import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import {CCButton, CCModal, CCTextInput} from './Common';
 
-const AddSWebsiteValidationSchema = yup.object({
+const AddWebsiteValidationSchema = yup.object({
   name: yup.string().required('Please enter website name.'),
-  link: yup.string().url('invalid link').required('Please enter website link.'),
+  link: yup
+    .string()
+    .url('Link is not in the correct format.')
+    .required('Please enter website link.'),
 });
 
 const AddWebsiteModal = ({visible, onClose}) => {
-  const [addWebsite, {loading}] = useMutation(ADD_WEBSITE, {
+  const [addWebsite, {loading: submitting}] = useMutation(ADD_WEBSITE, {
     onCompleted: () => {
       onClose();
       showMessage({
@@ -24,7 +27,7 @@ const AddWebsiteModal = ({visible, onClose}) => {
     },
     onError: err => {
       showMessage({
-        message: err.message || 'Some unknown error occurred ',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
         type: 'danger',
       });
     },
@@ -32,22 +35,19 @@ const AddWebsiteModal = ({visible, onClose}) => {
   });
 
   return (
-    <CCModal title="Add Website" visible={visible} onClose={onClose}>
+    <CCModal
+      title="Add Website"
+      visible={visible}
+      submitting={submitting}
+      onClose={onClose}>
       <Formik
         initialValues={{
           name: '',
           link: '',
         }}
-        validationSchema={AddSWebsiteValidationSchema}
-        onSubmit={values => {
-          addWebsite({
-            variables: {
-              websiteInput: {
-                name: values.name,
-                link: values.link,
-              },
-            },
-          });
+        validationSchema={AddWebsiteValidationSchema}
+        onSubmit={websiteInput => {
+          addWebsite({variables: {websiteInput}});
         }}>
         {({
           handleChange,
@@ -67,23 +67,26 @@ const AddWebsiteModal = ({visible, onClose}) => {
                 onChangeText={handleChange('name')}
                 onBlur={handleBlur('name')}
                 value={values.name}
-                editable={!loading}
+                editable={!submitting}
               />
               <CCTextInput
                 required
                 label="Link"
                 error={errors.link}
                 touched={touched.link}
+                info="Example: https://www.google.com/maps"
                 onChangeText={handleChange('link')}
                 onBlur={handleBlur('link')}
                 value={values.link}
-                editable={!loading}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
               />
             </View>
             <CCButton
               label="Submit"
-              loading={loading}
-              disabled={loading}
+              loading={submitting}
+              disabled={submitting}
               onPress={handleSubmit}
             />
           </>

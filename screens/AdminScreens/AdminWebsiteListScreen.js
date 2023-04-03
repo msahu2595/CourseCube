@@ -2,31 +2,36 @@ import {
   Text,
   View,
   Alert,
-  Button,
-  Switch,
   Linking,
   FlatList,
-  TextInput,
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
 import {tw} from '@lib';
 import {WEBSITES} from '@queries';
 import {DELETE_WEBSITE} from '@mutations';
+import {CCSearchInput} from 'components/Common';
+import {Fab, SafeAreaContainer} from '@components';
 import React, {useCallback, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import AddWebsiteModal from 'components/AddWebsiteModal';
 import EditWebsiteModal from 'components/EditWebsiteModal';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const AdminWebsiteListScreen = () => {
   const [search, setSearch] = useState('');
-  const [isEnabled, setIsEnabled] = useState(false);
   const [addWebsiteModal, setAddWebsiteModal] = useState(false);
   const [editWebsiteModal, setEditWebsiteModal] = useState(null);
 
-  const {loading, data, refetch, fetchMore} = useQuery(WEBSITES);
+  const {loading, data, refetch, fetchMore} = useQuery(WEBSITES, {
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+  });
 
   const [deleteWebsite] = useMutation(DELETE_WEBSITE, {
     onCompleted: () => {
@@ -37,7 +42,7 @@ const AdminWebsiteListScreen = () => {
     },
     onError: err => {
       showMessage({
-        message: err?.message || 'Some unknown error occurred.',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
         type: 'danger',
       });
     },
@@ -68,34 +73,69 @@ const AdminWebsiteListScreen = () => {
     [deleteWebsite],
   );
 
-  const Item = useCallback(
+  const onChangeSearchText = useCallback(
+    text => {
+      console.log(text);
+      setSearch(text);
+      if (text.length > 2) {
+        refetch({search: text});
+      } else {
+        refetch({search: ''});
+      }
+    },
+    [refetch],
+  );
+
+  const clearSearchText = useCallback(() => {
+    setSearch('');
+    refetch({search: ''});
+  }, [refetch]);
+
+  const _renderItem = useCallback(
     ({item}) => (
-      <View style={tw`p-2 flex-row justify-between `}>
-        <TouchableOpacity
-          onPress={() => {
-            Linking.openURL(item.link);
-          }}>
-          <View style={tw`  h-8 rounded-lg self-start bg-blue-600 ml-5 `}>
-            <Text style={tw`px-2 text-white`}>{item.name}</Text>
-          </View>
-        </TouchableOpacity>
-        <View style={tw`flex-row mx-2  `}>
-          {item.enable && (
-            <Button
-              onPress={() => setEditWebsiteModal(item)}
-              title="Edit"
-              color="#841584"
+      <View style={tw`px-1 flex-row justify-between items-center`}>
+        <View style={tw`flex-1`}>
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={tw`py-1 text-sm capitalize`}>
+            {item.name}
+          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL(item.link);
+            }}
+            style={tw`p-1 flex-row self-start bg-blue-100 items-center rounded`}>
+            <MaterialCommunityIcons
+              name="link-variant"
+              color={tw.color('blue-600')}
+              size={10}
             />
-          )}
-          {item.enable && (
-            <Button
-              title={'Delete'}
-              color="red"
-              onPress={() => {
-                deleteHandler(item._id);
-              }}
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={tw`text-[10px] px-1`}>
+              {item.link}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={tw`flex-row`}>
+          <TouchableOpacity onPress={() => setEditWebsiteModal(item)}>
+            <MaterialCommunityIcons
+              name="square-edit-outline"
+              color={tw.color('blue-600')}
+              size={24}
+              style={tw`px-1`}
             />
-          )}
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => deleteHandler(item._id)}>
+            <MaterialCommunityIcons
+              name="delete"
+              color={tw.color('red-600')}
+              size={24}
+              style={tw`px-1`}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     ),
@@ -103,68 +143,37 @@ const AdminWebsiteListScreen = () => {
   );
 
   return (
-    <>
-      <View style={tw`flex-1 `}>
-        <View style={tw`flex-row items-center m-2`}>
-          <View
-            style={tw`flex-1 flex-row m-2 justify-between rounded-lg px-2 items-center border`}>
-            <TextInput
-              placeholder="Search"
-              onChangeText={text => {
-                setSearch(text);
-                if (text.length > 2) {
-                  refetch({search: text});
-                } else {
-                  refetch({search: ''});
-                }
-              }}
-              value={search}
-            />
-            <TouchableOpacity
-              onPress={() => {
-                setSearch('');
-                refetch({search: ''});
-              }}>
-              <MaterialIcons name="clear" size={20} color={tw.color('black')} />
-            </TouchableOpacity>
-          </View>
-          <Switch
-            trackColor={{false: '#767577', true: '#81b0ff'}}
-            thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={value => {
-              setIsEnabled(value);
-              refetch({filter: {enable: !value}});
-              value = {isEnabled};
-            }}
-          />
-          <TouchableOpacity onPress={() => setAddWebsiteModal(true)}>
-            <MaterialIcons
-              name="add-circle"
-              size={40}
-              color={tw.color('blue-600')}
-            />
-          </TouchableOpacity>
-        </View>
-        <FlatList
-          bounces={true}
-          data={data?.websites?.payload}
-          renderItem={({item}) => <Item item={item} />}
-          ListHeaderComponent={() => <View style={tw`h-2`} />}
-          ListFooterComponent={() => <View style={tw`h-2`} />}
-          onEndReached={() => {
-            fetchMore({
-              variables: {
-                offset: data?.websites?.payload.length,
-                limit: 10,
-              },
-            });
-          }}
-          refreshControl={
-            <RefreshControl refreshing={loading} onRefresh={refetch} />
-          }
-        />
-      </View>
+    <SafeAreaContainer
+      statusBgColor={tw.color('blue-600')}
+      statusBarStyle="dark-content">
+      <CCSearchInput
+        value={search}
+        searching={loading}
+        onChangeText={onChangeSearchText}
+        onClear={clearSearchText}
+      />
+      <FlatList
+        bounces={true}
+        //
+        data={data?.websites?.payload}
+        keyExtractor={item => item._id}
+        renderItem={_renderItem}
+        //
+        contentContainerStyle={tw`px-2`}
+        ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+        //
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={refetch} />
+        }
+        onEndReached={() => {
+          fetchMore({
+            variables: {
+              offset: data?.websites?.payload.length,
+              limit: 10,
+            },
+          });
+        }}
+      />
       <AddWebsiteModal
         visible={addWebsiteModal}
         onClose={() => {
@@ -177,7 +186,12 @@ const AdminWebsiteListScreen = () => {
           setEditWebsiteModal(null);
         }}
       />
-    </>
+      <Fab
+        iconName="plus"
+        bgColor={tw.color('blue-600')}
+        onPress={() => setAddWebsiteModal(true)}
+      />
+    </SafeAreaContainer>
   );
 };
 
