@@ -48,7 +48,10 @@ const AdminHomeScreen = ({navigation}) => {
 
   return (
     <>
-      <SafeAreaContainer style={tw`bg-white p-4`}>
+      <SafeAreaContainer
+        style={tw`bg-white p-4`}
+        statusBarStyle="light-content"
+        statusBgColor={tw.color('blue-600')}>
         <CCNavigationButton
           name="Advert"
           onPress={null}

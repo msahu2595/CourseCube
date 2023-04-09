@@ -98,7 +98,7 @@ const AdminWebsiteListScreen = () => {
           <Text
             numberOfLines={2}
             ellipsizeMode="tail"
-            style={tw`py-1 text-sm capitalize`}>
+            style={tw`py-1 text-sm capitalize text-gray-600`}>
             {item.name}
           </Text>
           <TouchableOpacity
@@ -114,7 +114,7 @@ const AdminWebsiteListScreen = () => {
             <Text
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={tw`text-[10px] px-1`}>
+              style={tw`text-[10px] px-1 text-gray-600`}>
               {item.link}
             </Text>
           </TouchableOpacity>
