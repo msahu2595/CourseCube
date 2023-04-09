@@ -17,13 +17,15 @@ const AddContentValidationSchema = yup.object({
   paid: yup.boolean().required('required'),
   description: yup.string().required('required'),
   highlight: yup.string().nullable(),
+  price: yup.number().nullable(),
+  offer: yup.number().nullable(),
+  offerType: yup.string().oneOf(['AMOUNT', 'PERCENT']).nullable(),
   language: yup.string().oneOf(['HI', 'EN']).required('required'),
 });
 
 const EditContentModal = ({content, onClose}) => {
   const [EditContent, {loading}] = useMutation(EDIT_CONTENT, {
     onCompleted: data => {
-      console.log(data);
       onClose();
       showMessage({
         message: 'Your content Successfully Added.',
@@ -31,19 +33,17 @@ const EditContentModal = ({content, onClose}) => {
       });
     },
     onError: err => {
-      console.log(err);
       showMessage({
-        message: 'We have got some error. Please try again!',
+        message: err?.message || 'Some unknown error occurred.',
         type: 'danger',
       });
     },
     refetchQueries: ['AddContent'],
   });
 
-  console.log(content, 'hello');
   return (
     <CCModal title="Add Content" visible={!!content} onClose={onClose}>
-      <View style={tw.style(` rounded-lg bg-gray-200 `)}>
+      <View style={tw.style(' rounded-lg bg-gray-200 ')}>
         <ImageBackground
           source={{
             uri: content?.thumbnail,
@@ -78,6 +78,9 @@ const EditContentModal = ({content, onClose}) => {
           highlight: content?.highlight,
           media: content?._id,
           paid: false,
+          price: content?.price,
+          offer: content?.offer,
+          offerType: content?.offerType,
           language: 'HI',
         }}
         validationSchema={AddContentValidationSchema}
@@ -93,6 +96,9 @@ const EditContentModal = ({content, onClose}) => {
                 media: values.media,
                 type: values.type,
                 paid: values.paid,
+                price: parseInt(values.price, 10),
+                offer: parseInt(values.offer, 10),
+                offerType: values.offerType,
                 highlight: values.highlight,
                 description: values.description,
                 language: values.language,
@@ -166,19 +172,61 @@ const EditContentModal = ({content, onClose}) => {
               <CCRadio
                 required
                 label="Language"
-                error={errors.language}
-                touched={touched.language}
+                onPress={handleChange('language')}
+                value={values.language}
                 radio_props={[
-                  {label: 'Hindi   ', value: 'HI'},
+                  {label: 'Hindi', value: 'HI'},
                   {label: 'English', value: 'EN'},
                 ]}
-                value={values.language}
-                onPress={handleChange('language')}
               />
 
+              <CCRadio
+                required
+                label="Course"
+                onPress={value => {
+                  setFieldValue('paid', value);
+                }}
+                radio_props={[
+                  {label: 'Free', value: false},
+                  {label: 'Paid', value: true},
+                ]}
+                value={values.paid}
+              />
+
+              {values.paid ? (
+                <>
+                  <CCTextInput
+                    label="Price"
+                    error={errors.price}
+                    touched={touched.price}
+                    onChangeText={handleChange('price')}
+                    onBlur={handleBlur('price')}
+                    value={values.price}
+                    editable={!loading}
+                  />
+                  <CCTextInput
+                    label="Offer"
+                    error={errors.offer}
+                    touched={touched.offer}
+                    onChangeText={handleChange('offer')}
+                    onBlur={handleBlur('offer')}
+                    value={values.offer}
+                    editable={!loading}
+                  />
+                  <CCRadio
+                    required
+                    label="Offer Type"
+                    onPress={handleChange('offerType')}
+                    value={values.offerType}
+                    radio_props={[
+                      {label: 'Amount', value: 'AMOUNT'},
+                      {label: 'Percent', value: 'PERCENT'},
+                    ]}
+                  />
+                </>
+              ) : null}
               <Button
                 onPress={() => {
-                  console.log('handleSubmit', values);
                   handleSubmit();
                 }}
                 title="Submit"
