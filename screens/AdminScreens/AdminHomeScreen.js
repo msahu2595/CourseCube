@@ -72,7 +72,7 @@ const AdminHomeScreen = ({navigation}) => {
         />
         <CCNavigationButton
           name="Headlines"
-          onPress={null}
+          onPress={() => navigation.navigate('AdminHeadlineListScreen')}
           icon="file-text"
           disabled={loading}
         />

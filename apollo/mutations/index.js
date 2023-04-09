@@ -10,10 +10,11 @@ export * from './LOGOUT';
 export * from './CREATE_ANSWER';
 export * from './CREATE_QUESTION';
 //
-export * from './CREATE_HEADLINE';
-export * from './DELETE_HEADLINE';
-//
 export * from './ADD_CONTENT';
+//
+export * from './CREATE_HEADLINE';
+export * from './EDIT_HEADLINE';
+export * from './DELETE_HEADLINE';
 //
 export * from './CREATE_ARTICLE';
 export * from './EDIT_ARTICLE';

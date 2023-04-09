@@ -19,7 +19,7 @@ const statistics = [
     icon: 'pdffile1',
     value: 'documents',
     type: 'Read',
-    screen: 'AdminHeadlineListScreen',
+    screen: '',
   },
   {name: "Test's", icon: 'form', value: 'tests', type: 'Attempted', screen: ''},
   {
@@ -61,7 +61,7 @@ const UserStatistics = () => {
         {statistics.map(({name, icon, value, type, screen}) => {
           return (
             <TouchableOpacity
-              onPress={() => handleMenuPress(screen)}
+              onPress={() => (screen ? handleMenuPress(screen) : null)}
               key={icon}
               style={tw.style(
                 'mb-2',

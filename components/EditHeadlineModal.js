@@ -1,52 +1,51 @@
 import React from 'react';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import {Formik} from 'formik';
 import tw from '@lib/tailwind';
-import {CCButton, CCModal, CCTextInput} from './Common';
+import {View} from 'react-native';
+import {EDIT_HEADLINE} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {EDIT_HEADLINE} from 'apollo/mutations/EDIT_HEADLINE';
-import {ActivityIndicator, View} from 'react-native';
+import {CCButton, CCModal, CCTextInput} from './Common';
 
-const ValidationSchema = Yup.object().shape({
-  description: Yup.string().required('description is required'),
-  image: Yup.string().url('invalid image URL').nullable(),
-  link: Yup.string().url('invalid link').nullable(),
+const EditHeadlineValidationSchema = yup.object().shape({
+  image: yup.string().url('Image should be a link.').nullable(),
+  description: yup.string().required('Please enter headline description.'),
+  link: yup.string().url('Link is not in the correct format.').nullable(),
 });
 
 const EditHeadlineModal = ({headline, onClose}) => {
-  const [editHeadline, {loading: mutationLoading}] = useMutation(
-    EDIT_HEADLINE,
-    {
-      onCompleted: data => {
-        console.log('onCompleted', data);
-        onClose();
-        showMessage({
-          message: 'Headline Edited Successfully.',
-          type: 'success',
-        });
-      },
-      onError: error => {
-        console.log('onError', error.message);
-        showMessage({
-          message: 'Error.',
-          type: 'error',
-        });
-      },
-      refetchQueries: ['headlines'],
+  const [editHeadline, {loading: submitting}] = useMutation(EDIT_HEADLINE, {
+    onCompleted: () => {
+      onClose();
+      showMessage({
+        message: 'Headline is successfully edited.',
+        type: 'success',
+      });
     },
-  );
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+    refetchQueries: ['headlines'],
+  });
+
   return (
-    <CCModal title="Edit Headline" visible={!!headline} onClose={onClose}>
+    <CCModal
+      title="Edit Headline"
+      visible={!!headline}
+      submitting={submitting}
+      onClose={onClose}>
       <Formik
         initialValues={{
-          description: headline?.description,
           image: headline?.image,
+          description: headline?.description,
           link: headline?.link,
         }}
-        validationSchema={ValidationSchema}
+        validationSchema={EditHeadlineValidationSchema}
         onSubmit={values => {
-          console.log('formik Submit', values);
           const headlineInput = {description: values.description};
           if (values.image) {
             headlineInput.image = values.image;
@@ -54,7 +53,7 @@ const EditHeadlineModal = ({headline, onClose}) => {
           if (values.link) {
             headlineInput.link = values.link;
           }
-          editHeadline({variables: {headlineInput, headlineId: headline._id}});
+          editHeadline({variables: {headlineId: headline._id, headlineInput}});
         }}>
         {({
           handleChange,
@@ -65,50 +64,50 @@ const EditHeadlineModal = ({headline, onClose}) => {
           touched,
         }) => (
           <>
-            <CCTextInput
-              required
-              label="description"
-              errors={errors}
-              touched={touched}
-              editable={!mutationLoading}
-              placeholder="Enter description"
-              onChangeText={handleChange('description')}
-              value={values.description}
-              onBlur={handleBlur('description')}
-            />
-            <CCTextInput
-              label="Image Link"
-              errors={errors}
-              touched={touched}
-              editable={!mutationLoading}
-              placeholder="Enter image link"
-              onChangeText={handleChange('image')}
-              value={values.image}
-              onBlur={handleBlur('image')}
-            />
-            <CCTextInput
-              label="Reference Link"
-              errors={errors}
-              touched={touched}
-              editable={!mutationLoading}
-              placeholder="Enter Reference link"
-              onChangeText={handleChange('link')}
-              value={values.link}
-              onBlur={handleBlur('link')}
-            />
-            <View style={tw`m-3 shadow-sm pt-4`}>
-              <CCButton
-                label="Submit"
-                disabled={mutationLoading}
-                onPress={() => {
-                  console.log('onpress', values);
-                  handleSubmit();
-                }}
+            <View style={tw`py-2`}>
+              <CCTextInput
+                label="Image"
+                error={errors.image}
+                touched={touched.image}
+                info="Example: https://picsum.photos/64/64"
+                onChangeText={handleChange('image')}
+                onBlur={handleBlur('image')}
+                value={values.image}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
               />
-              {mutationLoading && (
-                <ActivityIndicator animating={true} size="small" />
-              )}
+              <CCTextInput
+                required
+                label="Description"
+                error={errors.description}
+                touched={touched.description}
+                onChangeText={handleChange('description')}
+                onBlur={handleBlur('description')}
+                value={values.description}
+                editable={!submitting}
+                multiline={true}
+                numberOfLines={4}
+              />
+              <CCTextInput
+                label="Link"
+                error={errors.link}
+                touched={touched.link}
+                info="Example: https://indianexpress.com/latest-news/"
+                onChangeText={handleChange('link')}
+                onBlur={handleBlur('link')}
+                value={values.link}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
+              />
             </View>
+            <CCButton
+              label="Submit"
+              loading={submitting}
+              disabled={submitting}
+              onPress={handleSubmit}
+            />
           </>
         )}
       </Formik>

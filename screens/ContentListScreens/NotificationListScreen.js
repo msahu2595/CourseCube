@@ -30,10 +30,8 @@ const NotificationListScreen = () => {
           data={queryData?.headlines?.payload || []}
           renderItem={renderItem}
           keyExtractor={item => item._id}
-          // contentContainerStyle={tw`bg-white`}
-          // ItemSeparatorComponent={() => <View style={tw`h-3`} />}
-          ListHeaderComponent={() => <View style={tw`h-2`} />}
-          ListFooterComponent={() => <View style={tw`h-2`} />}
+          contentContainerStyle={tw`py-2`}
+          ItemSeparatorComponent={() => <View style={tw`h-2`} />}
         />
       </LinearGradient>
     </SafeAreaContainer>
