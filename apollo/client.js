@@ -1,23 +1,21 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {from, ApolloClient, createHttpLink, ApolloLink} from '@apollo/client';
 import {InMemoryCache, makeVar, gql} from '@apollo/client';
 import {setContext} from '@apollo/client/link/context';
 import {onError} from '@apollo/client/link/error';
+import {MMKV} from 'react-native-mmkv';
+
+export const storage = new MMKV();
 
 export const typeDefs = gql`
   extend type Query {
-    isLoggedIn: Boolean!
     me: User
     cartItems: [ID!]!
   }
 `;
 
-// Initializes to true if localStorage includes a 'token' key,
-// false otherwise
-export const isLoggedInVar = makeVar(!!AsyncStorage.getItem('token'));
-
 // Initializes logged in user
-export const loggedUserVar = makeVar(null);
+const user = storage.getString('user');
+export const loggedUserVar = makeVar(user ? JSON.parse(user) : null);
 
 // Initializes to an empty array
 export const cartItemsVar = makeVar([]);
@@ -26,9 +24,54 @@ export const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
-        isLoggedIn: {
-          read() {
-            return isLoggedInVar();
+        videos: {
+          keyArgs: false,
+          merge(existing = {payload: []}, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+              payload: [...existing.payload, ...incoming.payload],
+            };
+          },
+        },
+        tests: {
+          keyArgs: false,
+          merge(existing = {payload: []}, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+              payload: [...existing.payload, ...incoming.payload],
+            };
+          },
+        },
+        documents: {
+          keyArgs: false,
+          merge(existing = {payload: []}, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+              payload: [...existing.payload, ...incoming.payload],
+            };
+          },
+        },
+        articles: {
+          keyArgs: false,
+          merge(existing = {payload: []}, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+              payload: [...existing.payload, ...incoming.payload],
+            };
+          },
+        },
+        websites: {
+          keyArgs: false,
+          merge(existing = {payload: []}, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+              payload: [...existing.payload, ...incoming.payload],
+            };
           },
         },
         me: {
@@ -47,18 +90,16 @@ export const cache = new InMemoryCache({
 });
 
 const authLink = setContext((_, {headers}) => {
-  return AsyncStorage.multiGet(['token', 'refresh']).then(res => {
-    if (res[0][1]) {
-      return {
-        headers: {
-          ...headers,
-          authorization: `Bearer ${res[0][1]}`,
-          'refresh-token': res[1][1],
-        },
-      };
-    }
-    return {headers};
-  });
+  if (storage.getString('token')) {
+    return {
+      headers: {
+        ...headers,
+        authorization: `Bearer ${storage.getString('token')}`,
+        'refresh-token': storage.getString('refresh'),
+      },
+    };
+  }
+  return {headers};
 });
 
 export const errorLink = onError(error => {
@@ -70,6 +111,11 @@ export const errorLink = onError(error => {
         ? graphQLErrors[0].message
         : 'Something Went Wrong';
     console.log({message});
+    if (message === 'Context creation failed: Refresh token expired.') {
+      storage.clearAll();
+      loggedUserVar(null);
+      console.log('Logout as refresh token expired.');
+    }
     return;
   }
   if (networkError) {
@@ -77,7 +123,6 @@ export const errorLink = onError(error => {
       const unAuthenticate = networkError?.result?.errors.find(
         er => er.extensions.code === 'UNAUTHENTICATED',
       );
-
       if (unAuthenticate) {
         console.log('unAuthenticate', unAuthenticate);
       }
@@ -100,32 +145,34 @@ const httpLink = createHttpLink({
   uri: 'https://course-cube-server-python-env.onrender.com/',
 });
 
-async function singleSet(name, token) {
-  try {
-    await AsyncStorage.setItem(name, token);
-    console.log('SingleSet done.');
-  } catch (e) {
-    console.log(e);
-  }
-}
-
 const setTokenLink = new ApolloLink((operation, forward) => {
   return forward(operation).map(response => {
     console.log(`====${operation.operationName}=====`);
     if (response?.data && response?.data[operation.operationName]?.token) {
-      if (response?.data[operation.operationName]?.token) {
+      if (
+        response?.data[operation.operationName]?.token &&
+        response?.data[operation.operationName]?.token !==
+          storage.getString('token')
+      ) {
         console.log(
           'Got new token ==> ',
           response?.data[operation.operationName]?.token,
         );
-        singleSet('token', response?.data[operation.operationName]?.token);
+        storage.set('token', response?.data[operation.operationName]?.token);
       }
-      if (response?.data[operation.operationName]?.refresh) {
+      if (
+        response?.data[operation.operationName]?.refresh &&
+        response?.data[operation.operationName]?.refresh !==
+          storage.getString('refresh')
+      ) {
         console.log(
           'Got new refresh ==> ',
           response?.data[operation.operationName]?.refresh,
         );
-        singleSet('refresh', response?.data[operation.operationName]?.refresh);
+        storage.set(
+          'refresh',
+          response?.data[operation.operationName]?.refresh,
+        );
       }
     }
     console.log(`====${operation.operationName}=====`);

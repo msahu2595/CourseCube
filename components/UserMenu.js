@@ -1,10 +1,8 @@
-import React, {useCallback} from 'react';
 import tw from '@lib/tailwind';
-// import {gql, useQuery, useReactiveVar} from '@apollo/client';
-import {Text, View, TouchableOpacity} from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
+import React, {useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
-// import {loggedUserVar} from 'apollo/client';
+import Feather from 'react-native-vector-icons/Feather';
+import {Text, View, TouchableOpacity} from 'react-native';
 
 const menu = [
   {name: 'My Courses', icon: 'book-open', screen: ''},
@@ -15,19 +13,7 @@ const menu = [
   {name: 'Help & Support', icon: 'headphones', screen: ''},
 ];
 
-// const IS_LOGGED_IN = gql`
-//   query IsUserLoggedIn {
-//     me @client
-//   }
-// `;
-
 const UserMenu = () => {
-  // const {data} = useQuery(IS_LOGGED_IN);
-
-  // const me = useReactiveVar(loggedUserVar);
-
-  // console.log({data, me});
-
   const navigation = useNavigation();
 
   const handleMenuPress = useCallback(

@@ -43,6 +43,14 @@ const UserStatistics = () => {
     },
     [navigation],
   );
+
+  const payload = data?.statistics?.payload || {
+    videos: 0,
+    tests: 0,
+    documents: 0,
+    questions: 0,
+  };
+
   return (
     <View style={tw`py-4 bg-white`}>
       <View style={tw`flex-row justify-between items-center px-4 bg-white`}>
@@ -53,7 +61,7 @@ const UserStatistics = () => {
         {statistics.map(({name, icon, value, type, screen}) => {
           return (
             <TouchableOpacity
-              onPress={() => handleMenuPress(screen)}
+              onPress={() => (screen ? handleMenuPress(screen) : null)}
               key={icon}
               style={tw.style(
                 'mb-2',
@@ -71,18 +79,17 @@ const UserStatistics = () => {
                 <Text style={tw`pl-2 font-avSemi text-black`}>{name}</Text>
               </View>
               <View
-                style={tw`justify-center items-center pl-2 border-l border-gray-300`}>
-                {data && (
-                  <Text style={tw`font-avSemi text-base text-blue-600`}>
-                    {data?.statistics?.payload[value]}
-                  </Text>
-                )}
-                {loading && (
+                style={tw`h-8 justify-between items-center pl-2 border-l border-gray-300`}>
+                {loading ? (
                   <ActivityIndicator
                     size="small"
                     color={tw.color('blue-600')}
                     style={tw`py-1`}
                   />
+                ) : (
+                  <Text style={tw`flex-1 font-avSemi text-base text-blue-600`}>
+                    {payload[value]}
+                  </Text>
                 )}
                 <Text
                   style={tw.style('font-avSemi', 'text-black', {

@@ -18,12 +18,12 @@ const CurrentAffairBar = props => {
   }, [navigation]);
 
   const renderItem = useCallback(
-    ({item, index}) => <CurrentAffairItem index={index} {...item} />,
+    ({item}) => <CurrentAffairItem {...item} />,
     [],
   );
 
   return (
-    <View style={tw`py-4 bg-white`}>
+    <View style={tw`pt-4 pb-2 bg-white`}>
       <View style={tw`flex-row justify-between items-center px-4 bg-white`}>
         <Text style={tw`font-avSemi text-base text-gray-600`}>
           {props.title}

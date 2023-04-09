@@ -7,11 +7,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {isLoggedInVar, loggedUserVar} from 'apollo/client';
+import {LoadingIndicator, SafeAreaContainer} from '@components';
 import messaging from '@react-native-firebase/messaging';
+import {loggedUserVar, storage} from 'apollo/client';
 import auth from '@react-native-firebase/auth';
-import {LoadingIndicator} from '@components';
 import {useMutation} from '@apollo/client';
 import {GOOGLE_LOG_IN} from '@mutations';
 import tw from '@lib/tailwind';
@@ -21,7 +20,20 @@ GoogleSignin.configure({
     '712761607011-pen5ucovsnc3pm7uf6hgic9k63s3bq6a.apps.googleusercontent.com',
 });
 
-const LoginIntroScreen = ({navigation}) => {
+const LoginIntroScreen = () => {
+  const [googleLogIn, {loading}] = useMutation(GOOGLE_LOG_IN, {
+    onCompleted: data => {
+      storage.set('user', JSON.stringify(data?.googleLogIn?.payload));
+      loggedUserVar(data?.googleLogIn?.payload);
+    },
+    onError: err => {
+      console.log(err);
+      auth()
+        .signOut()
+        .then(() => console.log('User signed out!'));
+    },
+  });
+
   const signIn = async () => {
     try {
       const FCMToken =
@@ -39,23 +51,12 @@ const LoginIntroScreen = ({navigation}) => {
     }
   };
 
-  const [googleLogIn, {loading}] = useMutation(GOOGLE_LOG_IN, {
-    onCompleted: data => {
-      const {payload} = data?.googleLogIn;
-      loggedUserVar(payload);
-      isLoggedInVar(true);
-    },
-    onError: err => {
-      console.log(err);
-      auth()
-        .signOut()
-        .then(() => console.log('User signed out!'));
-    },
-  });
-
   return (
     <>
-      <SafeAreaView style={tw`flex-1`}>
+      <SafeAreaContainer
+        statusBgColor="#1A368D"
+        statusBarStyle="dark-content"
+        containerStyle={tw`bg-[#1A368D]`}>
         <StatusBar backgroundColor="#1b368d" />
         <ImageBackground
           source={require('@images/LoginBackground.png')}
@@ -79,7 +80,7 @@ const LoginIntroScreen = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </ImageBackground>
-      </SafeAreaView>
+      </SafeAreaContainer>
       <LoadingIndicator loading={loading} />
     </>
   );

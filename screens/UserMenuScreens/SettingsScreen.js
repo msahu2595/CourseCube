@@ -1,13 +1,13 @@
 import {tw} from '@lib';
 import {LOGOUT} from '@mutations';
 import React, {useCallback} from 'react';
-import {useMutation} from '@apollo/client';
 import {SafeAreaContainer} from '@components';
 import auth from '@react-native-firebase/auth';
+import {CCNavigationButton} from 'components/Common';
+import {loggedUserVar, storage} from 'apollo/client';
+import {Alert, ScrollView, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import Feather from 'react-native-vector-icons/Feather';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert, ScrollView, Text, TouchableOpacity} from 'react-native';
+import {useMutation, useReactiveVar} from '@apollo/client';
 
 const menu = [
   {name: 'Privacy Policy', icon: 'lock', screen: 'PrivacyPolicyScreen'},
@@ -22,6 +22,7 @@ const menu = [
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
+  const loggedUser = useReactiveVar(loggedUserVar);
 
   const [logout, {loading}] = useMutation(LOGOUT, {
     onCompleted: data => {
@@ -30,7 +31,8 @@ const SettingsScreen = () => {
         .signOut()
         .then(() => {
           console.log('User signed out!');
-          AsyncStorage.multiRemove(['token', 'refresh']);
+          storage.clearAll();
+          loggedUserVar(null);
         });
     },
     onError: err => {
@@ -39,7 +41,8 @@ const SettingsScreen = () => {
         .signOut()
         .then(() => {
           console.log('User signed out!');
-          AsyncStorage.multiRemove(['token', 'refresh']);
+          storage.clearAll();
+          loggedUserVar(null);
         });
     },
   });
@@ -70,31 +73,23 @@ const SettingsScreen = () => {
       statusBgColor={tw.color('blue-600')}
       statusBarStyle="light-content">
       <ScrollView style={tw`bg-white`} contentContainerStyle={tw`p-4`}>
-        {menu.map(({name, icon, screen}) => {
-          return (
-            <TouchableOpacity
-              disabled={loading}
-              onPress={() => handleMenuPress(screen)}
-              key={icon}
-              style={tw.style(
-                'mb-4',
-                'p-4',
-                'flex-row',
-                'items-center',
-                'bg-blue-50',
-                'rounded-lg',
-                'shadow-sm',
-              )}>
-              <Feather name={icon} color={tw.color('blue-600')} size={16} />
-              <Text style={tw`flex-1 px-4 font-avSemi text-black`}>{name}</Text>
-              <Feather
-                name="chevron-right"
-                color={tw.color('blue-600')}
-                size={16}
-              />
-            </TouchableOpacity>
-          );
-        })}
+        {menu.map(({name, icon, screen}) => (
+          <CCNavigationButton
+            key={name}
+            name={name}
+            icon={icon}
+            disabled={loading}
+            onPress={() => handleMenuPress(screen)}
+          />
+        ))}
+        {loggedUser?.role === 'ADMIN' && (
+          <CCNavigationButton
+            name="Login as a Admin"
+            icon="repeat"
+            disabled={loading}
+            onPress={() => handleMenuPress('AdminHomeScreen')}
+          />
+        )}
         <Text style={tw`text-xs text-center font-avReg text-gray-500`}>
           App Version 1.0.0
         </Text>

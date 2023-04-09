@@ -10,7 +10,7 @@ const CurrentAffairListScreen = () => {
   const {loading: queryLoading, data: queryData} = useQuery(ARTICLES);
 
   const renderItem = useCallback(
-    ({item, index}) => <CurrentAffairItem index={index} {...item} />,
+    ({item}) => <CurrentAffairItem {...item} />,
     [],
   );
 
@@ -30,10 +30,8 @@ const CurrentAffairListScreen = () => {
           data={queryData?.articles?.payload || []}
           renderItem={renderItem}
           keyExtractor={item => item._id}
-          // contentContainerStyle={tw`bg-white`}
-          // ItemSeparatorComponent={() => <View style={tw`h-3`} />}
-          ListHeaderComponent={() => <View style={tw`h-2`} />}
-          ListFooterComponent={() => <View style={tw`h-2`} />}
+          contentContainerStyle={tw`py-2`}
+          ItemSeparatorComponent={() => <View style={tw`h-2`} />}
         />
       </LinearGradient>
     </SafeAreaContainer>

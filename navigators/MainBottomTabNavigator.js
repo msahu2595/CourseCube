@@ -13,6 +13,7 @@ const MainBottomTabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: true,
+        headerTitleAlign: 'left',
         headerShadowVisible: true,
       }}>
       <Tab.Screen

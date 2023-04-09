@@ -4,19 +4,9 @@ import {useNavigation} from '@react-navigation/core';
 import Feather from 'react-native-vector-icons/Feather';
 import {View, Image, Text, TouchableOpacity} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-// For development
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserInfo = ({edit}) => {
   const navigation = useNavigation();
-
-  // For development
-  const printTokens = () => {
-    AsyncStorage.multiGet(['token', 'refresh']).then(res => {
-      console.log({res});
-    });
-  };
-
   return (
     <View style={tw`p-4 bg-white`}>
       <View style={tw`flex-row justify-between items-center`}>
@@ -64,7 +54,6 @@ const UserInfo = ({edit}) => {
       </View>
       <View style={tw`mt-4 flex-row items-center justify-center`}>
         <TouchableOpacity
-          onPress={printTokens}
           style={tw`p-2 flex-1 flex-row items-center justify-center bg-blue-600 rounded shadow`}>
           <Feather
             name={edit ? 'edit' : 'user-plus'}
