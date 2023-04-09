@@ -8,6 +8,8 @@ import {MenuProvider} from 'react-native-popup-menu';
 import FlashMessage from 'react-native-flash-message';
 import {NavigationContainer} from '@react-navigation/native';
 import MainNativeStackNavigator from '@navigators';
+import {NetworkStatusProvider} from '@components';
+import navigatorRef from 'navigatorRef';
 import client from './apollo/client';
 import {linking} from '@lib';
 
@@ -15,9 +17,10 @@ const App = () => {
   return (
     <MenuProvider>
       <SafeAreaProvider>
-        <NavigationContainer linking={linking}>
+        <NavigationContainer ref={navigatorRef} linking={linking}>
           <ApolloProvider client={client}>
             <MainNativeStackNavigator />
+            <NetworkStatusProvider />
           </ApolloProvider>
         </NavigationContainer>
         <SafeAreaFlashMessage position="top" />

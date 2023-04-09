@@ -1,3 +1,4 @@
+import adminStackGroup from './adminStackGroup';
 import authStackGroup from './authStackGroup';
 import tabStackGroup from './tabStackGroup';
 import homeStackGroup from './homeStackGroup';
@@ -9,6 +10,7 @@ import userMenuStackGroup from './userMenuStackGroup';
 import settingStackGroup from './settingStackGroup';
 
 export {
+  adminStackGroup,
   authStackGroup,
   tabStackGroup,
   homeStackGroup,

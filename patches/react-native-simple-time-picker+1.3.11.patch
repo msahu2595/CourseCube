@@ -1,0 +1,27 @@
+diff --git a/node_modules/react-native-simple-time-picker/lib/TimePicker.d.ts b/node_modules/react-native-simple-time-picker/lib/TimePicker.d.ts
+index 714fbd8..355aa38 100644
+--- a/node_modules/react-native-simple-time-picker/lib/TimePicker.d.ts
++++ b/node_modules/react-native-simple-time-picker/lib/TimePicker.d.ts
+@@ -24,5 +24,6 @@ export interface TimePickerProps extends PickerProps {
+         am: string;
+         pm: string;
+     };
++    maxHours?: number;
+ }
+-export declare function TimePicker({ defaultValue, value, onChange, hoursUnit, minutesUnit, secondsUnit, zeroPadding, textColor, hoursInterval, minutesInterval, secondsInterval, pickerShows, emptyLabel, isAmpm, ampmLocalization, ...others }: TimePickerProps): JSX.Element;
++export declare function TimePicker({ defaultValue, value, onChange, hoursUnit, minutesUnit, secondsUnit, zeroPadding, textColor, hoursInterval, minutesInterval, secondsInterval, pickerShows, emptyLabel, isAmpm, ampmLocalization, maxHours, ...others }: TimePickerProps): JSX.Element;
+diff --git a/node_modules/react-native-simple-time-picker/lib/TimePicker.js b/node_modules/react-native-simple-time-picker/lib/TimePicker.js
+index 2b17174..052c9f5 100644
+--- a/node_modules/react-native-simple-time-picker/lib/TimePicker.js
++++ b/node_modules/react-native-simple-time-picker/lib/TimePicker.js
+@@ -42,8 +42,8 @@ function TimePicker(_a) {
+     var { defaultValue, value, onChange = () => { }, hoursUnit, minutesUnit, secondsUnit, zeroPadding = false, textColor = '', hoursInterval = 1, minutesInterval = 1, secondsInterval = 1, pickerShows = ['hours', 'minutes'], emptyLabel, isAmpm, ampmLocalization = {
+         am: 'am',
+         pm: 'pm',
+-    } } = _a, others = __rest(_a, ["defaultValue", "value", "onChange", "hoursUnit", "minutesUnit", "secondsUnit", "zeroPadding", "textColor", "hoursInterval", "minutesInterval", "secondsInterval", "pickerShows", "emptyLabel", "isAmpm", "ampmLocalization"]);
+-    let MAX_HOURS = 23;
++    }, maxHours } = _a, others = __rest(_a, ["defaultValue", "value", "onChange", "hoursUnit", "minutesUnit", "secondsUnit", "zeroPadding", "textColor", "hoursInterval", "minutesInterval", "secondsInterval", "pickerShows", "emptyLabel", "isAmpm", "ampmLocalization", "maxHours"]);
++    let MAX_HOURS = maxHours ?? 23;
+     let MIN_HOURS = 0;
+     if (isAmpm) {
+         MAX_HOURS = 12;
