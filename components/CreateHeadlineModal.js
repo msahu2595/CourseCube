@@ -19,7 +19,7 @@ const CreateHeadlineModal = ({visible, onClose}) => {
     onCompleted: () => {
       onClose();
       showMessage({
-        message: 'Headline is successfully added.',
+        message: 'Headline is successfully created.',
         type: 'success',
       });
     },

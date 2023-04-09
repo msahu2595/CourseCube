@@ -34,7 +34,7 @@ const AdminHeadlineListScreen = () => {
   const [deleteHeadline] = useMutation(DELETE_HEADLINE, {
     onCompleted: () => {
       showMessage({
-        message: 'Your headline successfully deleted.',
+        message: 'Headline is successfully deleted.',
         type: 'success',
       });
     },

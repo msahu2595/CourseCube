@@ -5,6 +5,7 @@ import {
   Button,
   FlatList,
   Pressable,
+  RefreshControl,
   Switch,
   Text,
   TouchableOpacity,
@@ -15,30 +16,34 @@ import React, {useCallback, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import EditAdvertModal from 'components/EditAdvertModal';
-import {AdvertItem, SafeAreaContainer} from '@components';
+import {AdvertItem, Fab, SafeAreaContainer, TagItem} from '@components';
 import CreateAdvertModal from 'components/CreateAdvertModal';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-const Separator = () => <View style={tw`h-2`} />;
 
 const AdminAdvertListScreen = () => {
-  const [createModalVisible, setCreateModalVisible] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [advertType, setAdvertType] = useState('ALL');
   const [editAdvertModal, setEditAdvertModal] = useState(null);
-  const {loading, error, data, refetch, fetchMore} = useQuery(ADVERTS);
+  const [createAdvertModal, setCreateAdvertModal] = useState(false);
+
+  const {loading, data, refetch, fetchMore} = useQuery(ADVERTS, {
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+  });
 
   const [deleteAdvert] = useMutation(DELETE_ADVERT, {
     onCompleted: () => {
       showMessage({
-        message: 'Advertisement successfully deleted',
+        message: 'Advertisement is successfully deleted.',
         type: 'success',
       });
     },
-    onError: error => {
-      console.log('onError', error.message);
+    onError: err => {
       showMessage({
-        message: 'Not able to delete',
-        type: 'error',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
       });
     },
     refetchQueries: ['adverts'],
@@ -48,137 +53,126 @@ const AdminAdvertListScreen = () => {
     advertId =>
       Alert.alert(
         'Delete Advertisement',
-        'Are you sure want to delete advertisement',
+        'Are you sure, you want to delete this advertisement?',
         [
           {
-            text: 'cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {
-            text: 'OK',
-            onPress: () =>
+            text: 'Yes',
+            onPress: () => {
               deleteAdvert({
                 variables: {advertId},
-              }),
+              });
+            },
+            style: 'destructive',
+          },
+          {
+            text: 'No',
+            style: 'cancel',
           },
         ],
       ),
     [deleteAdvert],
   );
 
-  const renderItem = useCallback(
-    ({item, index}) => {
+  const _renderTagItem = useCallback(
+    ({item}) => (
+      <TagItem
+        name={item}
+        selected={advertType}
+        onPress={name => {
+          console.log(name);
+          setAdvertType(name);
+          if (name === 'ALL') {
+            refetch({filter: {}});
+          } else {
+            refetch({filter: {type: name}});
+          }
+        }}
+      />
+    ),
+    [refetch, advertType],
+  );
+
+  const _renderItem = useCallback(
+    ({item}) => {
       return (
-        <View index={index} {...item}>
-          <AdvertItem index={index} {...item} />
-          <View style={tw`flex flex-row justify-evenly`}>
-            <Button
-              onPress={() => setEditAdvertModal(item)}
-              title="Edit"
-              color="#841584"
-            />
-            <Button
-              title={'delete'}
-              color="red"
-              onPress={() => {
-                deleteHandler(item._id);
-              }}
-            />
+        <>
+          <AdvertItem {...item} />
+          <View style={tw`flex-row px-2 mt-[2px]`}>
+            <TouchableOpacity
+              style={tw`flex-1 items-center bg-blue-500 py-2 rounded-md`}
+              onPress={() => setEditAdvertModal(item)}>
+              <Text style={tw`text-white font-avReg`}>Edit</Text>
+            </TouchableOpacity>
+            <View style={tw`w-[2px]`} />
+            <TouchableOpacity
+              style={tw`flex-1 items-center bg-red-500 py-2 rounded-md`}
+              onPress={() => deleteHandler(item._id)}>
+              <Text style={tw`text-white font-avReg`}>Delete</Text>
+            </TouchableOpacity>
           </View>
-        </View>
+        </>
       );
     },
     [deleteHandler],
   );
 
-  if (error) return <Text>Error: {error.message}</Text>;
-
   return (
-    <SafeAreaContainer>
-      <View style={tw`flex-row justify-between`}>
-        <View style={tw` flex-row bg-gray-600 items-center m-2`}>
-          <View style={tw`items-start`}>
-            <Switch
-              trackColor={{false: '#767577', true: '#81b0ff'}}
-              thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={value => {
-                setIsEnabled(value);
-                refetch({filter: {enable: !value}});
-              }}
-              value={isEnabled}
-            />
-          </View>
-        </View>
+    <SafeAreaContainer
+      // containerStyle={tw`bg-white`}
+      statusBgColor={tw.color('blue-600')}
+      statusBarStyle="dark-content">
+      <View>
         <FlatList
           horizontal
           data={['ALL', 'TINY', 'SMALL', 'MEDIUM', 'LARGE']}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              style={{
-                backgroundColor: 'white',
-              }}
-              onPress={() => {
-                console.log(item);
-                if (item === 'ALL') {
-                  refetch({filter: {}});
-                } else {
-                  refetch({filter: {type: item}});
-                }
-              }}>
-              <Text style={tw`font-bold`}>{item}</Text>
-            </TouchableOpacity>
-          )}
+          renderItem={_renderTagItem}
           keyExtractor={item => item}
           style={tw`bg-white`}
           contentContainerStyle={tw`py-2`}
           showsHorizontalScrollIndicator={false}
-          ItemSeparatorComponent={() => <View style={tw`w-8`} />}
-          ListHeaderComponent={() => <View style={tw`w-8`} />}
+          ItemSeparatorComponent={() => <View style={tw`w-2`} />}
+          ListHeaderComponent={() => <View style={tw`w-2`} />}
           ListFooterComponent={() => <View style={tw`w-2`} />}
         />
-        <View style={tw`bg-slate-500`}>
-          <View>
-            <Pressable onPress={() => setCreateModalVisible(true)}>
-              <MaterialCommunityIcons
-                name="plus"
-                size={30}
-                style={tw`pr-1 items-center text-white`}
-              />
-            </Pressable>
-          </View>
-        </View>
       </View>
       <FlatList
+        bounces={true}
+        //
         data={data?.adverts?.payload}
-        renderItem={renderItem}
         keyExtractor={item => item._id}
-        ItemSeparatorComponent={Separator}
-        horizontal={false}
-        numColumns={2}
-        columnWrapperStyle={tw`justify-between`}
-        contentContainerStyle={tw`p-1`}
-        refreshing={loading}
-        onRefresh={refetch}
-        onEndReached={() =>
+        renderItem={_renderItem}
+        //
+        contentContainerStyle={tw`py-2`}
+        ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+        //
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={refetch} />
+        }
+        onEndReached={() => {
           fetchMore({
             variables: {
               offset: data?.adverts?.payload.length,
               limit: 10,
             },
-          })
-        }
+          });
+        }}
       />
       <CreateAdvertModal
-        visible={createModalVisible}
-        onClose={() => setCreateModalVisible(false)}
+        visible={createAdvertModal}
+        onClose={() => {
+          setCreateAdvertModal(false);
+        }}
       />
       <EditAdvertModal
         advert={editAdvertModal}
         onClose={() => {
           setEditAdvertModal(null);
         }}
+      />
+      <Fab
+        iconName="plus"
+        bgColor={tw.color('blue-600')}
+        onPress={() => setCreateAdvertModal(true)}
       />
     </SafeAreaContainer>
   );

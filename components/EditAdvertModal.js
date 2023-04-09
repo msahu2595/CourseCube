@@ -2,63 +2,59 @@ import React from 'react';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
 import tw from '@lib/tailwind';
+import {View} from 'react-native';
 import {EDIT_ADVERT} from '@mutations';
 import {useMutation} from '@apollo/client';
-import {CCModal, CCButton, CCTextInput} from './Common';
-import {
-  ActivityIndicator,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
+import {CCModal, CCButton, CCTextInput, CCRadio} from './Common';
 
 const EditAdvertValidationSchema = Yup.object().shape({
+  type: Yup.string().required('Please select type'),
   image: Yup.string()
-    .url('Invalid image URL')
-    .required('Please enter image url'),
-  link: Yup.string().url('Invalid link').nullable(),
-  type: Yup.string().required('Please select advert type'),
+    .url('Image should be a URL.')
+    .required('Please enter image URL.'),
+  link: Yup.string().url('Link is not in the correct format.').nullable(),
 });
 
 const EditAdvertModal = ({advert, onClose}) => {
-  const [editAdvert, {loading}] = useMutation(EDIT_ADVERT, {
-    onCompleted: data => {
-      console.log('onCompleted', data);
+  const [editAdvert, {loading: submitting}] = useMutation(EDIT_ADVERT, {
+    onCompleted: () => {
       onClose();
       showMessage({
-        message: 'Advert Edited Successfully.',
+        message: 'Advertisement is successfully edited.',
         type: 'success',
       });
     },
-    onError: error => {
-      console.log('onError', error.message);
+    onError: err => {
       showMessage({
-        message: 'Error.',
-        type: 'error',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
       });
     },
     refetchQueries: ['adverts'],
   });
-  console.log('advertMOdal', advert);
 
   return (
-    <CCModal title="Edit Advert" visible={!!advert} onClose={onClose}>
+    <CCModal
+      title="Edit Advertisement"
+      visible={!!advert}
+      submitting={submitting}
+      onClose={onClose}>
       <Formik
         initialValues={{
+          type: advert?.type,
           image: advert?.image,
           link: advert?.link,
-          type: advert?.type,
         }}
         validationSchema={EditAdvertValidationSchema}
         onSubmit={values => {
-          console.log('onSubmit', values);
-          const advertInput = {type: values.type, image: values.image};
+          const advertInput = {
+            type: values.type,
+            image: values.image,
+          };
           if (values.link) {
             advertInput.link = values.link;
           }
-          console.log({advertInput});
           editAdvert({variables: {advertId: advert._id, advertInput}});
         }}>
         {({
@@ -70,64 +66,56 @@ const EditAdvertModal = ({advert, onClose}) => {
           errors,
           touched,
         }) => (
-          <View>
-            <Text style={tw`mx-2`}>Type (required!) : </Text>
-            <View style={tw`mt-2 flex-row border border-black rounded-lg`}>
-              <FlatList
-                horizontal
-                data={['TINY', 'SMALL', 'MEDIUM', 'LARGE']}
-                renderItem={({item}) => (
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor:
-                        values.type === item ? tw.color('blue-600') : 'white',
-                    }}
-                    onPress={() => setFieldValue('type', item)}>
-                    <Text>{item}</Text>
-                  </TouchableOpacity>
-                )}
-                keyExtractor={item => item}
-                style={tw`bg-white`}
-                contentContainerStyle={tw`py-2`}
-                showsHorizontalScrollIndicator={false}
-                ItemSeparatorComponent={() => <View style={tw`w-8`} />}
-                ListHeaderComponent={() => <View style={tw`w-8`} />}
-                ListFooterComponent={() => <View style={tw`w-2`} />}
+          <>
+            <View style={tw`py-2`}>
+              <CCRadio
+                required
+                label="Size"
+                horizontal={false}
+                radio_props={[
+                  {label: 'TINY (4/1 Aspect ratio)', value: 'TINY'},
+                  {label: 'SMALL (2.5/1 Aspect ratio)', value: 'SMALL'},
+                  {label: 'MEDIUM (16/9 Aspect ratio)', value: 'MEDIUM'},
+                  {label: 'LARGE (1/1 Aspect ratio)', value: 'LARGE'},
+                ]}
+                value={values.type}
+                onPress={value => {
+                  setFieldValue('type', value);
+                }}
+              />
+              <CCTextInput
+                required
+                label="Image"
+                error={errors.image}
+                touched={touched.image}
+                info="Example: https://picsum.photos/195/110"
+                onChangeText={handleChange('image')}
+                onBlur={handleBlur('image')}
+                value={values.image}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
+              />
+              <CCTextInput
+                label="Link"
+                error={errors.link}
+                touched={touched.link}
+                info="Example: https://www.advert.in/cc_ad1"
+                onChangeText={handleChange('link')}
+                onBlur={handleBlur('link')}
+                value={values.link}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
               />
             </View>
-            {errors.type && touched.type && <Text>{errors.type}</Text>}
-            <CCTextInput
-              required
-              label="Image Link"
-              errors={errors}
-              touched={touched}
-              editable={!loading}
-              placeholder="Enter image link"
-              onChangeText={handleChange('image')}
-              value={values.image}
-              onBlur={handleBlur('image')}
-            />
-            <CCTextInput
-              label="Reference Link"
-              errors={errors}
-              touched={touched}
-              editable={!loading}
-              placeholder="Enter Reference link"
-              onChangeText={handleChange('link')}
-              value={values.link}
-              onBlur={handleBlur('link')}
-            />
-
             <CCButton
-              disabled={loading}
               label="Submit"
-              onPress={() => {
-                console.log('onPress', values);
-                handleSubmit();
-              }}
+              loading={submitting}
+              disabled={submitting}
+              onPress={handleSubmit}
             />
-            {loading && <ActivityIndicator animating={true} size="small" />}
-          </View>
+          </>
         )}
       </Formik>
     </CCModal>

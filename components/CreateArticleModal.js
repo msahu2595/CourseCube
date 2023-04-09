@@ -21,7 +21,7 @@ const CreateArticleModal = ({visible, onClose}) => {
     onCompleted: () => {
       onClose();
       showMessage({
-        message: 'Article is successfully added.',
+        message: 'Article is successfully created.',
         type: 'success',
       });
     },

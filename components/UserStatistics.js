@@ -12,7 +12,7 @@ const statistics = [
     icon: 'playcircleo',
     value: 'videos',
     type: 'Watched',
-    screen: 'AdminAdvertListScreen',
+    screen: '',
   },
   {
     name: "PDF's",
@@ -65,7 +65,6 @@ const UserStatistics = () => {
               key={icon}
               style={tw.style(
                 'mb-2',
-                'p-2',
                 'flex-row',
                 'items-center',
                 'justify-around',
@@ -78,8 +77,7 @@ const UserStatistics = () => {
                 <AntDesign name={icon} color={tw.color('blue-600')} size={16} />
                 <Text style={tw`pl-2 font-avSemi text-black`}>{name}</Text>
               </View>
-              <View
-                style={tw`h-8 justify-between items-center pl-2 border-l border-gray-300`}>
+              <View style={tw`items-center pl-2 border-l border-gray-300`}>
                 {loading ? (
                   <ActivityIndicator
                     size="small"
@@ -87,14 +85,12 @@ const UserStatistics = () => {
                     style={tw`py-1`}
                   />
                 ) : (
-                  <Text style={tw`flex-1 font-avSemi text-base text-blue-600`}>
+                  <Text style={tw`font-avSemi text-base text-blue-600`}>
                     {payload[value]}
                   </Text>
                 )}
                 <Text
-                  style={tw.style('font-avSemi', 'text-black', {
-                    fontSize: 10,
-                  })}>
+                  style={tw.style('font-avSemi text-black text-[10px] pb-1')}>
                   {type}
                 </Text>
               </View>

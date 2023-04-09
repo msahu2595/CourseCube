@@ -54,7 +54,7 @@ const AdminHomeScreen = ({navigation}) => {
         statusBgColor={tw.color('blue-600')}>
         <CCNavigationButton
           name="Advert"
-          onPress={null}
+          onPress={() => navigation.navigate('AdminAdvertListScreen')}
           icon="file-text"
           disabled={loading}
         />
