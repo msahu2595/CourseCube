@@ -18,7 +18,7 @@ const CurrentAffairBar = props => {
   }, [navigation]);
 
   const renderItem = useCallback(
-    ({item, index}) => <CurrentAffairItem index={index} {...item} />,
+    ({item}) => <CurrentAffairItem {...item} />,
     [],
   );
 
@@ -50,7 +50,7 @@ const CurrentAffairBar = props => {
         data={queryData?.articles?.payload || []}
         renderItem={renderItem}
         keyExtractor={item => item._id}
-        contentContainerStyle={tw`py-2`}
+        contentContainerStyle={tw`mt-2`}
       />
     </View>
   );

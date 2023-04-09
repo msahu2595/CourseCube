@@ -6,16 +6,18 @@ import {View} from 'react-native';
 import {CREATE_ARTICLE} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCModal, CCButton, CCTextInput} from './Common';
+import {CCModal, CCButton, CCTextInput, CCCheckBox} from './Common';
 
 const AddArticleValidationSchema = yup.object({
-  title: yup.string().required('Please enter title.'),
-  description: yup.string().required('Please enter description.'),
-  author: yup.string().required('Please enter author name.'),
+  title: yup.string().required('Please enter article title.'),
+  image: yup.string().url('Image should be a link.').nullable(),
+  description: yup.string().required('Please enter article description.'),
+  author: yup.string().required("Please enter article's author name."),
+  visible: yup.boolean(),
 });
 
 const CreateArticleModal = ({visible, onClose}) => {
-  const [createArticle, {loading}] = useMutation(CREATE_ARTICLE, {
+  const [createArticle, {loading: submitting}] = useMutation(CREATE_ARTICLE, {
     onCompleted: () => {
       onClose();
       showMessage({
@@ -25,7 +27,7 @@ const CreateArticleModal = ({visible, onClose}) => {
     },
     onError: err => {
       showMessage({
-        message: err?.message || 'Some unknown error occurred',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
         type: 'danger',
       });
     },
@@ -33,29 +35,37 @@ const CreateArticleModal = ({visible, onClose}) => {
   });
 
   return (
-    <CCModal title="Create Article" visible={visible} onClose={onClose}>
+    <CCModal
+      title="Create Article"
+      visible={visible}
+      submitting={submitting}
+      onClose={onClose}>
       <Formik
         initialValues={{
           title: '',
+          image: '',
           description: '',
           author: '',
+          visible: true,
         }}
         validationSchema={AddArticleValidationSchema}
         onSubmit={values => {
-          createArticle({
-            variables: {
-              articleInput: {
-                title: values.title,
-                description: values.description,
-                author: values.author,
-              },
-            },
-          });
+          const articleInput = {
+            title: values.title,
+            description: values.description,
+            author: values.author,
+            visible: values.visible,
+          };
+          if (values.image) {
+            articleInput.image = values.image;
+          }
+          createArticle({variables: {articleInput}});
         }}>
         {({
           handleChange,
           handleBlur,
           handleSubmit,
+          setFieldValue,
           values,
           errors,
           touched,
@@ -70,7 +80,19 @@ const CreateArticleModal = ({visible, onClose}) => {
                 onChangeText={handleChange('title')}
                 onBlur={handleBlur('title')}
                 value={values.title}
-                editable={!loading}
+                editable={!submitting}
+              />
+              <CCTextInput
+                label="Image"
+                error={errors.image}
+                touched={touched.image}
+                info="Example: https://picsum.photos/195/110"
+                onChangeText={handleChange('image')}
+                onBlur={handleBlur('image')}
+                value={values.image}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
               />
               <CCTextInput
                 required
@@ -80,7 +102,7 @@ const CreateArticleModal = ({visible, onClose}) => {
                 onChangeText={handleChange('description')}
                 onBlur={handleBlur('description')}
                 value={values.description}
-                editable={!loading}
+                editable={!submitting}
                 multiline={true}
                 numberOfLines={4}
               />
@@ -92,13 +114,20 @@ const CreateArticleModal = ({visible, onClose}) => {
                 onChangeText={handleChange('author')}
                 onBlur={handleBlur('author')}
                 value={values.author}
-                editable={!loading}
+                editable={!submitting}
+              />
+              <CCCheckBox
+                label="If ticked, article immediately visible to users."
+                checked={values.visible}
+                onPress={value => {
+                  setFieldValue('visible', value);
+                }}
               />
             </View>
             <CCButton
               label="Submit"
-              loading={loading}
-              disabled={loading}
+              loading={submitting}
+              disabled={submitting}
               onPress={handleSubmit}
             />
           </>
