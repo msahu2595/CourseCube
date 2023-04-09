@@ -112,56 +112,54 @@ const AdminArticleListScreen = () => {
   );
 
   return (
-    <>
-      <SafeAreaContainer
-        statusBgColor={tw.color('blue-600')}
-        statusBarStyle="dark-content">
-        <CCSearchInput
-          value={search}
-          searching={loading}
-          onChangeText={onChangeSearchText}
-          onClear={clearSearchText}
-        />
-        <FlatList
-          bounces={true}
-          //
-          data={data?.articles?.payload}
-          keyExtractor={item => item._id}
-          renderItem={_renderItem}
-          //
-          ItemSeparatorComponent={() => <View style={tw`h-2`} />}
-          //
-          refreshControl={
-            <RefreshControl refreshing={loading} onRefresh={refetch} />
-          }
-          onEndReached={() => {
-            fetchMore({
-              variables: {
-                offset: data?.articles?.payload.length,
-                limit: 10,
-              },
-            });
-          }}
-        />
-        <CreateArticleModal
-          visible={createArticleModal}
-          onClose={() => {
-            setCreateArticleModal(false);
-          }}
-        />
-        <EditArticleModal
-          article={editArticleModal}
-          onClose={() => {
-            setEditArticleModal(null);
-          }}
-        />
-        <Fab
-          iconName="plus"
-          bgColor={tw.color('blue-600')}
-          onPress={() => setCreateArticleModal(true)}
-        />
-      </SafeAreaContainer>
-    </>
+    <SafeAreaContainer
+      statusBgColor={tw.color('blue-600')}
+      statusBarStyle="dark-content">
+      <CCSearchInput
+        value={search}
+        searching={loading}
+        onChangeText={onChangeSearchText}
+        onClear={clearSearchText}
+      />
+      <FlatList
+        bounces={true}
+        //
+        data={data?.articles?.payload}
+        keyExtractor={item => item._id}
+        renderItem={_renderItem}
+        //
+        ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+        //
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={refetch} />
+        }
+        onEndReached={() => {
+          fetchMore({
+            variables: {
+              offset: data?.articles?.payload.length,
+              limit: 10,
+            },
+          });
+        }}
+      />
+      <CreateArticleModal
+        visible={createArticleModal}
+        onClose={() => {
+          setCreateArticleModal(false);
+        }}
+      />
+      <EditArticleModal
+        article={editArticleModal}
+        onClose={() => {
+          setEditArticleModal(null);
+        }}
+      />
+      <Fab
+        iconName="plus"
+        bgColor={tw.color('blue-600')}
+        onPress={() => setCreateArticleModal(true)}
+      />
+    </SafeAreaContainer>
   );
 };
 
