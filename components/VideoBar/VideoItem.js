@@ -14,7 +14,10 @@ const VideoItem = memo(({width = 224, ...rest}) => {
 
   return (
     <Pressable onPress={handleNavigation}>
-      <View style={tw`bg-gray-50 rounded-lg shadow-sm w-[${width}px]`}>
+      <View
+        style={tw`bg-gray-50 rounded-lg shadow-sm w-[${width}px] opacity-${
+          rest?.visible ? 100 : 50
+        }`}>
         <ImageBackground
           resizeMode="cover"
           source={{uri: rest?.image}}
