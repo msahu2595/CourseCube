@@ -1,23 +1,20 @@
+import {
+  Text,
+  View,
+  Alert,
+  FlatList,
+  RefreshControl,
+  TouchableOpacity,
+} from 'react-native';
 import tw from '@lib/tailwind';
 import {ADVERTS} from '@queries';
-import {
-  Alert,
-  Button,
-  FlatList,
-  Pressable,
-  RefreshControl,
-  Switch,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
 import {DELETE_ADVERT} from '@mutations';
 import React, {useCallback, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import EditAdvertModal from 'components/EditAdvertModal';
-import {AdvertItem, Fab, SafeAreaContainer, TagItem} from '@components';
 import CreateAdvertModal from 'components/CreateAdvertModal';
+import {AdvertItem, Fab, SafeAreaContainer, TagItem} from '@components';
 
 const AdminAdvertListScreen = () => {
   const [advertType, setAdvertType] = useState('ALL');
@@ -118,7 +115,6 @@ const AdminAdvertListScreen = () => {
 
   return (
     <SafeAreaContainer
-      // containerStyle={tw`bg-white`}
       statusBgColor={tw.color('blue-600')}
       statusBarStyle="dark-content">
       <View>

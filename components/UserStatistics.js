@@ -12,7 +12,7 @@ const statistics = [
     icon: 'playcircleo',
     value: 'videos',
     type: 'Watched',
-    screen: 'AdminBundleListScreen',
+    screen: '',
   },
   {
     name: "PDF's",
@@ -21,7 +21,13 @@ const statistics = [
     type: 'Read',
     screen: '',
   },
-  {name: "Test's", icon: 'form', value: 'tests', type: 'Attempted', screen: ''},
+  {
+    name: "Test's",
+    icon: 'form',
+    value: 'tests',
+    type: 'Attempted',
+    screen: '',
+  },
   {
     name: "Q&A's",
     icon: 'questioncircleo',

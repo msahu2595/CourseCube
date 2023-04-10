@@ -9,7 +9,7 @@ const FullSyllabusCourseItem = memo(props => {
   const navigation = useNavigation();
 
   const handleNavigation = useCallback(() => {
-    navigation.navigate('ContentDetailTopTabNavigator', {
+    navigation.navigate('CourseDetailTopTabNavigator', {
       bundleId: props._id,
     });
   }, [navigation, props._id]);

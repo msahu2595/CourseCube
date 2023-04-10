@@ -1,6 +1,3 @@
-import React from 'react';
-import tw from '@lib/tailwind'; //Tailwind Imports
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   EditProfileScreen,
   MyNotificationScreen,
@@ -8,16 +5,13 @@ import {
   LeaderboardScreen,
   UserSearchScreen,
 } from '@screens';
+import React from 'react';
+import tw from '@lib/tailwind';
 import {TextInput, TouchableOpacity, View} from 'react-native';
-// Icon Import
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AdminContentListScreen from 'screens/AdminScreens/AdminContentListScreen';
-import AdminAddBundleScreen from 'screens/AdminScreens/AdminAddBundleScreen';
-import AdminBundleListScreen from 'screens/AdminScreens/AdminBundleListScreen';
-import AdminAdvertListScreen from 'screens/AdminScreens/AdminAdvertListScreen';
-import AdminHeadlineListScreen from 'screens/AdminScreens/AdminHeadlineListScreen';
 
-const Stack = createNativeStackNavigator(); // Create Stack Navigator
+const Stack = createNativeStackNavigator();
 
 const myProfileStackGroup = () => {
   return (
@@ -53,31 +47,6 @@ const myProfileStackGroup = () => {
         name="UserSearchScreen"
         component={UserSearchScreen}
         options={searchScreenOptions}
-      />
-      <Stack.Screen
-        name="AdminContentListScreen"
-        component={AdminContentListScreen}
-        options={{headerTitle: 'Admin Content List'}}
-      />
-      <Stack.Screen
-        name="AdminAddBundleScreen"
-        component={AdminAddBundleScreen}
-        options={{headerTitle: 'Admin Add Bundle'}}
-      />
-      <Stack.Screen
-        name="AdminBundleListScreen"
-        component={AdminBundleListScreen}
-        options={{headerTitle: 'Admin Bundle List'}}
-      />
-      <Stack.Screen
-        name="AdminAdvertListScreen"
-        component={AdminAdvertListScreen}
-        options={{headerTitle: 'Admin Advert List'}}
-      />
-      <Stack.Screen
-        name="AdminHeadlineListScreen"
-        component={AdminHeadlineListScreen}
-        options={{headerTitle: 'Admin Headline List'}}
       />
     </Stack.Group>
   );

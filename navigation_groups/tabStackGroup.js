@@ -3,8 +3,8 @@ import tw from '@lib/tailwind'; //Tailwind Imports
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   MainBottomTabNavigator,
-  ContentListTopTabNavigator,
-  ContentDetailTopTabNavigator,
+  CourseContentListTopTabNavigator,
+  CourseDetailTopTabNavigator,
   FollowListTopTabNavigator,
 } from '@navigators';
 
@@ -24,8 +24,8 @@ const tabStackGroup = () => {
         }}
       />
       <Stack.Screen
-        name="ContentListTopTabNavigator"
-        component={ContentListTopTabNavigator}
+        name="CourseContentListTopTabNavigator"
+        component={CourseContentListTopTabNavigator}
         options={{
           headerShadowVisible: false,
           headerTitle: 'Contents',
@@ -35,8 +35,8 @@ const tabStackGroup = () => {
         }}
       />
       <Stack.Screen
-        name="ContentDetailTopTabNavigator"
-        component={ContentDetailTopTabNavigator}
+        name="CourseDetailTopTabNavigator"
+        component={CourseDetailTopTabNavigator}
         options={({route}) => ({
           headerShadowVisible: false,
           headerTitle: 'Details',

@@ -1,12 +1,14 @@
 import React from 'react';
-import AdminFullCourseBundleListScreen from './AdminFullCourseBundleListScreen';
+import {
+  AdminFullCourseBundleListScreen,
+  AdminSubjectCourseBundleListScreen,
+  AdminPlaylistCourseBundleListScreen,
+} from '@screens';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import AdminSubjectCourseBundleListScreen from './AdminSubjectCourseBundleListScreen';
-import AdminPlaylistCourseBundleListScreen from './AdminPlaylistCourseBundleListScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
-const AdminBundleListScreen = () => {
+const CourseListTopTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -33,4 +35,4 @@ const AdminBundleListScreen = () => {
   );
 };
 
-export default AdminBundleListScreen;
+export default CourseListTopTabNavigator;

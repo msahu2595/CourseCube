@@ -5,16 +5,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import {Text, View, TouchableOpacity} from 'react-native';
 
 const menu = [
-  {name: 'My Courses', icon: 'book-open', screen: 'AdminContentListScreen'},
+  {name: 'My Courses', icon: 'book-open', screen: ''},
   {name: 'Downloads', icon: 'download', screen: ''},
   {name: 'Bookmarks', icon: 'bookmark', screen: ''},
   {name: 'Payments', icon: 'credit-card', screen: ''},
   {name: 'Settings', icon: 'settings', screen: 'SettingsScreen'},
-  {
-    name: 'Help & Support',
-    icon: 'headphones',
-    screen: 'AdminAddBundleScreen',
-  },
+  {name: 'Help & Support', icon: 'headphones', screen: ''},
 ];
 
 const UserMenu = () => {
@@ -37,7 +33,7 @@ const UserMenu = () => {
         {menu.map(({name, icon, screen}) => {
           return (
             <TouchableOpacity
-              onPress={() => handleMenuPress(screen)}
+              onPress={() => (screen ? handleMenuPress(screen) : null)}
               key={icon}
               style={tw.style(
                 'mb-2',

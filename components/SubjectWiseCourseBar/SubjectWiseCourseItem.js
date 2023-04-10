@@ -9,7 +9,7 @@ const SubjectWiseCourseItem = memo(props => {
   const navigation = useNavigation();
 
   const handleNavigation = useCallback(() => {
-    navigation.navigate('ContentDetailTopTabNavigator', {
+    navigation.navigate('CourseDetailTopTabNavigator', {
       bundleId: props._id,
       themeColor: 'orange',
     });

@@ -2,11 +2,17 @@ import {tw} from '@lib';
 import React from 'react';
 import {
   AdminHomeScreen,
+  AdminAdvertListScreen,
+  AdminHeadlineListScreen,
   AdminArticleListScreen,
   AdminWebsiteListScreen,
   AdminTestQuestionListScreen,
 } from '@screens';
-import {MediaListTopTabNavigator} from '@navigators';
+import {
+  MediaListTopTabNavigator,
+  CourseListTopTabNavigator,
+  ContentListTopTabNavigator,
+} from '@navigators';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
@@ -28,6 +34,20 @@ const adminStackGroup = () => {
         }}
       />
       <Stack.Screen
+        name="AdminAdvertListScreen"
+        component={AdminAdvertListScreen}
+        options={{
+          headerTitle: 'Adverts',
+        }}
+      />
+      <Stack.Screen
+        name="AdminHeadlineListScreen"
+        component={AdminHeadlineListScreen}
+        options={{
+          headerTitle: 'Headlines',
+        }}
+      />
+      <Stack.Screen
         name="AdminArticleListScreen"
         component={AdminArticleListScreen}
         options={{
@@ -39,6 +59,20 @@ const adminStackGroup = () => {
         component={AdminWebsiteListScreen}
         options={{
           headerTitle: 'Websites',
+        }}
+      />
+      <Stack.Screen
+        name="CourseListTopTabNavigator"
+        component={CourseListTopTabNavigator}
+        options={{
+          headerTitle: 'Courses',
+        }}
+      />
+      <Stack.Screen
+        name="ContentListTopTabNavigator"
+        component={ContentListTopTabNavigator}
+        options={{
+          headerTitle: 'Contents',
         }}
       />
       <Stack.Screen

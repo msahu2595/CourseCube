@@ -7,7 +7,7 @@ const deepLinksConf = {
         Community: 'community',
       },
     },
-    ContentDetailTopTabNavigator: {
+    CourseDetailTopTabNavigator: {
       path: 'detail',
       screens: {
         Info: 'info',

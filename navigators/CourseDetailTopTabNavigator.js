@@ -6,7 +6,7 @@ import {SafeAreaContainer} from '@components';
 
 const Tab = createMaterialTopTabNavigator();
 
-const ContentDetailTopTabNavigator = props => {
+const CourseDetailTopTabNavigator = props => {
   return (
     <SafeAreaContainer
       statusBgColor={tw.color(
@@ -54,4 +54,4 @@ const ContentDetailTopTabNavigator = props => {
   );
 };
 
-export default ContentDetailTopTabNavigator;
+export default CourseDetailTopTabNavigator;
