@@ -84,8 +84,8 @@ const AdminTestListScreen = ({navigation}) => {
     refetch({search: ''});
   }, [refetch]);
 
-  const Item = useCallback(
-    item => (
+  const _renderItem = useCallback(
+    ({item}) => (
       <MediaItem
         title={item.title}
         label={`${
@@ -140,7 +140,7 @@ const AdminTestListScreen = ({navigation}) => {
         //
         data={data?.tests?.payload}
         keyExtractor={item => item._id}
-        renderItem={({item}) => <Item {...item} />}
+        renderItem={_renderItem}
         //
         contentContainerStyle={tw`px-1`}
         columnWrapperStyle={tw`justify-between`}

@@ -83,31 +83,34 @@ const AdminDocumentListScreen = () => {
     refetch({search: ''});
   }, [refetch]);
 
-  const Item = item => (
-    <MediaItem
-      title={item.title}
-      label={`${item.pages} Pages`}
-      image={item.thumbnail}
-      options={[
-        {
-          key: 'Create content',
-          positive: true,
-          label: 'Create content',
-          onSelect: () => setAddContentModal(item),
-        },
-        {
-          key: 'Edit',
-          label: 'Edit',
-          onSelect: () => setEditDocumentModal(item),
-        },
-        {
-          key: 'Delete',
-          danger: true,
-          label: 'Delete',
-          onSelect: () => deleteHandler(item._id),
-        },
-      ]}
-    />
+  const _renderItem = useCallback(
+    ({item}) => (
+      <MediaItem
+        title={item.title}
+        label={`${item.pages} Pages`}
+        image={item.thumbnail}
+        options={[
+          {
+            key: 'Create content',
+            positive: true,
+            label: 'Create content',
+            onSelect: () => setAddContentModal(item),
+          },
+          {
+            key: 'Edit',
+            label: 'Edit',
+            onSelect: () => setEditDocumentModal(item),
+          },
+          {
+            key: 'Delete',
+            danger: true,
+            label: 'Delete',
+            onSelect: () => deleteHandler(item._id),
+          },
+        ]}
+      />
+    ),
+    [deleteHandler],
   );
 
   return (
@@ -124,7 +127,7 @@ const AdminDocumentListScreen = () => {
         //
         data={data?.documents?.payload}
         keyExtractor={item => item._id}
-        renderItem={({item}) => <Item {...item} />}
+        renderItem={_renderItem}
         //
         contentContainerStyle={tw`px-1`}
         columnWrapperStyle={tw`justify-between`}

@@ -84,8 +84,8 @@ const AdminVideoListScreen = () => {
     refetch({search: ''});
   }, [refetch]);
 
-  const Item = useCallback(
-    item => (
+  const _renderItem = useCallback(
+    ({item}) => (
       <MediaItem
         label={item.time}
         title={item.title}
@@ -124,7 +124,7 @@ const AdminVideoListScreen = () => {
         //
         data={data?.videos?.payload}
         keyExtractor={item => item._id}
-        renderItem={({item}) => <Item {...item} />}
+        renderItem={_renderItem}
         //
         contentContainerStyle={tw`px-1`}
         columnWrapperStyle={tw`justify-between`}

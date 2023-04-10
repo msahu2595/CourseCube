@@ -1,7 +1,8 @@
 import tw from '@lib/tailwind';
 import {CONTENTS} from '@queries';
 import {useQuery} from '@apollo/client';
-import React, {useCallback} from 'react';
+import {CCSearchInput} from 'components/Common';
+import React, {useCallback, useState} from 'react';
 import {showMessage} from 'react-native-flash-message';
 import {TestItem, SafeAreaContainer} from '@components';
 import LinearGradient from 'react-native-linear-gradient';
@@ -14,6 +15,8 @@ const itemWidth = columns
   : null;
 
 const TestListScreen = () => {
+  const [search, setSearch] = useState('');
+
   const {loading, data, refetch, fetchMore} = useQuery(CONTENTS, {
     variables: {filter: {type: 'Test'}},
     onError: err => {
@@ -24,7 +27,24 @@ const TestListScreen = () => {
     },
   });
 
-  const renderItem = useCallback(
+  const onChangeSearchText = useCallback(
+    text => {
+      setSearch(text);
+      if (text.length > 2) {
+        refetch({search: text});
+      } else {
+        refetch({search: ''});
+      }
+    },
+    [refetch],
+  );
+
+  const clearSearchText = useCallback(() => {
+    setSearch('');
+    refetch({search: ''});
+  }, [refetch]);
+
+  const _renderItem = useCallback(
     ({item}) => <TestItem {...item} columns={columns} width={itemWidth} />,
     [],
   );
@@ -41,15 +61,21 @@ const TestListScreen = () => {
           tw.color('white'),
         ]}
         style={tw`flex-1`}>
+        <CCSearchInput
+          value={search}
+          searching={loading}
+          onChangeText={onChangeSearchText}
+          onClear={clearSearchText}
+        />
         <FlatList
           bounces={true}
           numColumns={columns}
           //
           data={data?.contents?.payload}
           keyExtractor={item => item._id}
-          renderItem={renderItem}
+          renderItem={_renderItem}
           //
-          contentContainerStyle={tw`p-1 `}
+          contentContainerStyle={tw`px-1 pb-4`}
           columnWrapperStyle={tw`justify-between`}
           ItemSeparatorComponent={() => <View style={tw`h-1`} />}
           //
