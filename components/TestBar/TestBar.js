@@ -10,7 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 const TestBar = ({title = 'Tests', filter = {}}) => {
   const navigation = useNavigation();
 
-  const {loading: queryLoading, data: queryData} = useQuery(CONTENTS, {
+  const {loading, data: queryData} = useQuery(CONTENTS, {
     variables: {filter: {type: 'Test', ...filter}},
   });
 
@@ -18,36 +18,33 @@ const TestBar = ({title = 'Tests', filter = {}}) => {
     navigation.navigate('TestListScreen');
   }, [navigation]);
 
-  const renderItem = ({index, item}) => <TestItem index={index} {...item} />;
+  const renderItem = useCallback(({item}) => <TestItem {...item} />, []);
 
   return (
-    <View style={tw`pt-4 bg-white`}>
+    <View style={tw`pt-4 pb-2 bg-white`}>
       <View style={tw`flex-row justify-between items-center px-4 bg-white`}>
         <Text style={tw`font-avSemi text-base text-gray-600`}>{title}</Text>
         <TouchableOpacity
           onPress={handleSeeAll}
           style={tw`flex-row items-center`}>
-          <Text
-            style={tw.style('font-avSemi', 'text-gray-600', {fontSize: 10})}>
-            SEE ALL
-          </Text>
+          <Text style={tw`font-avSemi text-gray-600 text-[10px]`}>SEE ALL</Text>
           <MaterialCommunityIcons
-            name="chevron-right"
             size={16}
             color="#52525B"
+            name="chevron-right"
           />
         </TouchableOpacity>
       </View>
       <FlatList
         horizontal
-        data={queryData?.contents?.payload}
         renderItem={renderItem}
         keyExtractor={item => item._id}
-        contentContainerStyle={tw`bg-white py-2`}
+        data={queryData?.contents?.payload}
         showsHorizontalScrollIndicator={false}
-        ItemSeparatorComponent={() => <View style={tw`w-3`} />}
-        ListHeaderComponent={() => <View style={tw`w-4`} />}
-        ListFooterComponent={() => <View style={tw`w-4`} />}
+        contentContainerStyle={tw`bg-white py-2`}
+        ListHeaderComponent={() => <View style={tw`w-2`} />}
+        ListFooterComponent={() => <View style={tw`w-2`} />}
+        ItemSeparatorComponent={() => <View style={tw`w-2`} />}
       />
     </View>
   );
