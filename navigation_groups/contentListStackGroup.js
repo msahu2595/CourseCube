@@ -47,13 +47,26 @@ const contentListStackGroup = () => {
         name="FullSyllabusCourseListScreen"
         component={FullSyllabusCourseListScreen}
         options={({route}) => ({
+          headerShown: true,
+          headerStyle: tw`bg-green-200`,
           headerTitle: route?.params?.headerTitle || 'Full Syllabus Courses',
+        })}
+      />
+      <Stack.Screen
+        name="SubjectWiseCourseListScreen"
+        component={SubjectWiseCourseListScreen}
+        options={({route}) => ({
+          headerShown: true,
+          headerStyle: tw`bg-green-200`,
+          headerTitle: route?.params?.headerTitle || 'Subject Wise Courses',
         })}
       />
       <Stack.Screen
         name="VideoListScreen"
         component={VideoListScreen}
         options={({route}) => ({
+          headerShown: true,
+          headerStyle: tw`bg-indigo-100`,
           headerTitle: route?.params?.headerTitle || 'Videos',
         })}
       />
@@ -61,6 +74,8 @@ const contentListStackGroup = () => {
         name="TestListScreen"
         component={TestListScreen}
         options={({route}) => ({
+          headerShown: true,
+          headerStyle: tw`bg-amber-100`,
           headerTitle: route?.params?.headerTitle || 'Tests',
         })}
       />
@@ -68,14 +83,9 @@ const contentListStackGroup = () => {
         name="DocumentListScreen"
         component={DocumentListScreen}
         options={({route}) => ({
+          headerShown: true,
+          headerStyle: tw`bg-teal-100`,
           headerTitle: route?.params?.headerTitle || 'Documents',
-        })}
-      />
-      <Stack.Screen
-        name="SubjectWiseCourseListScreen"
-        component={SubjectWiseCourseListScreen}
-        options={({route}) => ({
-          headerTitle: route?.params?.headerTitle || 'Subject Wise Courses',
         })}
       />
       <Stack.Screen

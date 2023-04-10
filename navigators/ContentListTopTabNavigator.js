@@ -13,21 +13,33 @@ const Tab = createMaterialTopTabNavigator();
 const ContentListTopTabNavigator = () => {
   return (
     <SafeAreaContainer
-      statusBgColor={tw.color('blue-500')}
+      statusBgColor={tw.color('blue-600')}
       statusBarStyle="dark-content">
       <Tab.Navigator
         backBehavior="none"
         screenOptions={{
           swipeEnabled: true,
           tabBarScrollEnabled: false,
-          tabBarStyle: tw`bg-blue-200`,
+          tabBarStyle: tw`bg-blue-600`,
           tabBarItemStyle: tw`px-0`,
-          tabBarLabelStyle: tw`font-avSemi text-xs`,
-          tabBarIndicatorStyle: tw`bg-blue-500`,
+          tabBarIndicatorStyle: tw`bg-blue-200`,
+          tabBarLabelStyle: tw`font-avSemi text-xs text-white`,
         }}>
-        <Tab.Screen name="Video's" component={AdminContentVideoListScreen} />
-        <Tab.Screen name="PDF's" component={AdminContentDocumentListScreen} />
-        <Tab.Screen name="Test's" component={AdminContentTestListScreen} />
+        <Tab.Screen
+          name="AdminContentVideoListScreen"
+          component={AdminContentVideoListScreen}
+          options={{title: 'Videos'}}
+        />
+        <Tab.Screen
+          name="AdminContentTestListScreen"
+          component={AdminContentTestListScreen}
+          options={{title: 'Tests'}}
+        />
+        <Tab.Screen
+          name="AdminContentDocumentListScreen"
+          component={AdminContentDocumentListScreen}
+          options={{title: 'Documents'}}
+        />
       </Tab.Navigator>
     </SafeAreaContainer>
   );

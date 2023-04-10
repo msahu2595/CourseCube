@@ -3,119 +3,88 @@ import React, {memo, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {View, Image, Text, Pressable, ImageBackground} from 'react-native';
 
-const VideoItem = memo(props => {
+const VideoItem = memo(({width = 224, ...rest}) => {
   const navigation = useNavigation();
 
   const handleNavigation = useCallback(() => {
     navigation.navigate('VideoViewScreen', {
-      contentId: props._id,
+      contentId: rest?._id,
     });
-  }, [navigation, props._id]);
+  }, [navigation, rest?._id]);
 
   return (
     <Pressable onPress={handleNavigation}>
-      <View
-        style={tw.style('bg-gray-50', 'rounded-lg', 'shadow-sm', {
-          width: 224,
-          height: 256,
-        })}>
+      <View style={tw`bg-gray-50 rounded-lg shadow-sm w-[${width}px]`}>
         <ImageBackground
-          source={{uri: props?.image}}
           resizeMode="cover"
-          imageStyle={tw.style('rounded-lg', {
-            opacity: 0.5,
-          })}
-          style={tw.style(
-            'rounded-lg',
-            'items-center',
-            'shadow-sm',
-            'bg-black',
-            {
-              height: 126,
-            },
-          )}>
+          source={{uri: rest?.image}}
+          imageStyle={tw`rounded-lg opacity-50`}
+          style={tw`rounded-lg items-center shadow-sm bg-white w-[${width}px]`}>
           <Image
-            source={{uri: props?.image}}
+            source={{uri: rest?.image}}
             resizeMode="cover"
             style={tw.style({
+              width,
               borderRadius: 8,
-              height: 126,
               aspectRatio: 16 / 9,
             })}
           />
         </ImageBackground>
-        <View style={tw`flex-1 px-2 py-3 justify-between`}>
-          <Text
-            style={tw.style('font-avSemi', 'text-indigo-700', 'capitalize', {
-              fontSize: 10,
-            })}
-            numberOfLines={1}>
-            {props?.subject}
-          </Text>
+        <View style={tw`h-[130px] px-2 py-3 justify-between`}>
+          <View style={tw`flex-row justify-between`}>
+            <Text
+              style={tw`flex-1 font-avSemi text-indigo-700 capitalize text-[10px]`}
+              numberOfLines={1}>
+              {rest?.subject}
+            </Text>
+            {!!rest?.offer && (
+              <Text style={tw`font-avSemi text-red-500 text-[10px]`}>
+                {`${rest?.offer}${
+                  rest?.offerType === 'PERCENT' ? '%' : '₹'
+                } Off`}
+              </Text>
+            )}
+          </View>
           <Text
             style={tw`font-avSemi text-xs text-gray-600 capitalize`}
             numberOfLines={2}>
-            {props?.title}
+            {rest?.title}
           </Text>
           <Text
-            style={tw.style('font-avReg', 'text-gray-500', {
-              fontSize: 10,
-            })}
+            style={tw`font-avReg text-gray-500 text-[10px]`}
             numberOfLines={1}>
-            {`${props?.likes} Likes | 50k Watched ${
-              props?.purchases ? `| ${props?.purchases} Purchases` : ''
+            {`${rest?.likes} Likes | 50k Watched ${
+              rest?.purchases ? `| ${rest?.purchases} Purchases` : ''
             }`}
           </Text>
-          {props?.paid && !props?.purchased ? (
-            <View style={tw`flex-row justify-between`}>
-              <View style={tw`flex-row items-center justify-between`}>
+          {rest?.paid && !rest?.purchased ? (
+            <View style={tw`flex-row items-center justify-between`}>
+              <Text
+                style={tw`font-avSemi rounded text-xs px-2 bg-indigo-50 text-indigo-600 shadow-sm`}>
+                {rest?.offer
+                  ? `₹ ${
+                      rest?.price -
+                      (rest?.offerType === 'PERCENT'
+                        ? (rest?.price * rest?.offer) / 100
+                        : rest?.offer)
+                    }`
+                  : `₹ ${rest?.price}`}
+              </Text>
+              {!!rest?.offer && (
                 <Text
-                  style={tw`font-avSemi rounded text-xs px-2 bg-indigo-50 text-indigo-600 shadow-sm`}>
-                  {props?.offer
-                    ? `₹ ${
-                        props?.price -
-                        (props?.offerType === 'PERCENT'
-                          ? (props?.price * props?.offer) / 100
-                          : props?.offer)
-                      }`
-                    : `₹ ${props?.price}`}
-                </Text>
-                {!!props?.offer && (
-                  <Text
-                    style={tw.style('px-1', 'font-avReg', 'text-gray-500', {
-                      textDecorationLine: 'line-through',
-                      textDecorationStyle: 'solid',
-                      fontSize: 10,
-                    })}>
-                    {`₹ ${props?.price}`}
-                  </Text>
-                )}
-              </View>
-              {!!props?.offer && (
-                <Text
-                  style={tw.style('font-avSemi', 'text-xs', 'text-red-500', {
-                    fontSize: 9,
+                  style={tw.style('px-1 font-avReg text-gray-500 text-[10px]', {
+                    textDecorationLine: 'line-through',
+                    textDecorationStyle: 'solid',
                   })}>
-                  {`${props?.offer}${
-                    props?.offerType === 'PERCENT' ? '%' : '₹'
-                  } Off`}
+                  {`₹ ${rest?.price}`}
                 </Text>
               )}
             </View>
           ) : (
             <View style={tw`self-start`}>
               <Text
-                style={tw.style(
-                  'font-avSemi',
-                  'rounded',
-                  'px-2',
-                  'py-1',
-                  'bg-indigo-50',
-                  'text-indigo-600',
-                  'shadow-sm',
-                  {fontSize: 10},
-                )}>
-                {`Watch ${props?.purchased ? '' : 'Free '}➔`}
+                style={tw`font-avSemi rounded px-2 py-1 bg-indigo-50 text-indigo-600 shadow-sm text-[10px]`}>
+                {`Watch ${rest?.purchased ? '' : 'Free '}➔`}
               </Text>
             </View>
           )}

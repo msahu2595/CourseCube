@@ -2,54 +2,68 @@ import tw from '@lib/tailwind';
 import {CONTENTS} from '@queries';
 import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
-import {View, FlatList} from 'react-native';
+import {showMessage} from 'react-native-flash-message';
+import {TestItem, SafeAreaContainer} from '@components';
 import LinearGradient from 'react-native-linear-gradient';
-import {ContentItem, SafeAreaContainer} from '@components';
+import {View, FlatList, RefreshControl, Dimensions} from 'react-native';
 
-const TestListScreen = ({navigation, route}) => {
-  const {loading: queryLoading, data: queryData} = useQuery(CONTENTS, {
+const columns = 2;
+const width = Dimensions.get('window').width;
+const itemWidth = columns
+  ? width / columns - ((columns + 1) * 4) / columns
+  : null;
+
+const TestListScreen = () => {
+  const {loading, data, refetch, fetchMore} = useQuery(CONTENTS, {
     variables: {filter: {type: 'Test'}},
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
   });
 
-  const handlePress = useCallback(
-    (contentId, title) => {
-      navigation?.navigate('TestViewScreen', {contentId, title});
-    },
-    [navigation],
-  );
-
   const renderItem = useCallback(
-    ({index, item}) => (
-      <ContentItem
-        index={index}
-        color="amber"
-        {...item}
-        handlePress={handlePress}
-      />
-    ),
-    [handlePress],
+    ({item}) => <TestItem {...item} columns={columns} width={itemWidth} />,
+    [],
   );
 
   return (
     <SafeAreaContainer
-      statusBgColor={tw.color('green-200')}
+      statusBgColor={tw.color('amber-100')}
       statusBarStyle="dark-content">
       <LinearGradient
         locations={[0, 0.2, 0.5]}
         colors={[
-          tw.color('green-200'),
-          tw.color('green-50'),
+          tw.color('amber-100'),
+          tw.color('amber-50'),
           tw.color('white'),
         ]}
         style={tw`flex-1`}>
         <FlatList
-          data={queryData?.contents?.payload || []}
-          renderItem={renderItem}
+          bounces={true}
+          numColumns={columns}
+          //
+          data={data?.contents?.payload}
           keyExtractor={item => item._id}
-          // contentContainerStyle={tw`bg-white`}
-          ItemSeparatorComponent={() => <View style={tw`h-3`} />}
-          ListHeaderComponent={() => <View style={tw`h-4`} />}
-          ListFooterComponent={() => <View style={tw`h-4`} />}
+          renderItem={renderItem}
+          //
+          contentContainerStyle={tw`p-1 `}
+          columnWrapperStyle={tw`justify-between`}
+          ItemSeparatorComponent={() => <View style={tw`h-1`} />}
+          //
+          refreshControl={
+            <RefreshControl refreshing={loading} onRefresh={refetch} />
+          }
+          onEndReached={() => {
+            fetchMore({
+              variables: {
+                offset: data?.contents?.payload.length,
+                limit: 10,
+              },
+            });
+          }}
         />
       </LinearGradient>
     </SafeAreaContainer>
