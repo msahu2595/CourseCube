@@ -14,6 +14,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AdminContentListScreen from 'screens/AdminScreens/AdminContentListScreen';
 import AdminAddBundleScreen from 'screens/AdminScreens/AdminAddBundleScreen';
 import AdminBundleListScreen from 'screens/AdminScreens/AdminBundleListScreen';
+import AdminAdvertListScreen from 'screens/AdminScreens/AdminAdvertListScreen';
+import AdminHeadlineListScreen from 'screens/AdminScreens/AdminHeadlineListScreen';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -66,6 +68,16 @@ const myProfileStackGroup = () => {
         name="AdminBundleListScreen"
         component={AdminBundleListScreen}
         options={{headerTitle: 'Admin Bundle List'}}
+      />
+      <Stack.Screen
+        name="AdminAdvertListScreen"
+        component={AdminAdvertListScreen}
+        options={{headerTitle: 'Admin Advert List'}}
+      />
+      <Stack.Screen
+        name="AdminHeadlineListScreen"
+        component={AdminHeadlineListScreen}
+        options={{headerTitle: 'Admin Headline List'}}
       />
     </Stack.Group>
   );

@@ -3,6 +3,10 @@ import {gql} from '@apollo/client';
 export const ADD_TEST = gql`
   mutation addTest($testInput: TestInput!) {
     addTest(testInput: $testInput) {
+      code
+      success
+      message
+      token
       payload {
         _id
         title
@@ -10,20 +14,9 @@ export const ADD_TEST = gql`
         instructions
         duration
         totalMarks
-        negativeMark
         enable
         createdAt
         updatedAt
-        questions {
-          _id
-          question
-          image
-          passage
-          options
-          mark
-          answerIndex
-          enable
-        }
       }
     }
   }

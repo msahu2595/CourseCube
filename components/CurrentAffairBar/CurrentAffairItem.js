@@ -10,20 +10,20 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
-const CurrentAffairItem = memo(({_id, relatedTo, image, title, createdAt}) => {
+const CurrentAffairItem = memo(({_id, image, title, createdAt}) => {
   const navigation = useNavigation();
 
   const width = useWindowDimensions().width;
 
   const handlePress = useCallback(() => {
     navigation.navigate('CurrentAffairViewScreen', {
+      title,
       articleId: _id,
-      title: relatedTo,
     });
-  }, [navigation, _id, relatedTo]);
+  }, [navigation, title, _id]);
 
   return (
-    <View style={tw.style('items-center', 'px-4', 'py-2', {width})}>
+    <View style={tw.style('items-center', {width})}>
       <Pressable onPress={handlePress}>
         <ImageBackground
           source={{uri: image}}
@@ -35,7 +35,7 @@ const CurrentAffairItem = memo(({_id, relatedTo, image, title, createdAt}) => {
             'bg-black',
             'justify-between',
             {
-              width: width - 32,
+              width: width - 16,
               height: undefined,
               aspectRatio: 16 / 9,
             },

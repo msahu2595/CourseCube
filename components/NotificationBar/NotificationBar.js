@@ -24,7 +24,7 @@ const NotificationBar = props => {
   );
 
   return (
-    <View style={tw`py-4 bg-white`}>
+    <View style={tw`pt-4 pb-2 bg-white`}>
       <View style={tw`flex-row justify-between items-center px-4 bg-white`}>
         <Text style={tw`font-avSemi text-base text-gray-600`}>
           {props.title}
@@ -54,6 +54,7 @@ const NotificationBar = props => {
           data={queryData?.headlines?.payload || []}
           renderItem={renderItem}
           keyExtractor={item => item._id}
+          contentContainerStyle={tw`py-2`}
         />
       )}
     </View>

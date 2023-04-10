@@ -7,9 +7,11 @@ import App from './App';
 import {name as appName} from './app.json';
 
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import messaging from '@react-native-firebase/messaging';
 
+dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 // Register background handler

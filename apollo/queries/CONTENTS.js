@@ -22,7 +22,6 @@ export const CONTENTS = gql`
             title
             thumbnail
             time
-            link
             enable
             createdAt
             updatedAt

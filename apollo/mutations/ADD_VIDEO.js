@@ -1,23 +1,18 @@
 import {gql} from '@apollo/client';
 
-export const REFRESH_VIDEO = gql`
-  mutation refreshVideo($videoId: ID!) {
-    refreshVideo(videoId: $videoId) {
+export const ADD_VIDEO = gql`
+  mutation addVideo($videoLink: URL!) {
+    addVideo(videoLink: $videoLink) {
       code
       success
       message
       token
       payload {
-        __typename
         _id
         title
         thumbnail
-        link
         time
-        urls {
-          url
-          format
-        }
+        link
         enable
         createdAt
         updatedAt

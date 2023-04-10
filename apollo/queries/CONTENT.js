@@ -24,10 +24,6 @@ export const CONTENT = gql`
             thumbnail
             link
             time
-            urls {
-              url
-              format
-            }
             enable
             createdAt
             updatedAt
@@ -44,13 +40,12 @@ export const CONTENT = gql`
               image
               passage
               options
-              mark
               answerIndex
-              enable
+              mark
+              negativeMark
             }
             duration
             totalMarks
-            negativeMark
             enable
             createdAt
             updatedAt

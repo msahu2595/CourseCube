@@ -1,4 +1,13 @@
 import {
+  AdminHomeScreen,
+  AdminVideoListScreen,
+  AdminDocumentListScreen,
+  AdminTestListScreen,
+  AdminArticleListScreen,
+  AdminWebsiteListScreen,
+  AdminTestQuestionListScreen,
+} from './AdminScreens';
+import {
   LoginIntroScreen,
   MobileNumberScreen,
   OTPVerifyScreen,
@@ -63,6 +72,13 @@ import {
 } from './UserMenuScreens';
 
 export {
+  AdminHomeScreen,
+  AdminVideoListScreen,
+  AdminTestListScreen,
+  AdminDocumentListScreen,
+  AdminArticleListScreen,
+  AdminWebsiteListScreen,
+  AdminTestQuestionListScreen,
   LoginIntroScreen,
   MobileNumberScreen,
   OTPVerifyScreen,

@@ -15,7 +15,10 @@ const VideoItem = memo(props => {
   return (
     <Pressable onPress={handleNavigation}>
       <View
-        style={tw.style('bg-gray-50', 'rounded-lg', 'shadow-sm', {width: 224})}>
+        style={tw.style('bg-gray-50', 'rounded-lg', 'shadow-sm', {
+          width: 224,
+          height: 256,
+        })}>
         <ImageBackground
           source={{uri: props?.image}}
           resizeMode="cover"
@@ -41,17 +44,11 @@ const VideoItem = memo(props => {
             })}
           />
         </ImageBackground>
-        <View style={tw`p-2`}>
+        <View style={tw`flex-1 px-2 py-3 justify-between`}>
           <Text
-            style={tw.style(
-              'font-avSemi',
-              'text-indigo-700',
-              'py-1',
-              'capitalize',
-              {
-                fontSize: 10,
-              },
-            )}
+            style={tw.style('font-avSemi', 'text-indigo-700', 'capitalize', {
+              fontSize: 10,
+            })}
             numberOfLines={1}>
             {props?.subject}
           </Text>
@@ -61,17 +58,16 @@ const VideoItem = memo(props => {
             {props?.title}
           </Text>
           <Text
-            style={tw.style('font-avReg', 'text-gray-500', 'py-1', {
+            style={tw.style('font-avReg', 'text-gray-500', {
               fontSize: 10,
             })}
             numberOfLines={1}>
             {`${props?.likes} Likes | 50k Watched ${
               props?.purchases ? `| ${props?.purchases} Purchases` : ''
             }`}
-            {/* 45 Mins | 50k Watched */}
           </Text>
           {props?.paid && !props?.purchased ? (
-            <View style={tw`flex-row justify-between my-1`}>
+            <View style={tw`flex-row justify-between`}>
               <View style={tw`flex-row items-center justify-between`}>
                 <Text
                   style={tw`font-avSemi rounded text-xs px-2 bg-indigo-50 text-indigo-600 shadow-sm`}>
@@ -107,7 +103,7 @@ const VideoItem = memo(props => {
               )}
             </View>
           ) : (
-            <View style={tw`self-start my-1`}>
+            <View style={tw`self-start`}>
               <Text
                 style={tw.style(
                   'font-avSemi',

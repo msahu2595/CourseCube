@@ -1,10 +1,19 @@
 import {tw} from '@lib';
-import React, {memo, useMemo} from 'react';
 import {Text, View} from 'react-native';
+import React, {memo, useMemo} from 'react';
 import RadioForm from 'react-native-simple-radio-button';
 
 export const CCRadio = memo(
-  ({label, required = false, value, error, touched, radio_props, ...rest}) => {
+  ({
+    label,
+    required = false,
+    radio_props,
+    value,
+    horizontal = true,
+    error,
+    touched,
+    ...rest
+  }) => {
     const initial = useMemo(
       () => radio_props.findIndex(obj => obj.value === value),
       [radio_props, value],
@@ -19,11 +28,11 @@ export const CCRadio = memo(
         </Text>
         <View style={tw`my-1`}>
           <RadioForm
-            formHorizontal={true}
-            initial={initial}
+            formHorizontal={horizontal}
             buttonColor={tw.color('blue-600')}
             selectedButtonColor={tw.color('blue-600')}
             radio_props={radio_props}
+            initial={initial}
             {...rest}
           />
         </View>

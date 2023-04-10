@@ -1,8 +1,8 @@
 import {gql} from '@apollo/client';
 
-export const ADD_VIDEOS = gql`
-  mutation AddVideo($videoLink: URL!) {
-    addVideo(videoLink: $videoLink) {
+export const DELETE_DOCUMENT = gql`
+  mutation deleteDocument($documentId: ID!) {
+    deleteDocument(documentId: $documentId) {
       code
       success
       message
@@ -11,12 +11,8 @@ export const ADD_VIDEOS = gql`
         _id
         title
         thumbnail
-        link
-        time
-        urls {
-          url
-          format
-        }
+        url
+        pages
         enable
         createdAt
         updatedAt

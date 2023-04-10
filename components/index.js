@@ -8,9 +8,9 @@ import UserMenu from './UserMenu';
 import UserStatistics from './UserStatistics';
 import UserLeaderboard from './UserLeaderboard';
 // Item Component Imports
+import TagItem from './TagItem';
 import FollowItem from './FollowItem';
 import ContentItem from './ContentItem';
-import CommunityTagItem from './CommunityTagItem';
 import CommunityPostItem from './CommunityPostItem';
 import LeaderboardItem from './LeaderboardItem';
 // Bar & Item Component Imports
@@ -31,6 +31,11 @@ import NotificationBar, {NotificationItem} from './NotificationBar';
 import CurrentAffairBar, {CurrentAffairItem} from './CurrentAffairBar';
 // App Advert Imports
 import {ShareApp, FollowUs, GetCallFromUs, GetSubscription} from './AppAdverts';
+//
+import MediaItem from './MediaItem';
+import MenuOptionItem from './MenuOptionItem';
+import LoadingIndicator from './LoadingIndicator';
+import NetworkStatusProvider from './NetworkStatusProvider';
 
 export {
   FocusAwareStatusBar,
@@ -43,9 +48,9 @@ export {
   UserStatistics,
   UserLeaderboard,
   // Item Component Exports
+  TagItem,
   FollowItem,
   ContentItem,
-  CommunityTagItem,
   CommunityPostItem,
   LeaderboardItem,
   // Folder Components Exports
@@ -76,4 +81,9 @@ export {
   FollowUs,
   GetCallFromUs,
   GetSubscription,
+  //
+  MediaItem,
+  MenuOptionItem,
+  LoadingIndicator,
+  NetworkStatusProvider,
 };

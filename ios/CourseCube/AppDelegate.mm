@@ -1,6 +1,8 @@
 #import <Firebase.h> // Firebase: @react-native-firebase
 #import "AppDelegate.h"
 
+#import "Orientation.h" // react-native-orientation-locker
+
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
@@ -132,5 +134,10 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 }
 
 #endif
+
+// react-native-orientation-locker
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+  return [Orientation getOrientation];
+}
 
 @end
