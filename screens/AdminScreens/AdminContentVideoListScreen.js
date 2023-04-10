@@ -1,185 +1,169 @@
 import {
   View,
   Text,
-  FlatList,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  Switch,
   Alert,
-  Button,
+  FlatList,
+  Dimensions,
+  RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import tw from '@lib/tailwind';
 import {CONTENTS} from '@queries';
+import {VideoItem} from '@components';
 import {DELETE_CONTENT} from '@mutations';
-import {SafeAreaContainer} from '@components';
+import {CCSearchInput} from 'components/Common';
 import React, {useCallback, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import EditContentModal from 'components/EditContentModal';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 
-const separator = () => <View style={tw`h-2`} />;
+const columns = 2;
+const width = Dimensions.get('window').width;
+const itemWidth = columns
+  ? width / columns - ((columns + 1) * 4) / columns
+  : null;
 
-function AdminContentVideoListScreen() {
-  const [isEnabled, setIsEnabled] = useState(false);
+const AdminContentVideoListScreen = () => {
   const [search, setSearch] = useState('');
   const [editContentModal, setEditContentModal] = useState(null);
 
-  const {loading, error, data, refetch, fetchMore} = useQuery(CONTENTS, {
-    variables: {
-      filter: {
-        type: 'Video',
-      },
+  const {loading, data, refetch, fetchMore} = useQuery(CONTENTS, {
+    variables: {filter: {type: 'Video'}},
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
     },
   });
-
-  console.log('dataaaaa', data);
 
   const [deleteContent] = useMutation(DELETE_CONTENT, {
     onCompleted: () => {
       showMessage({
-        message: 'Your Content successfully deleted',
+        message: 'Content is successfully deleted.',
         type: 'success',
       });
     },
-    onError: () => {
+    onError: err => {
       showMessage({
-        message: 'Not able to delete',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
         type: 'danger',
       });
     },
-    refetchQueries: ['contents'],
+    refetchQueries: [{query: CONTENTS, variables: {filter: {type: 'Video'}}}],
   });
 
   const deleteHandler = useCallback(
     contentId =>
-      Alert.alert('Delete Content', 'Are you want to delete content', [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () =>
-            deleteContent({
-              variables: {contentId},
-            }),
-        },
-      ]),
+      Alert.alert(
+        'Delete Content',
+        'Are you sure, you want to delete this content?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => {
+              deleteContent({
+                variables: {contentId},
+              });
+            },
+            style: 'destructive',
+          },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+      ),
     [deleteContent],
   );
 
-  const Item = item => {
-    console.log(item);
-    return (
-      <View style={tw`flex-row pb-2 px-2 rounded-lg`}>
-        <Image
-          source={{
-            uri: item.image,
-          }}
-          style={tw`w-44 h-24 rounded-lg`}
-        />
-        <View style={tw`flex justify-between px-1`}>
-          <Text style={tw`text-xs font-bold`}>{item.subject}</Text>
-          <Text
-            numberOfLines={2}
-            ellipsizeMode="tail"
-            style={tw`text-[14px] font-bold`}>
-            {item.title}
-          </Text>
-          <View style={tw`flex-row`}>
-            <Text style={tw`text-[10px]`}>{item.media.time} | </Text>
-            <Text style={tw`text-[10px]`}>{item.likes} likes |</Text>
-            <Text style={tw`text-[10px]`}>{item.createdAt}</Text>
-          </View>
-          {item.enable && (
-            <Button
-              title={'Delete'}
-              onPress={() => {
-                deleteHandler(item._id);
-              }}
-            />
-          )}
-          <Button
-            onPress={() => setEditContentModal(item)}
-            title="Edit"
-            color="#841584"
-          />
+  const onChangeSearchText = useCallback(
+    text => {
+      console.log(text);
+      setSearch(text);
+      if (text.length > 2) {
+        refetch({search: text});
+      } else {
+        refetch({search: ''});
+      }
+    },
+    [refetch],
+  );
+
+  const clearSearchText = useCallback(() => {
+    setSearch('');
+    refetch({search: ''});
+  }, [refetch]);
+
+  const _renderItem = useCallback(
+    ({item}) => (
+      <View>
+        <VideoItem {...item} width={itemWidth} />
+        <View style={tw`flex-row mt-[2px]`}>
+          <TouchableOpacity
+            style={tw`flex-1 items-center bg-blue-500 py-2 rounded-md`}
+            onPress={() => setEditContentModal(item)}>
+            <Text style={tw`text-white text-xs font-avReg`}>Edit</Text>
+          </TouchableOpacity>
+          <View style={tw`w-[2px]`} />
+          <TouchableOpacity
+            style={tw`flex-1 items-center bg-red-500 py-2 rounded-md`}
+            onPress={() => deleteHandler(item._id)}>
+            <Text style={tw`text-white text-xs font-avReg`}>Delete</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    );
-  };
+    ),
+    [deleteHandler],
+  );
 
   return (
-    <>
-      <SafeAreaContainer>
-        <View style={tw`flex-row m-2`}>
-          <View style={tw`flex-1 flex-row items-center border rounded-lg`}>
-            <TextInput
-              placeholder="Enter name to search"
-              style={tw`flex-1`}
-              value={search}
-              onChangeText={text => {
-                setSearch(text);
-                if (text.length > 2) {
-                  refetch({search: text});
-                } else {
-                  refetch({search: ''});
-                }
-              }}
-            />
-            <TouchableOpacity
-              onPress={() => {
-                setSearch('');
-                refetch({search: ''});
-              }}>
-              <MaterialCommunityIcons name="clear" size={25} style={tw`p-1`} />
-            </TouchableOpacity>
+    <View style={tw`flex-1 bg-white`}>
+      <CCSearchInput
+        value={search}
+        searching={loading}
+        onChangeText={onChangeSearchText}
+        onClear={clearSearchText}
+      />
+      <FlatList
+        bounces={true}
+        numColumns={columns}
+        //
+        data={data?.contents?.payload}
+        keyExtractor={item => item._id}
+        renderItem={_renderItem}
+        //
+        contentContainerStyle={tw`px-1`}
+        columnWrapperStyle={tw`justify-between`}
+        ItemSeparatorComponent={() => <View style={tw`h-1`} />}
+        ListFooterComponent={() => (
+          <View style={tw`py-4 items-center`}>
+            <Text style={tw`text-xs text-gray-600 font-avSemi`}>
+              {loading ? 'Loading...' : "That's all, we have got!!"}
+            </Text>
           </View>
-          <Switch
-            trackColor={{false: '#767577', true: '#81b0ff'}}
-            thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={value => {
-              setIsEnabled(value);
-              refetch({filter: {type: 'Video', enable: !value}});
-            }}
-            value={isEnabled}
-          />
-        </View>
-        {loading ? (
-          <Text>Loading...</Text>
-        ) : error ? (
-          <Text>Error: {error.message}</Text>
-        ) : (
-          <FlatList
-            data={data?.contents?.payload}
-            renderItem={({item}) => <Item {...item} />}
-            keyExtractor={item => item._id}
-            ItemSeparatorComponent={separator}
-            refreshing={loading}
-            onRefresh={refetch}
-            onEndReached={() =>
-              fetchMore({
-                variables: {
-                  offset: data?.contents?.payload.length,
-                  limit: 10,
-                },
-              })
-            }
-          />
         )}
-      </SafeAreaContainer>
+        //
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={refetch} />
+        }
+        onEndReached={() => {
+          fetchMore({
+            variables: {
+              offset: data?.contents?.payload.length,
+              limit: 10,
+            },
+          });
+        }}
+      />
       <EditContentModal
         content={editContentModal}
         onClose={() => {
           setEditContentModal(null);
         }}
       />
-    </>
+    </View>
   );
-}
+};
 
 export default AdminContentVideoListScreen;

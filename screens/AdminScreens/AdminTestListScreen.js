@@ -171,7 +171,7 @@ const AdminTestListScreen = ({navigation}) => {
         }}
       />
       <AddContentModal
-        content={addContentModal}
+        media={addContentModal}
         onClose={() => {
           setAddContentModal(null);
         }}

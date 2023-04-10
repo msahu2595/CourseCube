@@ -117,7 +117,7 @@ const CreateArticleModal = ({visible, onClose}) => {
                 editable={!submitting}
               />
               <CCCheckBox
-                label="If ticked, article immediately visible to users."
+                label="If ticked, article will be immediately visible to users."
                 checked={values.visible}
                 onPress={value => {
                   setFieldValue('visible', value);

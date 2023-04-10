@@ -1,8 +1,12 @@
 import {gql} from '@apollo/client';
 
 export const EDIT_CONTENT = gql`
-  mutation EditContent($contentId: ID!, $contentInput: ContentInput!) {
+  mutation editContent($contentId: ID!, $contentInput: ContentInput!) {
     editContent(contentId: $contentId, contentInput: $contentInput) {
+      code
+      success
+      message
+      token
       payload {
         _id
         categories
@@ -14,44 +18,12 @@ export const EDIT_CONTENT = gql`
         media {
           ... on Video {
             _id
-            title
-            thumbnail
-            time
-            link
-            enable
-            createdAt
-            updatedAt
           }
           ... on Test {
             _id
-            title
-            thumbnail
-            instructions
-            duration
-            questions {
-              _id
-              question
-              image
-              passage
-              options
-              answerIndex
-              mark
-              negativeMark
-            }
-            totalMarks
-            enable
-            createdAt
-            updatedAt
           }
           ... on Document {
             _id
-            title
-            thumbnail
-            url
-            pages
-            enable
-            createdAt
-            updatedAt
           }
         }
         type

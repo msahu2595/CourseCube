@@ -158,7 +158,7 @@ const AdminDocumentListScreen = () => {
         }}
       />
       <AddContentModal
-        content={addContentModal}
+        media={addContentModal}
         onClose={() => {
           setAddContentModal(null);
         }}

@@ -1,116 +1,141 @@
 import React from 'react';
-import {Text, View, Button, ImageBackground} from 'react-native';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import tw from '@lib/tailwind';
-import {CCModal, CCRadio, CCTextInput} from './Common';
+import {View} from 'react-native';
+import {CONTENTS} from '@queries';
 import {EDIT_CONTENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
+import {CCButton, CCCheckBox, CCModal, CCRadio, CCTextInput} from './Common';
 
-const AddContentValidationSchema = yup.object({
-  subject: yup.string().required('required'),
-  image: yup.string().url().required('required'),
-  title: yup.string().required('required'),
-  type: yup.string().oneOf(['Video', 'Test', 'Document']).required('required'),
-  media: yup.string().required('required'),
-  paid: yup.boolean().required('required'),
-  description: yup.string().required('required'),
+const EditContentValidationSchema = yup.object({
+  subject: yup.string().required('Please enter subject.'),
+  image: yup
+    .string()
+    .url('Image should be a link.')
+    .required('Please enter image link.'),
+  title: yup.string().required('Please enter title.'),
+  media: yup.string().required('Please enter media id.'),
+  type: yup
+    .string()
+    .oneOf(['Video', 'Test', 'Document'])
+    .required('Please enter media type.'),
+  paid: yup.boolean().required(),
+  price: yup.number().min(1).max(99999).nullable(),
+  offer: yup.number().min(1).max(99999).nullable(),
+  offerType: yup.string().oneOf(['PERCENT', 'AMOUNT']).nullable(),
   highlight: yup.string().nullable(),
-  price: yup.number().nullable(),
-  offer: yup.number().nullable(),
-  offerType: yup.string().oneOf(['AMOUNT', 'PERCENT']).nullable(),
-  language: yup.string().oneOf(['HI', 'EN']).required('required'),
+  language: yup
+    .string()
+    .oneOf(['HI', 'EN'])
+    .required('Please select language.'),
+  index: yup.string().nullable(),
+  description: yup.string().required('Please enter description.'),
+  visible: yup.boolean().required(),
 });
 
 const EditContentModal = ({content, onClose}) => {
-  const [EditContent, {loading}] = useMutation(EDIT_CONTENT, {
-    onCompleted: data => {
+  const [editContent, {submitting: submitting}] = useMutation(EDIT_CONTENT, {
+    onCompleted: () => {
       onClose();
       showMessage({
-        message: 'Your content Successfully Added.',
+        message: 'Content is successfully edited.',
         type: 'success',
       });
     },
     onError: err => {
       showMessage({
-        message: err?.message || 'Some unknown error occurred.',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
         type: 'danger',
       });
     },
-    refetchQueries: ['AddContent'],
+    refetchQueries: [
+      {query: CONTENTS, variables: {filter: {type: content?.type}}},
+    ],
   });
 
-  return (
-    <CCModal title="Add Content" visible={!!content} onClose={onClose}>
-      <View style={tw.style(' rounded-lg bg-gray-200 ')}>
-        <ImageBackground
-          source={{
-            uri: content?.thumbnail,
-          }}
-          resizeMode="cover"
-          style={tw`h-40  justify-between`}>
-          <View style={tw` h-10 `}>
-            <Text
-              style={tw` self-end text-xs  text-white p-1 bg-black bg-opacity-40  rounded-bl-lg `}>
-              {content?.time}
-            </Text>
-          </View>
-          <View
-            style={tw`bg-black bg-opacity-50 text-white p-1 h-10 justify-center`}>
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={tw`text-xs px-1 text-white`}>
-              {content?.title}
-            </Text>
-          </View>
-        </ImageBackground>
-      </View>
+  console.log(content);
 
+  return (
+    <CCModal
+      title="Edit Content"
+      visible={!!content}
+      submitting={submitting}
+      onClose={onClose}>
       <Formik
         initialValues={{
-          type: content?.type,
           subject: content?.subject,
           image: content?.image,
           title: content?.title,
-          description: content?.description,
-          highlight: content?.highlight,
-          media: content?._id,
-          paid: false,
-          price: content?.price,
-          offer: content?.offer,
+          media: content?.media?._id,
+          type: content?.type,
+          paid: content?.paid,
+          price: content?.price?.toString(),
+          offer: content?.offer?.toString(),
           offerType: content?.offerType,
-          language: 'HI',
+          highlight: content?.highlight,
+          language: content?.language,
+          index: content?.index,
+          description: content?.description,
+          visible: content?.visible,
         }}
-        validationSchema={AddContentValidationSchema}
-        onSubmit={values => {
-          console.log('value', values);
-          EditContent({
-            variables: {
-              contentId: content._id,
-              contentInput: {
-                subject: values.subject,
-                image: values.image,
-                title: values.title,
-                media: values.media,
-                type: values.type,
-                paid: values.paid,
-                price: parseInt(values.price, 10),
-                offer: parseInt(values.offer, 10),
-                offerType: values.offerType,
-                highlight: values.highlight,
-                description: values.description,
-                language: values.language,
-              },
-            },
-          });
+        validationSchema={EditContentValidationSchema}
+        onSubmit={(values, {setFieldError}) => {
+          const contentInput = {
+            subject: values.subject,
+            image: values.image,
+            title: values.title,
+            media: values.media,
+            type: values.type,
+            paid: false,
+            language: values.language,
+            description: values.description,
+            visible: values.visible,
+          };
+          if (values.paid && values.price && parseInt(values.price, 10)) {
+            contentInput.paid = true;
+            contentInput.price = parseInt(values.price, 10);
+            if (values.offer && parseInt(values.offer, 10)) {
+              contentInput.offer = parseInt(values.offer, 10);
+              if (
+                values.offerType === 'AMOUNT' &&
+                parseInt(values.offer, 10) > parseInt(values.price, 10)
+              ) {
+                setFieldError(
+                  'offer',
+                  `Offer must be less than or equal to ${values.price}.`,
+                );
+                return;
+              }
+              if (
+                (values.offerType === 'PERCENT' &&
+                  parseInt(values.offer, 10) > 100) ||
+                (values.offerType === 'PERCENT' &&
+                  parseInt(values.offer, 10) < 0)
+              ) {
+                setFieldError(
+                  'offer',
+                  'Offer must be less than or equal to 100.',
+                );
+                return;
+              }
+              contentInput.offerType = values.offerType;
+            }
+          }
+          if (values.highlight) {
+            contentInput.highlight = values.highlight;
+          }
+          if (values.index) {
+            contentInput.index = values.index;
+          }
+          editContent({variables: {contentId: content?._id, contentInput}});
         }}>
         {({
           handleChange,
           handleBlur,
-          setFieldValue,
           handleSubmit,
+          setFieldValue,
           values,
           errors,
           touched,
@@ -119,34 +144,57 @@ const EditContentModal = ({content, onClose}) => {
             <View style={tw`py-2`}>
               <CCTextInput
                 required
-                label="Subject"
-                error={errors.subject}
-                touched={touched.subject}
-                onChangeText={handleChange('subject')}
-                onBlur={handleBlur('subject')}
-                value={values.subject}
-                editable={!loading}
-              />
-
-              <CCTextInput
-                required
-                label="Image"
-                error={errors.image}
-                touched={touched.image}
-                onChangeText={handleChange('image')}
-                onBlur={handleBlur('image')}
-                value={values.image}
-                editable={!loading}
-              />
-              <CCTextInput
-                required
                 label="Title"
                 error={errors.title}
                 touched={touched.title}
                 onChangeText={handleChange('title')}
                 onBlur={handleBlur('title')}
                 value={values.title}
-                editable={!loading}
+                editable={!submitting}
+              />
+              <CCTextInput
+                required
+                label="Subject"
+                error={errors.subject}
+                touched={touched.subject}
+                onChangeText={handleChange('subject')}
+                onBlur={handleBlur('subject')}
+                value={values.subject}
+                editable={!submitting}
+              />
+              <CCTextInput
+                required
+                label="Image"
+                error={errors.image}
+                touched={touched.image}
+                info="Example: https://picsum.photos/195/110"
+                onChangeText={handleChange('image')}
+                onBlur={handleBlur('image')}
+                value={values.image}
+                editable={!submitting}
+                autoCapitalize="none"
+                inputMode="url"
+              />
+              <CCRadio
+                required
+                label="Language"
+                radio_props={[
+                  {label: 'Hindi   ', value: 'HI'},
+                  {label: 'English   ', value: 'EN'},
+                ]}
+                value={values.language}
+                onPress={value => {
+                  setFieldValue('language', value);
+                }}
+              />
+              <CCTextInput
+                label="Highlight"
+                error={errors.highlight}
+                touched={touched.highlight}
+                onChangeText={handleChange('highlight')}
+                onBlur={handleBlur('highlight')}
+                value={values.highlight}
+                editable={!submitting}
               />
               <CCTextInput
                 required
@@ -156,82 +204,84 @@ const EditContentModal = ({content, onClose}) => {
                 onChangeText={handleChange('description')}
                 onBlur={handleBlur('description')}
                 value={values.description}
-                editable={!loading}
+                editable={!submitting}
                 multiline={true}
                 numberOfLines={4}
               />
               <CCTextInput
-                label="Highlight"
-                error={errors.highlight}
-                touched={touched.highlight}
-                onChangeText={handleChange('highlight')}
-                onBlur={handleBlur('highlight')}
-                value={values.highlight}
-                editable={!loading}
+                label="Index"
+                error={errors.index}
+                touched={touched.index}
+                onChangeText={handleChange('index')}
+                onBlur={handleBlur('index')}
+                value={values.index}
+                editable={!submitting}
+                multiline={true}
+                numberOfLines={4}
               />
-              <CCRadio
-                required
-                label="Language"
-                onPress={handleChange('language')}
-                value={values.language}
-                radio_props={[
-                  {label: 'Hindi', value: 'HI'},
-                  {label: 'English', value: 'EN'},
-                ]}
-              />
-
-              <CCRadio
-                required
-                label="Course"
+              <CCCheckBox
+                label="Tick this, if content is paid."
+                checked={values.paid}
                 onPress={value => {
                   setFieldValue('paid', value);
                 }}
-                radio_props={[
-                  {label: 'Free', value: false},
-                  {label: 'Paid', value: true},
-                ]}
-                value={values.paid}
               />
-
-              {values.paid ? (
+              {values.paid && (
                 <>
                   <CCTextInput
                     label="Price"
                     error={errors.price}
                     touched={touched.price}
+                    info="Min: 1, Max: 99999"
                     onChangeText={handleChange('price')}
                     onBlur={handleBlur('price')}
                     value={values.price}
-                    editable={!loading}
+                    editable={!submitting}
+                    keyboardType="number-pad"
                   />
-                  <CCTextInput
-                    label="Offer"
-                    error={errors.offer}
-                    touched={touched.offer}
-                    onChangeText={handleChange('offer')}
-                    onBlur={handleBlur('offer')}
-                    value={values.offer}
-                    editable={!loading}
-                  />
-                  <CCRadio
-                    required
-                    label="Offer Type"
-                    onPress={handleChange('offerType')}
-                    value={values.offerType}
-                    radio_props={[
-                      {label: 'Amount', value: 'AMOUNT'},
-                      {label: 'Percent', value: 'PERCENT'},
-                    ]}
-                  />
+                  {!!values.price && (
+                    <>
+                      <CCTextInput
+                        label="Offer"
+                        error={errors.offer}
+                        touched={touched.offer}
+                        onChangeText={handleChange('offer')}
+                        onBlur={handleBlur('offer')}
+                        value={values.offer}
+                        editable={!submitting}
+                        keyboardType="number-pad"
+                      />
+                      {!!values.offer && (
+                        <CCRadio
+                          label="Offer Type"
+                          radio_props={[
+                            {label: 'Percent   ', value: 'PERCENT'},
+                            {label: 'Amount   ', value: 'AMOUNT'},
+                          ]}
+                          value={values.offerType}
+                          onPress={value => {
+                            setFieldValue('offerType', value);
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
                 </>
-              ) : null}
-              <Button
-                onPress={() => {
-                  handleSubmit();
+              )}
+              <CCCheckBox
+                label="If ticked, content will be immediately visible to users."
+                checked={values.visible}
+                onPress={value => {
+                  setFieldValue('visible', value);
                 }}
-                title="Submit"
               />
             </View>
+            <CCButton
+              label="Submit"
+              loading={submitting}
+              disabled={submitting}
+              onPress={handleSubmit}
+            />
           </>
         )}
       </Formik>

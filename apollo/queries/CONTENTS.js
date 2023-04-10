@@ -8,6 +8,20 @@ export const CONTENTS = gql`
     $filter: ContentsFilterInput
   ) {
     contents(offset: $offset, limit: $limit, search: $search, filter: $filter) {
+      code
+      success
+      message
+      token
+      offset
+      limit
+      search
+      filter {
+        paid
+        type
+        language
+        visible
+        enable
+      }
       payload {
         _id
         categories
@@ -19,43 +33,12 @@ export const CONTENTS = gql`
         media {
           ... on Video {
             _id
-            title
-            thumbnail
-            time
-            enable
-            createdAt
-            updatedAt
           }
           ... on Test {
             _id
-            title
-            thumbnail
-            instructions
-            duration
-            questions {
-              _id
-              question
-              image
-              passage
-              options
-              answerIndex
-              mark
-              negativeMark
-            }
-            totalMarks
-            enable
-            createdAt
-            updatedAt
           }
           ... on Document {
             _id
-            title
-            thumbnail
-            url
-            pages
-            enable
-            createdAt
-            updatedAt
           }
         }
         type

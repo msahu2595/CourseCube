@@ -18,34 +18,12 @@ export const ADD_CONTENT = gql`
         media {
           ... on Video {
             _id
-            title
-            thumbnail
-            time
-            link
-            enable
-            createdAt
-            updatedAt
           }
           ... on Test {
             _id
-            title
-            thumbnail
-            instructions
-            duration
-            totalMarks
-            enable
-            createdAt
-            updatedAt
           }
           ... on Document {
             _id
-            title
-            thumbnail
-            url
-            pages
-            enable
-            createdAt
-            updatedAt
           }
         }
         type
