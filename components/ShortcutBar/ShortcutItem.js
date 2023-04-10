@@ -10,7 +10,7 @@ const ShortcutItem = ({index, icon, firstName, lastName, screen}) => {
   const navigation = useNavigation();
   return (
     <Pressable
-      onPress={() => navigation.navigate(screen)}
+      onPress={() => (screen ? navigation.navigate(screen) : null)}
       style={tw.style('py-4', 'justify-center', 'items-center', {width: 80})}>
       <LinearGradient
         colors={[COLOR_GRADIENTS[index][50], COLOR_GRADIENTS[index][100]]}

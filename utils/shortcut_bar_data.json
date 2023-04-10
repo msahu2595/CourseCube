@@ -1,70 +1,75 @@
 [
-    {
-        "id": "SHORTCUT_1",
-        "icon": "videocamera",
-        "firstName": "Watch",
-        "lastName": "Videos"
-    },
-    {
-        "id": "SHORTCUT_2",
-        "icon": "book",
-        "firstName": "Study",
-        "lastName": "Materials"
-    },
-    {
-        "id": "SHORTCUT_3",
-        "seen": true,
-        "icon": "form",
-        "firstName": "Test",
-        "lastName": "Series"
-    },
-    {
-        "id": "SHORTCUT_4",
-        "icon": "bells",
-        "firstName": "Latest",
-        "lastName": "Notification"
-    },
-    {
-        "id": "SHORTCUT_5",
-        "icon": "notification",
-        "firstName": "Current",
-        "lastName": "Affairs"
-    },
-    {
-        "id": "SHORTCUT_6",
-        "icon": "pdffile1",
-        "firstName": "PDF",
-        "lastName": "Magazines"
-    },
-    {
-        "id": "SHORTCUT_7",
-        "icon": "download",
-        "firstName": "Offline",
-        "lastName": "Downloads"
-    },
-    {
-        "id": "SHORTCUT_8",
-        "icon": "copy1",
-        "firstName": "Previous",
-        "lastName": "Year Papers"
-    },
-    {
-        "id": "SHORTCUT_9",
-        "icon": "bulb1",
-        "firstName": "Toppers &",
-        "lastName": "Motivational Videos"
-    },
-    {
-        "id": "SHORTCUT_10",
-        "icon": "link",
-        "firstName": "Important",
-        "lastName": "Websites"
-    },
-    {
-        "id": "SHORTCUT_11",
-        "icon": "phone",
-        "firstName": "Contact",
-        "lastName": "Us",
-        "screen": "ContactUs"
-    }
+  {
+    "id": "SHORTCUT_1",
+    "icon": "videocamera",
+    "firstName": "Watch",
+    "lastName": "Videos",
+    "screen": "VideoListScreen"
+  },
+  {
+    "id": "SHORTCUT_3",
+    "seen": true,
+    "icon": "form",
+    "firstName": "Test",
+    "lastName": "Series",
+    "screen": "TestListScreen"
+  },
+  {
+    "id": "SHORTCUT_2",
+    "icon": "book",
+    "firstName": "Study",
+    "lastName": "Materials",
+    "screen": "DocumentListScreen"
+  },
+  {
+    "id": "SHORTCUT_4",
+    "icon": "bells",
+    "firstName": "Latest",
+    "lastName": "Notification",
+    "screen": "NotificationListScreen"
+  },
+  {
+    "id": "SHORTCUT_5",
+    "icon": "notification",
+    "firstName": "Current",
+    "lastName": "Affairs",
+    "screen": "CurrentAffairListScreen"
+  },
+  {
+    "id": "SHORTCUT_6",
+    "icon": "pdffile1",
+    "firstName": "PDF",
+    "lastName": "Magazines"
+  },
+  {
+    "id": "SHORTCUT_7",
+    "icon": "download",
+    "firstName": "Offline",
+    "lastName": "Downloads"
+  },
+  {
+    "id": "SHORTCUT_8",
+    "icon": "copy1",
+    "firstName": "Previous",
+    "lastName": "Year Papers"
+  },
+  {
+    "id": "SHORTCUT_9",
+    "icon": "bulb1",
+    "firstName": "Toppers &",
+    "lastName": "Motivational Videos"
+  },
+  {
+    "id": "SHORTCUT_10",
+    "icon": "link",
+    "firstName": "Important",
+    "lastName": "Websites",
+    "screen": "WebsiteListScreen"
+  },
+  {
+    "id": "SHORTCUT_11",
+    "icon": "phone",
+    "firstName": "Contact",
+    "lastName": "Us"
+  }
 ]

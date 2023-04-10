@@ -23,6 +23,7 @@ import FullSyllabusCourseBar, {
 import SubjectWiseCourseBar, {
   SubjectWiseCourseItem,
 } from './SubjectWiseCourseBar';
+import WebsiteItem from './WebsiteItem';
 import VideoBar, {VideoItem} from './VideoBar';
 import TestBar, {TestItem} from './TestBar';
 import DocumentBar, {DocumentItem} from './DocumentBar';
@@ -64,6 +65,7 @@ export {
   FullSyllabusCourseItem,
   SubjectWiseCourseBar,
   SubjectWiseCourseItem,
+  WebsiteItem,
   VideoBar,
   VideoItem,
   TestBar,

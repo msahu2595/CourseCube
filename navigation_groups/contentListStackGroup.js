@@ -65,8 +65,6 @@ const contentListStackGroup = () => {
         name="VideoListScreen"
         component={VideoListScreen}
         options={({route}) => ({
-          headerShown: true,
-          headerStyle: tw`bg-indigo-100`,
           headerTitle: route?.params?.headerTitle || 'Videos',
         })}
       />
@@ -74,8 +72,6 @@ const contentListStackGroup = () => {
         name="TestListScreen"
         component={TestListScreen}
         options={({route}) => ({
-          headerShown: true,
-          headerStyle: tw`bg-amber-100`,
           headerTitle: route?.params?.headerTitle || 'Tests',
         })}
       />
@@ -83,8 +79,6 @@ const contentListStackGroup = () => {
         name="DocumentListScreen"
         component={DocumentListScreen}
         options={({route}) => ({
-          headerShown: true,
-          headerStyle: tw`bg-teal-100`,
           headerTitle: route?.params?.headerTitle || 'Documents',
         })}
       />
@@ -92,24 +86,13 @@ const contentListStackGroup = () => {
         name="NotificationListScreen"
         component={NotificationListScreen}
         options={({route}) => ({
-          headerShown: true,
-          headerStyle: tw`bg-gray-300`,
           headerTitle: route?.params?.headerTitle || 'Notifications',
-        })}
-      />
-      <Stack.Screen
-        name="PrepareExamListScreen"
-        component={PrepareExamListScreen}
-        options={({route}) => ({
-          headerTitle: route?.params?.headerTitle || 'Prepare Exams',
         })}
       />
       <Stack.Screen
         name="CurrentAffairListScreen"
         component={CurrentAffairListScreen}
         options={({route}) => ({
-          headerShown: true,
-          headerStyle: tw`bg-gray-300`,
           headerTitle: route?.params?.headerTitle || 'Currents Affairs',
         })}
       />
@@ -125,6 +108,13 @@ const contentListStackGroup = () => {
         component={WebsiteListScreen}
         options={({route}) => ({
           headerTitle: route?.params?.headerTitle || 'Websites',
+        })}
+      />
+      <Stack.Screen
+        name="PrepareExamListScreen"
+        component={PrepareExamListScreen}
+        options={({route}) => ({
+          headerTitle: route?.params?.headerTitle || 'Prepare Exams',
         })}
       />
       <Stack.Screen

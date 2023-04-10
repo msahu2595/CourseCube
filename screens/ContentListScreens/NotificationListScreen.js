@@ -3,7 +3,6 @@ import {HEADLINES} from '@queries';
 import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
 import {View, FlatList} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import {NotificationItem, SafeAreaContainer} from '@components';
 
 const NotificationListScreen = () => {
@@ -15,25 +14,14 @@ const NotificationListScreen = () => {
   );
 
   return (
-    <SafeAreaContainer
-      statusBgColor={tw.color('gray-300')}
-      statusBarStyle="dark-content">
-      <LinearGradient
-        locations={[0, 0.5, 1]}
-        colors={[
-          tw.color('gray-300'),
-          tw.color('gray-200'),
-          tw.color('gray-100'),
-        ]}
-        style={tw`flex-1`}>
-        <FlatList
-          data={queryData?.headlines?.payload || []}
-          renderItem={renderItem}
-          keyExtractor={item => item._id}
-          contentContainerStyle={tw`py-2`}
-          ItemSeparatorComponent={() => <View style={tw`h-2`} />}
-        />
-      </LinearGradient>
+    <SafeAreaContainer>
+      <FlatList
+        data={queryData?.headlines?.payload || []}
+        renderItem={renderItem}
+        keyExtractor={item => item._id}
+        contentContainerStyle={tw`py-2`}
+        ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+      />
     </SafeAreaContainer>
   );
 };

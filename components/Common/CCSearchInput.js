@@ -10,7 +10,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export const CCSearchInput = memo(({searching = false, onClear, ...rest}) => (
   <View
-    style={tw`m-2 flex-row items-center bg-gray-100 border border-gray-300 rounded-lg`}>
+    style={tw`m-2 flex-row items-center bg-gray-50 border border-gray-300 rounded-lg`}>
     <TextInput
       style={tw.style('pl-2 flex-1 text-black')}
       placeholder="Enter search text here..."
