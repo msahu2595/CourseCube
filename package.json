@@ -16,6 +16,8 @@
     "start": "npx react-native start --reset-cache",
     "preandroid:build": "npx jetify",
     "android:build": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && ./gradlew assembleDebug",
+    "log:android": "npx react-native log-android",
+    "log:ios": "npx react-native log-ios",
     "android:release": "npx react-native run-android --variant=release",
     "ios:release": "npx react-native run-ios --configuration=release",
     "copy:apk": "cp android/app/build/outputs/apk/release/app-release.apk",

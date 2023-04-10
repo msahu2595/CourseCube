@@ -141,9 +141,12 @@ export const errorLink = onError(error => {
   }
 });
 
+console.log({__DEV__});
+
 const httpLink = createHttpLink({
-  // uri: 'https://course-cube-server-python-env.onrender.com/',
-  uri: 'http://192.168.1.7:4000/',
+  uri: __DEV__
+    ? 'http://192.168.1.7:4000/'
+    : 'https://course-cube-server-python-env.onrender.com/',
 });
 
 const setTokenLink = new ApolloLink((operation, forward) => {
