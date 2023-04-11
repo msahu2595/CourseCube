@@ -1,5 +1,7 @@
 import React from 'react';
 import tw from '@lib/tailwind';
+import openWebURL from 'utils/openWebURL';
+import {WHATSAPP_NUMBER} from 'utils/constants';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 
 const GetCallFromUs = () => {
@@ -23,6 +25,12 @@ const GetCallFromUs = () => {
         </Text>
         <View style={tw`mt-2 flex-row`}>
           <TouchableOpacity
+            onPress={() =>
+              openWebURL(
+                `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=Hi`,
+                false,
+              )
+            }
             style={tw.style('px-4', 'py-2', 'rounded-lg', 'self-start', {
               backgroundColor: tw.color('green-600'),
             })}>

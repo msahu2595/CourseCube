@@ -5,12 +5,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import {Text, View, TouchableOpacity} from 'react-native';
 
 const menu = [
-  {name: 'My Courses', icon: 'book-open', screen: ''},
-  {name: 'Downloads', icon: 'download', screen: ''},
-  {name: 'Bookmarks', icon: 'bookmark', screen: ''},
-  {name: 'Payments', icon: 'credit-card', screen: ''},
+  {name: 'My Courses', icon: 'book-open', screen: 'MyCoursesScreen'},
+  {name: 'Downloads', icon: 'download', screen: 'DownloadsScreen'},
+  {name: 'Bookmarks', icon: 'bookmark', screen: 'BookmarksScreen'},
+  {name: 'Payments', icon: 'credit-card', screen: 'PaymentsScreen'},
   {name: 'Settings', icon: 'settings', screen: 'SettingsScreen'},
-  {name: 'Help & Support', icon: 'headphones', screen: ''},
+  {name: 'Help & Support', icon: 'headphones', screen: 'HelpSupportScreen'},
 ];
 
 const UserMenu = () => {
