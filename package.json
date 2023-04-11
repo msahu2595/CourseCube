@@ -57,6 +57,7 @@
     "react-native-blob-util": "^0.17.0",
     "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-flash-message": "^0.3.1",
+    "react-native-image-crop-picker": "0.38.1",
     "react-native-inappbrowser-reborn": "^3.7.0",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-media-controls": "^2.3.0",
