@@ -1,24 +1,16 @@
 import {
   View,
   Text,
-  Linking,
   ImageBackground,
   TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
 import tw from '@lib/tailwind';
-import React, {memo, useCallback} from 'react';
+import React, {memo} from 'react';
+import openWebURL from 'utils/openWebURL';
 
 const NotificationItem = memo(({image, description, link}) => {
   const width = useWindowDimensions().width;
-
-  const handleLink = useCallback(async () => {
-    const supported = await Linking.canOpenURL(link);
-    if (supported) {
-      await Linking.openURL(link);
-    }
-  }, [link]);
-
   return (
     <View style={tw.style('items-center', {width})}>
       <View
@@ -42,7 +34,7 @@ const NotificationItem = memo(({image, description, link}) => {
         </Text>
         {!!link && (
           <TouchableOpacity
-            onPress={handleLink}
+            onPress={() => openWebURL(link)}
             style={tw.style('justify-center bg-blue-700 rounded-r-lg', {
               height: 92,
             })}>

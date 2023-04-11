@@ -1,23 +1,23 @@
-import dayjs from 'dayjs';
-import tw from '@lib/tailwind';
-import {ARTICLE} from '@queries';
-import {useQuery} from '@apollo/client';
-import {SafeAreaContainer} from '@components';
-import React, {useCallback, useState} from 'react';
-import Feather from 'react-native-vector-icons/Feather';
-import LinearGradient from 'react-native-linear-gradient';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {
   View,
   Text,
   Image,
   Share,
-  Linking,
+  Platform,
   ScrollView,
   TouchableOpacity,
   useWindowDimensions,
-  Platform,
 } from 'react-native';
+import dayjs from 'dayjs';
+import tw from '@lib/tailwind';
+import {ARTICLE} from '@queries';
+import {useQuery} from '@apollo/client';
+import openWebURL from 'utils/openWebURL';
+import {SafeAreaContainer} from '@components';
+import React, {useCallback, useState} from 'react';
+import Feather from 'react-native-vector-icons/Feather';
+import LinearGradient from 'react-native-linear-gradient';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const CurrentAffairViewScreen = ({route}) => {
   const {width} = useWindowDimensions();
@@ -66,11 +66,8 @@ const CurrentAffairViewScreen = ({route}) => {
     setBookmark(!bookmark);
   }, [bookmark]);
 
-  const handleSource = useCallback(async source => {
-    const supported = await Linking.canOpenURL(source);
-    if (supported) {
-      await Linking.openURL(source);
-    }
+  const handleSource = useCallback(source => {
+    openWebURL(source);
   }, []);
 
   return (

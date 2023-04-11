@@ -1,17 +1,11 @@
-import {
-  View,
-  Alert,
-  Linking,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import Pdf from 'react-native-pdf';
 import {useQuery} from '@apollo/client';
+import openWebURL from 'utils/openWebURL';
 import {SafeAreaContainer} from '@components';
 import React, {useCallback, useState} from 'react';
-import {showMessage} from 'react-native-flash-message';
+import {View, Alert, TouchableOpacity, ActivityIndicator} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const DocumentViewScreen = ({route}) => {
@@ -30,23 +24,8 @@ const DocumentViewScreen = ({route}) => {
     console.log(`Current page: ${page}, Total page: ${numberOfPages}`);
   }, []);
 
-  const handlePressLink = useCallback(async uri => {
-    try {
-      const supported = await Linking.canOpenURL(uri);
-      if (supported) {
-        await Linking.openURL(uri);
-      } else {
-        showMessage({
-          message: 'Sorry, link cannot be open.',
-          type: 'danger',
-        });
-      }
-    } catch (err) {
-      showMessage({
-        message: err?.message || 'Some unknown err occurred. Try again!!',
-        type: 'danger',
-      });
-    }
+  const handlePressLink = useCallback(uri => {
+    openWebURL(uri);
   }, []);
 
   const handleError = useCallback(

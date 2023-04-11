@@ -1,29 +1,10 @@
 import tw from '@lib/tailwind';
-import React, {memo, useCallback} from 'react';
-import {showMessage} from 'react-native-flash-message';
-import {View, Text, Linking, TouchableOpacity} from 'react-native';
+import React, {memo} from 'react';
+import openWebURL from 'utils/openWebURL';
+import {View, Text, TouchableOpacity} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const WebsiteItem = memo(props => {
-  const handlePressLink = useCallback(async () => {
-    try {
-      const supported = await Linking.canOpenURL(props?.link);
-      if (supported) {
-        await Linking.openURL(props?.link);
-      } else {
-        showMessage({
-          message: 'Sorry, link cannot be open.',
-          type: 'danger',
-        });
-      }
-    } catch (err) {
-      showMessage({
-        message: err?.message || 'Some unknown err occurred. Try again!!',
-        type: 'danger',
-      });
-    }
-  }, [props?.link]);
-
   return (
     <View style={tw`flex-1`}>
       <Text
@@ -33,7 +14,7 @@ const WebsiteItem = memo(props => {
         {props?.name}
       </Text>
       <TouchableOpacity
-        onPress={handlePressLink}
+        onPress={() => openWebURL(props?.link)}
         style={tw`p-1 flex-row self-start bg-blue-100 items-center rounded`}>
         <MaterialCommunityIcons
           name="link-variant"
