@@ -1,16 +1,17 @@
-import React, {useCallback, useState} from 'react';
+import {
+  View,
+  Alert,
+  Linking,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import Pdf from 'react-native-pdf';
 import {useQuery} from '@apollo/client';
-import {SafeAreaView} from 'react-native';
-import {
-  View,
-  TouchableOpacity,
-  StatusBar,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
+import {SafeAreaContainer} from '@components';
+import React, {useCallback, useState} from 'react';
+import {showMessage} from 'react-native-flash-message';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const DocumentViewScreen = ({route}) => {
@@ -20,9 +21,32 @@ const DocumentViewScreen = ({route}) => {
 
   const [loading, setLoading] = useState(true);
 
-  const handledLoadEnd = useCallback((numberOfPages, filePath) => {
-    console.log(`Number of pages: ${numberOfPages}`);
+  const handledLoadComplete = useCallback((numberOfPages, filePath) => {
+    console.log(`Number of pages: ${numberOfPages}, File path: ${filePath}`);
     setLoading(false);
+  }, []);
+
+  const handlePageChanged = useCallback((page, numberOfPages) => {
+    console.log(`Current page: ${page}, Total page: ${numberOfPages}`);
+  }, []);
+
+  const handlePressLink = useCallback(async uri => {
+    try {
+      const supported = await Linking.canOpenURL(uri);
+      if (supported) {
+        await Linking.openURL(uri);
+      } else {
+        showMessage({
+          message: 'Sorry, link cannot be open.',
+          type: 'danger',
+        });
+      }
+    } catch (err) {
+      showMessage({
+        message: err?.message || 'Some unknown err occurred. Try again!!',
+        type: 'danger',
+      });
+    }
   }, []);
 
   const handleError = useCallback(
@@ -38,11 +62,9 @@ const DocumentViewScreen = ({route}) => {
   );
 
   return (
-    <SafeAreaView style={tw`flex-1 bg-gray-100`}>
-      <StatusBar
-        backgroundColor={tw.color('teal-200')}
-        barStyle="dark-content"
-      />
+    <SafeAreaContainer
+      statusBgColor={tw.color('teal-200')}
+      statusBarStyle="dark-content">
       <View style={tw`flex-1 bg-black`}>
         {queryLoading ? (
           <View style={tw`flex-1 items-center justify-center`}>
@@ -57,45 +79,30 @@ const DocumentViewScreen = ({route}) => {
               </View>
             )}
             <Pdf
+              trustAllCerts={false}
+              style={tw`flex-1 bg-black`}
               source={{
-                uri:
-                  'https://www.africau.edu/images/default/sample.pdf' ||
-                  queryData?.content?.payload?.media?.url,
+                uri: queryData?.content?.payload?.media?.url,
                 cache: true,
               }}
-              onLoadComplete={handledLoadEnd}
+              onLoadComplete={handledLoadComplete}
+              onPageChanged={handlePageChanged}
+              onPressLink={handlePressLink}
               onError={handleError}
-              onPageChanged={(page, numberOfPages) => {
-                console.log(`Current page: ${page}`);
-              }}
-              onPressLink={uri => {
-                console.log(`Link pressed: ${uri}`);
-              }}
-              style={tw`flex-1 bg-black`}
             />
           </>
         )}
       </View>
       <TouchableOpacity
         onPressOut={null}
-        style={tw.style(
-          'absolute',
-          'bottom-2',
-          'right-2',
-          'bg-teal-600',
-          'justify-center',
-          'items-center',
-          'rounded-full',
-          'shadow',
-          {width: 56, height: 56},
-        )}>
+        style={tw`absolute bottom-2 right-2 bg-teal-600 justify-center items-center rounded-full shadow w-[56px] h-[56px]`}>
         <MaterialCommunityIcons
-          name="file-download-outline"
           size={28}
           color={tw.color('white')}
+          name="file-download-outline"
         />
       </TouchableOpacity>
-    </SafeAreaView>
+    </SafeAreaContainer>
   );
 };
 
