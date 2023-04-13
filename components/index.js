@@ -33,6 +33,7 @@ import CurrentAffairBar, {CurrentAffairItem} from './CurrentAffairBar';
 // App Advert Imports
 import {ShareApp, FollowUs, GetCallFromUs, GetSubscription} from './AppAdverts';
 //
+import InfoItem from './InfoItem';
 import MediaItem from './MediaItem';
 import MenuOptionItem from './MenuOptionItem';
 import LoadingIndicator from './LoadingIndicator';
@@ -84,6 +85,7 @@ export {
   GetCallFromUs,
   GetSubscription,
   //
+  InfoItem,
   MediaItem,
   MenuOptionItem,
   LoadingIndicator,

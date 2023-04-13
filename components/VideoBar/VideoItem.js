@@ -56,9 +56,7 @@ const VideoItem = memo(({width = 224, ...rest}) => {
           <Text
             style={tw`font-avReg text-gray-500 text-[10px]`}
             numberOfLines={1}>
-            {`${rest?.likes} Likes | 50k Watched ${
-              rest?.purchases ? `| ${rest?.purchases} Purchases` : ''
-            }`}
+            {`${rest?.media?.time} Mins | ${rest?.likes} Likes | 50k Watched`}
           </Text>
           {rest?.paid && !rest?.purchased ? (
             <View style={tw`flex-row items-center justify-between`}>

@@ -33,12 +33,41 @@ export const CONTENTS = gql`
         media {
           ... on Video {
             _id
+            title
+            thumbnail
+            #
+            time
+            #
+            enable
+            createdAt
+            updatedAt
           }
           ... on Test {
             _id
+            title
+            thumbnail
+            #
+            instructions
+            duration
+            totalMarks
+            questions {
+              _id
+            }
+            #
+            enable
+            createdAt
+            updatedAt
           }
           ... on Document {
             _id
+            title
+            thumbnail
+            #
+            pages
+            #
+            enable
+            createdAt
+            updatedAt
           }
         }
         type

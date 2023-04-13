@@ -57,10 +57,7 @@ const DocumentItem = memo(({width = 144, ...rest}) => {
           <Text
             style={tw`font-avReg text-gray-500 text-[10px]`}
             numberOfLines={1}>
-            {`${rest?.likes} Likes | 131 Reads ${
-              rest?.purchases ? `| ${rest?.purchases} Purchases` : ''
-            }`}
-            {/* 12 Pages | 131 Reads */}
+            {`${rest?.media?.pages} P | ${rest?.likes} Likes | 131 Reads`}
           </Text>
           {rest?.paid && !rest?.purchased ? (
             <View style={tw`flex-row items-center justify-between`}>

@@ -145,7 +145,7 @@ console.log({__DEV__});
 
 const httpLink = createHttpLink({
   uri: __DEV__
-    ? 'http://192.168.1.7:4000/'
+    ? 'http://192.168.1.36:4000/'
     : 'https://course-cube-server-python-env.onrender.com/',
 });
 

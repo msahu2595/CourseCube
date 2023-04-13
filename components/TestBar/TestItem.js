@@ -1,6 +1,7 @@
+import dayjs from 'dayjs';
 import tw from '@lib/tailwind';
-import React, {memo, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import React, {memo, useCallback, useMemo} from 'react';
 import {View, Text, Image, Pressable, ImageBackground} from 'react-native';
 
 const TestItem = memo(({width = 184, ...rest}) => {
@@ -12,6 +13,21 @@ const TestItem = memo(({width = 184, ...rest}) => {
       title: rest?.title,
     });
   }, [navigation, rest?._id, rest?.title]);
+
+  const duration = useMemo(() => {
+    const hour = dayjs.duration(rest?.media?.duration).hours();
+    const minute = dayjs.duration(rest?.media?.duration).minutes();
+    if (hour && minute) {
+      return `${hour}H ${minute}M`;
+    }
+    if (hour) {
+      return `${hour} Hours`;
+    }
+    if (minute) {
+      return `${minute} Minutes`;
+    }
+    return '';
+  }, [rest?.media?.duration]);
 
   return (
     <Pressable onPress={handleNavigation}>
@@ -57,10 +73,7 @@ const TestItem = memo(({width = 184, ...rest}) => {
           <Text
             style={tw.style('font-avReg text-gray-500 text-[10px]')}
             numberOfLines={1}>
-            {`${rest?.likes} Likes | 180 Attempts ${
-              rest?.purchases ? `| ${rest?.purchases} Purchases` : ''
-            }`}
-            {/* 12 Ques | 5 Mins | 180 Attempts */}
+            {`${rest?.media?.questions?.length} Ques | ${duration} | 180 Attempts`}
           </Text>
           {rest?.paid && !rest?.purchased ? (
             <View style={tw`flex-row items-center justify-between`}>

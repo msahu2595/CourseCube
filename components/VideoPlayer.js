@@ -1,7 +1,5 @@
 import React, {memo, useCallback, useEffect, useMemo, useState} from 'react';
-import {useQuery} from '@apollo/client';
 import playerRef from 'playerRef';
-import {CONTENT} from '@queries';
 import {tw} from '@lib';
 import {
   Text,
@@ -14,127 +12,12 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import Orientation, {useLockListener} from 'react-native-orientation-locker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const VideoPlayer = ({contentId}) => {
-  const {width, height} = useWindowDimensions();
-
-  const {loading: queryLoading, data: queryData} = useQuery(CONTENT, {
-    variables: {contentId},
-  });
-
-  const data = queryData?.content?.payload || {};
-
-  return (
-    <>
-      {queryLoading ? (
-        <View
-          style={tw.style('bg-black', {
-            width: width < height ? width : (height * 16) / 9,
-            height: height < width ? height : (width * 9) / 16,
-          })}
-        />
-      ) : (
-        <Player link={data?.media?.link} />
-      )}
-      <LinearGradient
-        locations={[0, 0.2, 0.5]}
-        colors={[
-          tw.color('indigo-200'),
-          tw.color('indigo-50'),
-          tw.color('white'),
-        ]}>
-        <View style={tw`px-4 py-2`}>
-          <Text
-            style={tw`font-avSemi text-base text-gray-600`}
-            numberOfLines={2}>
-            {data?.title}
-          </Text>
-          <Text style={tw`font-avReg text-xs text-amber-600`} numberOfLines={1}>
-            #CGPSE #ACS #SSC #Mains
-          </Text>
-          <Text
-            style={tw.style('font-avReg', 'text-gray-600', 'text-sm', {
-              fontSize: 10,
-            })}
-            numberOfLines={1}>
-            {data?.media?.time} Mins | 50k Watched | 223 Likes
-          </Text>
-        </View>
-        <View
-          style={tw`flex-row justify-around border-t border-b border-gray-100 px-2`}>
-          <TouchableOpacity
-            style={tw.style('items-center', 'py-1', {width: 60})}>
-            <AntDesign name="like1" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', 'text-blue-600', {
-                fontSize: 10,
-              })}>
-              Likes
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={tw.style('items-center', 'py-1', {width: 60})}>
-            <AntDesign name="sharealt" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', 'text-blue-600', {
-                fontSize: 10,
-              })}>
-              Share
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={tw.style('items-center', 'py-1', {width: 60})}>
-            <AntDesign
-              name="questioncircleo"
-              size={20}
-              color={tw.color('blue-600')}
-            />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', 'text-blue-600', {
-                fontSize: 10,
-              })}>
-              Doubts
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={tw.style('items-center', 'py-1', {width: 60})}>
-            <AntDesign name="download" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', 'text-blue-600', {
-                fontSize: 10,
-              })}>
-              Download
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={tw.style('items-center', 'py-1', {width: 60})}>
-            <AntDesign name="message1" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', 'text-blue-600', {
-                fontSize: 10,
-              })}>
-              Live
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </LinearGradient>
-    </>
-  );
-};
-
-export default VideoPlayer;
-
-const Player = memo(({link}) => {
+const VideoPlayer = memo(props => {
   const {width, height} = useWindowDimensions();
   const navigation = useNavigation();
 
@@ -149,9 +32,9 @@ const Player = memo(({link}) => {
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PLAYING);
 
   const videoId = useMemo(() => {
-    const arr = link?.split('https://youtu.be/');
+    const arr = props?.link?.split('https://youtu.be/');
     return arr[1];
-  }, [link]);
+  }, [props?.link]);
 
   useEffect(() => {
     let interval = setInterval(() => {
@@ -414,3 +297,5 @@ const Player = memo(({link}) => {
     </View>
   );
 });
+
+export default VideoPlayer;
