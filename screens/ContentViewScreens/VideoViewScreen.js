@@ -9,8 +9,8 @@ import React from 'react';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import {useQuery} from '@apollo/client';
+import {CCIcon, CCLikeButton} from 'components/Common';
 import LinearGradient from 'react-native-linear-gradient';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import {InfoItem, SafeAreaContainer, VideoPlayer} from '@components';
 
 const VideoViewScreen = ({route}) => {
@@ -66,53 +66,24 @@ const VideoViewScreen = ({route}) => {
         </View>
         <View
           style={tw`flex-row justify-around border-t border-b border-indigo-200 px-2`}>
-          <TouchableOpacity
-            style={tw.style('items-center', 'py-2', {width: 60})}>
-            <AntDesign name="like1" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', 'text-blue-600', {
-                fontSize: 10,
-              })}>
-              Likes
-            </Text>
+          <CCLikeButton
+            refId={route?.params?.contentId}
+            initial={data?.liked === 1 ? true : false}>
+            {liked => (
+              <CCIcon
+                icon={liked ? 'like1' : 'like2'}
+                label={liked ? 'Liked' : 'Like'}
+              />
+            )}
+          </CCLikeButton>
+          <TouchableOpacity>
+            <CCIcon icon="sharealt" label="Share" />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={tw.style('items-center', 'py-2', {width: 60})}>
-            <AntDesign name="sharealt" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', 'text-blue-600', {
-                fontSize: 10,
-              })}>
-              Share
-            </Text>
+          <TouchableOpacity>
+            <CCIcon icon="questioncircleo" label="Doubts" />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={tw.style('items-center', 'py-2', {width: 60})}>
-            <AntDesign
-              name="questioncircleo"
-              size={20}
-              color={tw.color('blue-600')}
-            />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', 'text-blue-600', {
-                fontSize: 10,
-              })}>
-              Doubts
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={tw.style('items-center', 'py-2', {width: 60})}>
-            <AntDesign name="download" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', 'text-blue-600', {
-                fontSize: 10,
-              })}>
-              Download
-            </Text>
+          <TouchableOpacity>
+            <CCIcon icon="download" label="Download" />
           </TouchableOpacity>
         </View>
         <ScrollView style={tw`flex-1`}>

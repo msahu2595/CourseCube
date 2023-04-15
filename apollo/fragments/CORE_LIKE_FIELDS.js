@@ -9,7 +9,6 @@ export const CORE_LIKE_FIELDS = gql`
       _id
     }
     refId
-    active
     createdAt
     updatedAt
   }

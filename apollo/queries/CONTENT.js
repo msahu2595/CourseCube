@@ -78,6 +78,7 @@ export const CONTENT = gql`
         createdAt
         updatedAt
         likes
+        liked
         purchases
         purchased
       }
