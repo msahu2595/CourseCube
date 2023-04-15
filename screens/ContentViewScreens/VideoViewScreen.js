@@ -9,9 +9,10 @@ import React from 'react';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import {useQuery} from '@apollo/client';
-import {CCIcon, CCLikeButton} from 'components/Common';
 import LinearGradient from 'react-native-linear-gradient';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {InfoItem, SafeAreaContainer, VideoPlayer} from '@components';
+import {CCIcon, CCLikeButton, CCBookmarkButton} from 'components/Common';
 
 const VideoViewScreen = ({route}) => {
   const {width, height} = useWindowDimensions();
@@ -76,6 +77,21 @@ const VideoViewScreen = ({route}) => {
               />
             )}
           </CCLikeButton>
+          <CCBookmarkButton
+            type="VIDEO"
+            refId={route?.params?.contentId}
+            initial={data?.bookmarked === 1 ? true : false}>
+            {bookmarked => {
+              console.log({bookmarked});
+              return (
+                <CCIcon
+                  icon={bookmarked ? 'bookmark' : 'bookmark-o'}
+                  label={bookmarked ? 'Bookmarked' : 'Bookmark'}
+                  IconComponent={FontAwesome}
+                />
+              );
+            }}
+          </CCBookmarkButton>
           <TouchableOpacity>
             <CCIcon icon="sharealt" label="Share" />
           </TouchableOpacity>

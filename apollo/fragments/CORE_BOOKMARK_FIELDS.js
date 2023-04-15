@@ -10,7 +10,6 @@ export const CORE_BOOKMARK_FIELDS = gql`
     }
     refId
     type
-    active
     createdAt
     updatedAt
   }

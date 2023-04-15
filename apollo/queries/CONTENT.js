@@ -81,6 +81,7 @@ export const CONTENT = gql`
         liked
         purchases
         purchased
+        bookmarked
       }
     }
   }
