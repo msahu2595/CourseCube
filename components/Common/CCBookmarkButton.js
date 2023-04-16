@@ -21,6 +21,7 @@ export const CCBookmarkButton = memo(
         showMessage({
           message: err?.message || 'Some unknown error occurred. Try again!!',
           type: 'danger',
+          icon: 'danger',
         });
         setBookmarked(false);
       },
@@ -28,7 +29,7 @@ export const CCBookmarkButton = memo(
     });
 
     const [unbookmark] = useMutation(UNBOOKMARK, {
-      variables: {refId, type},
+      variables: {refId},
       onCompleted: data => {
         console.log(data);
         if (!data?.unbookmark?.success) {
@@ -39,6 +40,7 @@ export const CCBookmarkButton = memo(
         showMessage({
           message: err?.message || 'Some unknown error occurred. Try again!!',
           type: 'danger',
+          icon: 'danger',
         });
         setBookmarked(true);
       },
@@ -56,7 +58,7 @@ export const CCBookmarkButton = memo(
     };
 
     return (
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity disabled={!refId} onPress={onPress}>
         {children(bookmarked)}
       </TouchableOpacity>
     );

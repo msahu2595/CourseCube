@@ -53,6 +53,8 @@ export const CCLikeButton = memo(({refId, initial = false, children}) => {
   };
 
   return (
-    <TouchableOpacity onPress={onPress}>{children(liked)}</TouchableOpacity>
+    <TouchableOpacity disabled={!refId} onPress={onPress}>
+      {children(liked)}
+    </TouchableOpacity>
   );
 });

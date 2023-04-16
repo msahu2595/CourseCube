@@ -68,7 +68,7 @@ const VideoViewScreen = ({route}) => {
         <View
           style={tw`flex-row justify-around border-t border-b border-indigo-200 px-2`}>
           <CCLikeButton
-            refId={route?.params?.contentId}
+            refId={data?._id}
             initial={data?.liked === 1 ? true : false}>
             {liked => (
               <CCIcon
@@ -78,19 +78,16 @@ const VideoViewScreen = ({route}) => {
             )}
           </CCLikeButton>
           <CCBookmarkButton
-            type="VIDEO"
-            refId={route?.params?.contentId}
+            refId={data?._id}
+            type={data?.__typename}
             initial={data?.bookmarked === 1 ? true : false}>
-            {bookmarked => {
-              console.log({bookmarked});
-              return (
-                <CCIcon
-                  icon={bookmarked ? 'bookmark' : 'bookmark-o'}
-                  label={bookmarked ? 'Bookmarked' : 'Bookmark'}
-                  IconComponent={FontAwesome}
-                />
-              );
-            }}
+            {bookmarked => (
+              <CCIcon
+                icon={bookmarked ? 'bookmark' : 'bookmark-o'}
+                label={bookmarked ? 'Bookmarked' : 'Bookmark'}
+                IconComponent={FontAwesome}
+              />
+            )}
           </CCBookmarkButton>
           <TouchableOpacity>
             <CCIcon icon="sharealt" label="Share" />
