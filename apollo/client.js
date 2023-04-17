@@ -1,4 +1,5 @@
 import {from, ApolloClient, createHttpLink, ApolloLink} from '@apollo/client';
+import {REACT_APP_DEV_MODE, REACT_APP_PROD_MODE} from '@env';
 import {InMemoryCache, makeVar, gql} from '@apollo/client';
 import {setContext} from '@apollo/client/link/context';
 import {onError} from '@apollo/client/link/error';
@@ -142,11 +143,11 @@ export const errorLink = onError(error => {
 });
 
 console.log({__DEV__});
+console.log(REACT_APP_DEV_MODE);
+console.log(REACT_APP_PROD_MODE);
 
 const httpLink = createHttpLink({
-  uri: __DEV__
-    ? 'http://192.168.1.39:4000/'
-    : 'https://course-cube-server-python-env.onrender.com/',
+  uri: __DEV__ ? REACT_APP_DEV_MODE : REACT_APP_PROD_MODE,
 });
 
 const setTokenLink = new ApolloLink((operation, forward) => {
