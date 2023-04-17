@@ -41,20 +41,17 @@ const CurrentAffairItem = memo(({_id, image, title, createdAt}) => {
             },
           )}>
           <Text
-            style={tw`self-end text-right px-2 py-1 font-avReg text-gray-100 text-xs bg-black bg-opacity-10 rounded-bl-lg rounded-tr-lg`}
-            numberOfLines={3}>
+            style={tw`self-end text-right px-2 py-1 font-avReg text-gray-100 text-xs bg-black bg-opacity-50 rounded-bl-lg rounded-tr-lg`}>
             {dayjs(parseInt(createdAt, 10)).format('DD MMM')}
           </Text>
-          <View>
+          <View style={tw`py-2 bg-black bg-opacity-50 rounded-b-lg`}>
             <Text
-              style={tw.style('px-3 py-1 font-avSemi text-gray-100', {
-                fontSize: 12,
-              })}
+              style={tw`px-3 font-avSemi text-gray-100 text-[12px]`}
               numberOfLines={1}>
               {'• National Affairs'}
             </Text>
             <Text
-              style={tw`px-3 py-2 font-avReg text-gray-100 text-sm bg-black bg-opacity-50 rounded-b-lg`}
+              style={tw`m-1 px-3 font-avReg text-gray-100 text-sm`}
               numberOfLines={2}>
               {title}
             </Text>
