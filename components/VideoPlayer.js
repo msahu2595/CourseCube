@@ -96,9 +96,9 @@ const VideoPlayer = memo(props => {
       case 'video cue':
         break;
       case 'buffering':
-        setIsLoading(false);
         break;
       case 'playing':
+        setIsLoading(false);
         setPlayerState(PLAYER_STATES.PLAYING);
         break;
       case 'paused':
@@ -143,8 +143,8 @@ const VideoPlayer = memo(props => {
   }, []);
 
   const onSeekVideo = useCallback(e => {
-    playerRef.current?.seekTo(e);
     setIsLoading(true);
+    playerRef.current?.seekTo(e);
   }, []);
 
   const onSeekingVideo = useCallback(e => {
@@ -152,13 +152,13 @@ const VideoPlayer = memo(props => {
   }, []);
 
   const onRewindVideo = useCallback(() => {
-    playerRef.current?.seekTo(currentTime - 10);
     setIsLoading(true);
+    playerRef.current?.seekTo(currentTime - 10);
   }, [currentTime]);
 
   const onForwardVideo = useCallback(() => {
-    playerRef.current?.seekTo(currentTime + 10);
     setIsLoading(true);
+    playerRef.current?.seekTo(currentTime + 10);
   }, [currentTime]);
 
   const onToggleMute = useCallback(() => {
