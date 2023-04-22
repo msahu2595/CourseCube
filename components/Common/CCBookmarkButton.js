@@ -6,11 +6,10 @@ import {BOOKMARK, UNBOOKMARK} from '@mutations';
 import {showMessage} from 'react-native-flash-message';
 
 export const CCBookmarkButton = memo(
-  ({refId, type, initial = false, children}) => {
+  ({refId, type, subType, initial = false, children}) => {
     const [bookmarked, setBookmarked] = useState(initial);
 
     const [bookmark] = useMutation(BOOKMARK, {
-      variables: {refId, type},
       onCompleted: data => {
         console.log(data);
         if (!data?.bookmark?.success) {
@@ -52,7 +51,11 @@ export const CCBookmarkButton = memo(
         unbookmark();
         setBookmarked(false);
       } else {
-        bookmark();
+        const variables = {refId, type};
+        if (subType) {
+          variables.subType = subType;
+        }
+        bookmark({variables});
         setBookmarked(true);
       }
     };

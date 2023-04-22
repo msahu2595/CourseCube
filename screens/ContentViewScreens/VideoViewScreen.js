@@ -80,6 +80,7 @@ const VideoViewScreen = ({route}) => {
           <CCBookmarkButton
             refId={data?._id}
             type={data?.__typename}
+            subType={data?.media?.__typename}
             initial={data?.bookmarked === 1 ? true : false}>
             {bookmarked => (
               <CCIcon
