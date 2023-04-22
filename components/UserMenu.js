@@ -7,7 +7,7 @@ import {Text, View, TouchableOpacity} from 'react-native';
 const menu = [
   {name: 'My Courses', icon: 'book-open', screen: 'MyCoursesScreen'},
   {name: 'Downloads', icon: 'download', screen: 'DownloadsScreen'},
-  {name: 'Bookmarks', icon: 'bookmark', screen: 'BookmarksScreen'},
+  {name: 'Bookmarks', icon: 'bookmark', screen: 'BookmarkListTopTabNavigator'},
   {name: 'Payments', icon: 'credit-card', screen: 'PaymentsScreen'},
   {name: 'Settings', icon: 'settings', screen: 'SettingsScreen'},
   {name: 'Help & Support', icon: 'headphones', screen: 'HelpSupportScreen'},

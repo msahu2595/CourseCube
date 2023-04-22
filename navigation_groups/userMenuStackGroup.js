@@ -1,8 +1,8 @@
 import React from 'react';
 import tw from '@lib/tailwind'; //Tailwind Imports
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {BookmarkListTopTabNavigator} from '@navigators';
 import {
-  BookmarksScreen,
   DownloadsScreen,
   HelpSupportScreen,
   MyCoursesScreen,
@@ -23,10 +23,11 @@ const settingStackGroup = () => {
         // animation: 'slide_from_right',
       }}>
       <Stack.Screen
-        name="BookmarksScreen"
-        component={BookmarksScreen}
+        name="BookmarkListTopTabNavigator"
+        component={BookmarkListTopTabNavigator}
         options={{
           headerTitle: 'Bookmarks',
+          headerShadowVisible: false,
         }}
       />
       <Stack.Screen

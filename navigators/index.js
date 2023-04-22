@@ -5,6 +5,7 @@ import ContentListTopTabNavigator from './ContentListTopTabNavigator';
 import CourseDetailTopTabNavigator from './CourseDetailTopTabNavigator';
 import CourseContentListTopTabNavigator from './CourseContentListTopTabNavigator';
 //
+import BookmarkListTopTabNavigator from './BookmarkListTopTabNavigator';
 import CourseListTopTabNavigator from './CourseListTopTabNavigator';
 import FollowListTopTabNavigator from './FollowListTopTabNavigator';
 import MediaListTopTabNavigator from './MediaListTopTabNavigator';
@@ -15,6 +16,7 @@ export {
   ContentListTopTabNavigator,
   CourseDetailTopTabNavigator,
   CourseContentListTopTabNavigator,
+  BookmarkListTopTabNavigator,
   CourseListTopTabNavigator,
   FollowListTopTabNavigator,
   MediaListTopTabNavigator,

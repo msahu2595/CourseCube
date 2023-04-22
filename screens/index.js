@@ -75,7 +75,8 @@ import {
   AboutScreen,
 } from './SettingScreens';
 import {
-  BookmarksScreen,
+  BookmarkContentScreen,
+  BookmarkArticleScreen,
   DownloadsScreen,
   HelpSupportScreen,
   MyCoursesScreen,
@@ -152,9 +153,10 @@ export {
   PrivacyPolicyScreen,
   TermsConditionsScreen,
   AboutScreen,
-  BookmarksScreen,
-  DownloadsScreen,
+  BookmarkContentScreen,
+  BookmarkArticleScreen,
   HelpSupportScreen,
+  DownloadsScreen,
   MyCoursesScreen,
   PaymentsScreen,
   SettingsScreen,
