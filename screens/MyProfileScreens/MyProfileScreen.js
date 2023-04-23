@@ -34,7 +34,7 @@ const MyProfileScreen = ({navigation}) => {
         <View style={tw`pt-1`}>
           <UserLeaderboard />
         </View>
-        <View style={tw`py-2`}>
+        <View style={tw`pt-2`}>
           <FollowUs />
         </View>
         <View style={tw`py-2`}>

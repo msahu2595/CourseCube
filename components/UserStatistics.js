@@ -3,6 +3,7 @@ import {STATISTICS} from '@queries';
 import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
 import {useNavigation} from '@react-navigation/native';
+import {showMessage} from 'react-native-flash-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Text, View, TouchableOpacity, ActivityIndicator} from 'react-native';
 
@@ -37,9 +38,16 @@ const statistics = [
   },
 ];
 
-const UserStatistics = () => {
-  const {loading, error, data} = useQuery(STATISTICS);
-  console.log(error?.message);
+const UserStatistics = ({userId}) => {
+  const {loading, data} = useQuery(STATISTICS, {
+    variables: userId ? {userId} : {},
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+  });
 
   const navigation = useNavigation();
 

@@ -1,66 +1,27 @@
 import React from 'react';
 import tw from '@lib/tailwind';
 import {View, FlatList} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {LeaderboardItem} from '@components';
+import {LeaderboardItem, SafeAreaContainer} from '@components';
+import USER_LEADERBOARD_DATA from '@utils/user_leaderboard_data.json';
 
 const LeaderboardScreen = () => {
   const renderItem = ({item, index}) => (
     <LeaderboardItem index={index} {...item} />
   );
   return (
-    <SafeAreaView style={tw`flex-1 bg-gray-100`}>
-      <View style={tw`bg-white mt-1`}>
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          contentContainerStyle={tw`bg-white py-2`}
-          ItemSeparatorComponent={() => <View style={tw`h-6`} />}
-          ListHeaderComponent={() => <View style={tw`h-2`} />}
-          ListFooterComponent={() => <View style={tw`h-2`} />}
-        />
-      </View>
-    </SafeAreaView>
+    <SafeAreaContainer
+      statusBgColor={tw.color('blue-600')}
+      statusBarStyle="light-content">
+      <FlatList
+        renderItem={renderItem}
+        data={USER_LEADERBOARD_DATA}
+        keyExtractor={item => item.id}
+        ListHeaderComponent={() => <View style={tw`h-2`} />}
+        ListFooterComponent={() => <View style={tw`h-2`} />}
+        ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+      />
+    </SafeAreaContainer>
   );
 };
 
 export default LeaderboardScreen;
-
-const data = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    image: require('@images/Logo.png'),
-    name: 'Sonu Kumar',
-    activities: 50,
-    followers: '1k',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bb',
-    image: require('@images/Logo.png'),
-    name: 'Sonu Kumar',
-    activities: 50,
-    followers: '3k',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bc',
-    image: require('@images/Logo.png'),
-    name: 'Sonu Kumar',
-    activities: 50,
-    followers: '5k',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bd',
-    image: require('@images/Logo.png'),
-    name: 'Sonu Kumar',
-    activities: 50,
-    followers: '7k',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28be',
-    image: require('@images/Logo.png'),
-    name: 'Sonu Kumar',
-    activities: 50,
-    followers: '9k',
-  },
-];

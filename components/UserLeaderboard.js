@@ -13,7 +13,7 @@ const UserLeaderboard = () => {
       <View style={tw`flex-row justify-between items-center px-4 bg-white`}>
         <Text style={tw`font-avSemi text-base text-gray-600`}>Leaderboard</Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Leaderboard')}
+          onPress={() => navigation.navigate('LeaderboardScreen')}
           style={tw`flex-row items-center`}>
           <Text
             style={tw.style('font-avSemi', 'text-gray-600', {fontSize: 10})}>

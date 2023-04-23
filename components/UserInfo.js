@@ -65,7 +65,8 @@ const UserInfo = ({edit}) => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={tw`ml-2 p-2 flex-row items-center justify-center bg-blue-600 rounded shadow`}>
+          disabled
+          style={tw`ml-2 p-2 flex-row items-center justify-center bg-blue-600 rounded shadow opacity-50`}>
           <MaterialCommunityIcons
             name="share"
             size={20}
