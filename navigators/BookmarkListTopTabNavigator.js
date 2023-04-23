@@ -10,7 +10,7 @@ const BookmarkListTopTabNavigator = props => {
   return (
     <SafeAreaContainer
       statusBgColor={tw.color('blue-600')}
-      statusBarStyle="dark-content">
+      statusBarStyle="light-content">
       <Tab.Navigator
         backBehavior="none"
         screenOptions={{

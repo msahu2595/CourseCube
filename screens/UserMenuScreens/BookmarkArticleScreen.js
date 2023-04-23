@@ -61,7 +61,7 @@ const BookmarkArticleScreen = () => {
   );
 
   return (
-    <SafeAreaContainer>
+    <>
       <FlatList
         bounces={true}
         //
@@ -84,7 +84,7 @@ const BookmarkArticleScreen = () => {
           });
         }}
       />
-    </SafeAreaContainer>
+    </>
   );
 };
 
