@@ -9,8 +9,12 @@ import {showMessage} from 'react-native-flash-message';
 import {CCModal, CCButton, CCTextInput, CCCheckBox} from './Common';
 
 const AddArticleValidationSchema = yup.object({
+  subject: yup.string().required('Please enter subject.'),
+  image: yup
+    .string()
+    .url('Image should be a link.')
+    .required('Please enter image link.'),
   title: yup.string().required('Please enter article title.'),
-  image: yup.string().url('Image should be a link.').nullable(),
   description: yup.string().required('Please enter article description.'),
   author: yup.string().required("Please enter article's author name."),
   visible: yup.boolean(),
@@ -42,8 +46,9 @@ const CreateArticleModal = ({visible, onClose}) => {
       onClose={onClose}>
       <Formik
         initialValues={{
-          title: '',
+          subject: '',
           image: '',
+          title: '',
           description: '',
           author: '',
           visible: true,
@@ -51,14 +56,13 @@ const CreateArticleModal = ({visible, onClose}) => {
         validationSchema={AddArticleValidationSchema}
         onSubmit={values => {
           const articleInput = {
+            subject: values.subject,
+            image: values.image,
             title: values.title,
             description: values.description,
             author: values.author,
             visible: values.visible,
           };
-          if (values.image) {
-            articleInput.image = values.image;
-          }
           createArticle({variables: {articleInput}});
         }}>
         {({
@@ -83,6 +87,17 @@ const CreateArticleModal = ({visible, onClose}) => {
                 editable={!submitting}
               />
               <CCTextInput
+                required
+                label="Subject"
+                error={errors.subject}
+                touched={touched.subject}
+                onChangeText={handleChange('subject')}
+                onBlur={handleBlur('subject')}
+                value={values.subject}
+                editable={!submitting}
+              />
+              <CCTextInput
+                required
                 label="Image"
                 error={errors.image}
                 touched={touched.image}

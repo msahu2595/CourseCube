@@ -112,10 +112,14 @@ export const errorLink = onError(error => {
         ? graphQLErrors[0].message
         : 'Something Went Wrong';
     console.log({message});
-    if (message === 'Context creation failed: Refresh token expired.') {
+    if (
+      message === 'Refresh token is revoked/expired, please log in again.' ||
+      message === 'Refresh token is null, please log in again.' ||
+      message === 'Unexpected error, please log in again.'
+    ) {
       storage.clearAll();
       loggedUserVar(null);
-      console.log('Logout as refresh token expired.');
+      console.log(`Logout as ${message}.`);
     }
     return;
   }

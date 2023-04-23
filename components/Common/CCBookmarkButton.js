@@ -1,3 +1,4 @@
+import {tw} from '@lib';
 import {CONTENT} from '@queries';
 import {useMutation} from '@apollo/client';
 import React, {memo, useState} from 'react';
@@ -6,7 +7,7 @@ import {BOOKMARK, UNBOOKMARK} from '@mutations';
 import {showMessage} from 'react-native-flash-message';
 
 export const CCBookmarkButton = memo(
-  ({refId, type, subType, initial = false, children}) => {
+  ({refId, type, subType, refetchQueries = [], initial = false, children}) => {
     const [bookmarked, setBookmarked] = useState(initial);
 
     const [bookmark] = useMutation(BOOKMARK, {
@@ -24,7 +25,7 @@ export const CCBookmarkButton = memo(
         });
         setBookmarked(false);
       },
-      refetchQueries: [{query: CONTENT, variables: {contentId: refId}}],
+      refetchQueries,
     });
 
     const [unbookmark] = useMutation(UNBOOKMARK, {
@@ -61,7 +62,10 @@ export const CCBookmarkButton = memo(
     };
 
     return (
-      <TouchableOpacity disabled={!refId} onPress={onPress}>
+      <TouchableOpacity
+        disabled={!refId}
+        onPress={onPress}
+        style={tw`opacity-${refId ? 100 : 50}`}>
         {children(bookmarked)}
       </TouchableOpacity>
     );

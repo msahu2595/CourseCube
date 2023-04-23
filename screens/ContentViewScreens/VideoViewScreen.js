@@ -93,7 +93,10 @@ const VideoViewScreen = ({route}) => {
               style={tw`flex-row justify-around border-t border-b border-indigo-200 px-2`}>
               <CCLikeButton
                 refId={data?._id}
-                initial={data?.liked === 1 ? true : false}>
+                initial={data?.liked === 1 ? true : false}
+                refetchQueries={[
+                  {query: CONTENT, variables: {contentId: data?._id}},
+                ]}>
                 {liked => (
                   <CCIcon
                     icon={liked ? 'like1' : 'like2'}
@@ -105,7 +108,10 @@ const VideoViewScreen = ({route}) => {
                 refId={data?._id}
                 type={data?.__typename}
                 subType={data?.media?.__typename}
-                initial={data?.bookmarked === 1 ? true : false}>
+                initial={data?.bookmarked === 1 ? true : false}
+                refetchQueries={[
+                  {query: CONTENT, variables: {contentId: data?._id}},
+                ]}>
                 {bookmarked => (
                   <CCIcon
                     icon={bookmarked ? 'bookmark' : 'bookmark-o'}

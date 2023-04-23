@@ -13,17 +13,17 @@ import tw from '@lib/tailwind';
 import {ARTICLE} from '@queries';
 import {useQuery} from '@apollo/client';
 import openWebURL from 'utils/openWebURL';
-import {SafeAreaContainer} from '@components';
 import React, {useCallback, useState} from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
+import {LoadingIndicator, SafeAreaContainer} from '@components';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {CCBookmarkButton, CCLikeButton} from 'components/Common';
 
 const CurrentAffairViewScreen = ({route}) => {
   const {width} = useWindowDimensions();
 
   const [size, setSize] = useState(1);
-  const [bookmark, setBookmark] = useState(false);
 
   const {loading: queryLoading, data: queryData} = useQuery(ARTICLE, {
     variables: {articleId: route?.params?.articleId},
@@ -62,13 +62,13 @@ const CurrentAffairViewScreen = ({route}) => {
     );
   }, [data?.title]);
 
-  const handleBookmark = useCallback(() => {
-    setBookmark(!bookmark);
-  }, [bookmark]);
-
   const handleSource = useCallback(source => {
     openWebURL(source);
   }, []);
+
+  if (queryLoading) {
+    <LoadingIndicator loading />;
+  }
 
   return (
     <SafeAreaContainer
@@ -98,7 +98,14 @@ const CurrentAffairViewScreen = ({route}) => {
               />
               <View style={tw`py-2 border-b border-gray-400`}>
                 <Text
-                  style={tw`py-1 font-avBold text-gray-600 text-${
+                  style={tw`py-1 font-avSemi text-gray-600 text-[${
+                    size ? (size < 2 ? '12px' : '14px') : '12px'
+                  }]`}
+                  numberOfLines={1}>
+                  {`• ${data?.subject}`}
+                </Text>
+                <Text
+                  style={tw`font-avBold text-gray-600 text-${
                     size ? (size < 2 ? 'lg' : 'xl') : 'base'
                   }`}
                   numberOfLines={3}>
@@ -122,20 +129,43 @@ const CurrentAffairViewScreen = ({route}) => {
                     </Text>
                   </View>
                   <View style={tw`flex-row`}>
-                    <TouchableOpacity onPress={handleBookmark}>
-                      <FontAwesome
-                        name={bookmark ? 'bookmark' : 'bookmark-o'}
-                        color={tw.color('gray-600')}
-                        size={24}
-                        style={tw`ml-2`}
-                      />
-                    </TouchableOpacity>
+                    <CCLikeButton
+                      refId={data?._id}
+                      initial={data?.liked === 1 ? true : false}
+                      refetchQueries={[
+                        {query: ARTICLE, variables: {articleId: data?._id}},
+                      ]}>
+                      {liked => (
+                        <FontAwesome
+                          name={liked ? 'heart' : 'heart-o'}
+                          color={tw.color('gray-600')}
+                          size={24}
+                          style={tw`px-2`}
+                        />
+                      )}
+                    </CCLikeButton>
+                    <CCBookmarkButton
+                      refId={data?._id}
+                      type={data?.__typename}
+                      initial={data?.bookmarked === 1 ? true : false}
+                      refetchQueries={[
+                        {query: ARTICLE, variables: {articleId: data?._id}},
+                      ]}>
+                      {bookmarked => (
+                        <FontAwesome
+                          name={bookmarked ? 'bookmark' : 'bookmark-o'}
+                          color={tw.color('gray-600')}
+                          size={24}
+                          style={tw`px-2`}
+                        />
+                      )}
+                    </CCBookmarkButton>
                     <TouchableOpacity onPress={handleShare}>
                       <Feather
                         name="share-2"
                         color={tw.color('gray-600')}
                         size={24}
-                        style={tw`ml-2`}
+                        style={tw`px-2`}
                       />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleSize}>
@@ -143,7 +173,7 @@ const CurrentAffairViewScreen = ({route}) => {
                         name="type"
                         color={tw.color('gray-600')}
                         size={24}
-                        style={tw`ml-2`}
+                        style={tw`px-2`}
                       />
                     </TouchableOpacity>
                   </View>
