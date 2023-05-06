@@ -9,11 +9,27 @@ import {
 import React from 'react';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
-import {useQuery} from '@apollo/client';
+import {showMessage} from 'react-native-flash-message';
 import LinearGradient from 'react-native-linear-gradient';
+import {gql, useMutation, useQuery} from '@apollo/client';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {InfoItem, SafeAreaContainer, VideoPlayer} from '@components';
 import {CCIcon, CCLikeButton, CCBookmarkButton} from 'components/Common';
+
+const ADD_HISTORY = gql`
+  mutation AddHistory(
+    $refId: ID!
+    $type: HistoryType!
+    $subType: HistorySubType
+  ) {
+    addHistory(refId: $refId, type: $type, subType: $subType) {
+      code
+      success
+      message
+      token
+    }
+  }
+`;
 
 const VideoViewScreen = ({route}) => {
   const {width, height} = useWindowDimensions();
@@ -27,6 +43,19 @@ const VideoViewScreen = ({route}) => {
   });
 
   const data = queryData?.content?.payload || {};
+
+  const [addHistory] = useMutation(ADD_HISTORY, {
+    variables: {refId: data?._id, type: data?.__typename, subType: data?.type},
+    onCompleted: res => {
+      console.log('addHistory', res);
+    },
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+  });
 
   if (queryError) {
     return (
@@ -49,7 +78,7 @@ const VideoViewScreen = ({route}) => {
           <ActivityIndicator size="large" color={tw.color('white')} />
         </View>
       ) : (
-        <VideoPlayer link={data?.media?.link} />
+        <VideoPlayer link={data?.media?.link} onVideoStart={addHistory} />
       )}
       <LinearGradient
         locations={[0, 0.2, 0.5]}

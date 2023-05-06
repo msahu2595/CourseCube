@@ -74,10 +74,6 @@ const VideoPlayer = memo(props => {
     console.log('onError', error);
   }, []);
 
-  const onReady = useCallback(event => {
-    // console.log('onReady', event);
-  }, []);
-
   const onStateChange = useCallback(state => {
     switch (state) {
       case 'unstarted':
@@ -210,7 +206,7 @@ const VideoPlayer = memo(props => {
           forceAndroidAutoplay={true}
           play={playerState > 0 ? false : true}
           onError={onError}
-          onReady={onReady}
+          onReady={props?.onVideoStart}
           onChangeState={onStateChange}
           onFullScreenChange={onFullScreenChange}
           onPlaybackRateChange={onPlaybackRateChange}
