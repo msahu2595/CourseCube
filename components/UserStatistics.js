@@ -30,10 +30,10 @@ const statistics = [
     screen: '',
   },
   {
-    name: "Q&A's",
-    icon: 'questioncircleo',
+    name: "Article's",
+    icon: 'profile',
     value: 'questions',
-    type: 'Viewed',
+    type: 'Read',
     screen: '',
   },
 ];
