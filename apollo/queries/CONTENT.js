@@ -79,7 +79,7 @@ export const CONTENT = gql`
         updatedAt
         likes
         liked
-        purchases
+        views
         purchased
         bookmarked
       }

@@ -23,6 +23,7 @@ export const CONTENTS = gql`
         enable
       }
       payload {
+        __typename
         _id
         categories
         exams
@@ -32,6 +33,7 @@ export const CONTENTS = gql`
         title
         media {
           ... on Video {
+            __typename
             _id
             title
             thumbnail
@@ -43,6 +45,7 @@ export const CONTENTS = gql`
             updatedAt
           }
           ... on Test {
+            __typename
             _id
             title
             thumbnail
@@ -59,6 +62,7 @@ export const CONTENTS = gql`
             updatedAt
           }
           ... on Document {
+            __typename
             _id
             title
             thumbnail
@@ -86,8 +90,10 @@ export const CONTENTS = gql`
         createdAt
         updatedAt
         likes
-        purchases
+        liked
+        views
         purchased
+        bookmarked
       }
     }
   }

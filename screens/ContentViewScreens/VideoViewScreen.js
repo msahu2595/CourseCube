@@ -16,13 +16,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {InfoItem, SafeAreaContainer, VideoPlayer} from '@components';
 import {CCIcon, CCLikeButton, CCBookmarkButton} from 'components/Common';
 
-const ADD_HISTORY = gql`
-  mutation AddHistory(
-    $refId: ID!
-    $type: HistoryType!
-    $subType: HistorySubType
-  ) {
-    addHistory(refId: $refId, type: $type, subType: $subType) {
+const ADD_VIEW = gql`
+  mutation addView($refId: ID!) {
+    addView(refId: $refId) {
       code
       success
       message
@@ -44,10 +40,10 @@ const VideoViewScreen = ({route}) => {
 
   const data = queryData?.content?.payload || {};
 
-  const [addHistory] = useMutation(ADD_HISTORY, {
-    variables: {refId: data?._id, type: data?.__typename, subType: data?.type},
+  const [addView] = useMutation(ADD_VIEW, {
+    variables: {refId: data?._id},
     onCompleted: res => {
-      console.log('addHistory', res);
+      console.log('addView', res);
     },
     onError: err => {
       showMessage({
@@ -78,7 +74,7 @@ const VideoViewScreen = ({route}) => {
           <ActivityIndicator size="large" color={tw.color('white')} />
         </View>
       ) : (
-        <VideoPlayer link={data?.media?.link} onVideoStart={addHistory} />
+        <VideoPlayer link={data?.media?.link} onVideoStart={addView} />
       )}
       <LinearGradient
         locations={[0, 0.2, 0.5]}
