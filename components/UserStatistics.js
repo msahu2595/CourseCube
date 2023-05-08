@@ -32,7 +32,7 @@ const statistics = [
   {
     name: "Article's",
     icon: 'profile',
-    value: 'questions',
+    value: 'articles',
     type: 'Read',
     screen: '',
   },
@@ -62,7 +62,7 @@ const UserStatistics = ({userId}) => {
     videos: 0,
     tests: 0,
     documents: 0,
-    questions: 0,
+    articles: 0,
   };
 
   return (

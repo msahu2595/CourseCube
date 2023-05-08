@@ -13,7 +13,7 @@ export const STATISTICS = gql`
         videos
         tests
         documents
-        questions
+        articles
       }
     }
   }
