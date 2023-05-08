@@ -26,11 +26,11 @@ const MainBottomTabNavigator = () => {
         component={MyProfileScreen}
         options={myProfileScreenOptions}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Community"
         component={CommunityScreen}
         options={communityScreenOptions}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };
