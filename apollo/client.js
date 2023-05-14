@@ -1,5 +1,5 @@
 import {from, ApolloClient, createHttpLink, ApolloLink} from '@apollo/client';
-import {REACT_APP_DEV_MODE, REACT_APP_PROD_MODE} from '@env';
+import {REACT_APP_DEV_URI, REACT_APP_PROD_URI} from '@env';
 import {InMemoryCache, makeVar, gql} from '@apollo/client';
 import {setContext} from '@apollo/client/link/context';
 import {onError} from '@apollo/client/link/error';
@@ -147,11 +147,13 @@ export const errorLink = onError(error => {
 });
 
 console.log({__DEV__});
-console.log(REACT_APP_DEV_MODE);
-console.log(REACT_APP_PROD_MODE);
+console.log({REACT_APP_DEV_URI});
+console.log({REACT_APP_PROD_URI});
+console.log({Authorization: `Bearer ${storage.getString('token')}`});
+console.log({'refresh-token': storage.getString('refresh')});
 
 const httpLink = createHttpLink({
-  uri: __DEV__ ? REACT_APP_DEV_MODE : REACT_APP_PROD_MODE,
+  uri: __DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI,
 });
 
 const setTokenLink = new ApolloLink((operation, forward) => {
