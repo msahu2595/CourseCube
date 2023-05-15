@@ -165,14 +165,14 @@ const LoginIntroScreen = ({route}) => {
             <LoginButton
               onPress={handleGoogleSignIn}
               imageStyle={tw`h-8 w-8`}
-              imageSource={require('@images/icons8-google-48.png')}
+              imageSource={require('@images/google-48.png')}
               disabled={googleLogInLoading || whatsAppLogInLoading}
             />
             <View style={tw`w-2`} />
             <LoginButton
               onPress={handleWhatsAppSignIn}
               imageStyle={tw`h-10 w-10`}
-              imageSource={require('@images/icons8-whatsapp-48.png')}
+              imageSource={require('@images/whatsapp-52.png')}
               disabled={googleLogInLoading || whatsAppLogInLoading}
             />
           </View>

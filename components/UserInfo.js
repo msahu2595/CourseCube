@@ -1,5 +1,7 @@
 import React from 'react';
 import tw from '@lib/tailwind';
+import {loggedUserVar} from 'apollo/client';
+import {useReactiveVar} from '@apollo/client';
 import {useNavigation} from '@react-navigation/core';
 import Feather from 'react-native-vector-icons/Feather';
 import {View, Image, Text, TouchableOpacity} from 'react-native';
@@ -7,26 +9,34 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const UserInfo = ({edit}) => {
   const navigation = useNavigation();
+
+  const loggedUser = useReactiveVar(loggedUserVar);
+
   return (
     <View style={tw`p-4 bg-white`}>
       <View style={tw`flex-row justify-between items-center`}>
         <Image
-          source={require('@images/manish.jpg')}
+          source={
+            loggedUser?.picture
+              ? {uri: loggedUser?.picture}
+              : loggedUser?.gender === 'MALE'
+              ? require('@images/person-male.png')
+              : require('@images/person-female.png')
+          }
           resizeMode="contain"
-          style={tw.style('rounded-full', {
+          style={tw.style('rounded-full border border-gray-300', {
             height: 84,
             width: 84,
           })}
         />
         <View style={tw`flex-1 pl-4`}>
           <Text style={tw`font-avSemi text-lg text-blue-600`} numberOfLines={1}>
-            Bhavesh Gajpal
+            {loggedUser?.fullName}
           </Text>
           <Text
             style={tw`font-avReg text-xs text-gray-500 py-1`}
             numberOfLines={2}>
-            Engineer by profession and a Teacher by heart. ❤️ I share my
-            knowledge by creating Coding & Interview preparation videos. 😇
+            {loggedUser?.about}
           </Text>
           <View style={tw`flex-row justify-between pt-2`}>
             <TouchableOpacity
@@ -34,7 +44,7 @@ const UserInfo = ({edit}) => {
               style={tw`flex-row items-center bg-blue-50 py-1 px-3 rounded shadow`}>
               <Feather name="users" size={16} color={tw.color('blue-600')} />
               <Text style={tw`font-avReg text-xs pl-1 text-blue-600`}>
-                40 Followers
+                {loggedUser?.followers} Followers
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -46,7 +56,7 @@ const UserInfo = ({edit}) => {
                 color={tw.color('blue-600')}
               />
               <Text style={tw`font-avReg text-xs pl-1 text-blue-600`}>
-                86 Following
+                {loggedUser?.followings} Following
               </Text>
             </TouchableOpacity>
           </View>

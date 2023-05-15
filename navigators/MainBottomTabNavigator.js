@@ -1,5 +1,6 @@
 import React from 'react';
 import tw from '@lib/tailwind';
+import {loggedUserVar} from 'apollo/client';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {HomeScreen, MyProfileScreen, CommunityScreen} from '@screens';
@@ -135,11 +136,18 @@ const myProfileScreenOptions = ({navigation}) => ({
     );
   },
   tabBarIcon: () => {
+    const loggedUser = loggedUserVar();
     return (
       <Image
-        source={require('@images/manish.jpg')}
+        source={
+          loggedUser?.picture
+            ? {uri: loggedUser?.picture}
+            : loggedUser?.gender === 'MALE'
+            ? require('@images/person-male.png')
+            : require('@images/person-female.png')
+        }
         resizeMode="contain"
-        style={tw.style('rounded-full', {
+        style={tw.style('rounded-full border border-gray-300', {
           width: 24,
           height: 24,
         })}

@@ -13,10 +13,11 @@ import {
 } from '@components';
 import {YOUTUBE_CHANNEL_URL} from '@utils/constants';
 
-const MyProfileScreen = ({navigation}) => {
+const MyProfileScreen = () => {
   const visitYoutubeChannel = useCallback(() => {
     Linking.openURL(YOUTUBE_CHANNEL_URL);
   }, []);
+
   return (
     <SafeAreaContainer
       statusBgColor={tw.color('blue-600')}

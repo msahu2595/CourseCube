@@ -50,6 +50,8 @@ export const GOOGLE_LOG_IN = gql`
         acceptTnC
         createdAt
         updatedAt
+        followers
+        followings
       }
     }
   }
