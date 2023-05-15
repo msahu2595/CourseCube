@@ -19,11 +19,7 @@ import {
   AdminSubjectCourseBundleListScreen,
   AdminPlaylistCourseBundleListScreen,
 } from './AdminScreens';
-import {
-  LoginIntroScreen,
-  MobileNumberScreen,
-  OTPVerifyScreen,
-} from './AuthScreens';
+import {LoginIntroScreen} from './AuthScreens';
 import {
   CommunityScreen,
   PostViewScreen,
@@ -106,8 +102,6 @@ export {
   AdminPlaylistCourseBundleListScreen,
   //
   LoginIntroScreen,
-  MobileNumberScreen,
-  OTPVerifyScreen,
   CommunityScreen,
   CreatePostScreen,
   CommunityNotificationScreen,

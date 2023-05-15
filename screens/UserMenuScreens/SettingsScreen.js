@@ -2,11 +2,11 @@ import {tw} from '@lib';
 import {LOGOUT} from '@mutations';
 import React, {useCallback} from 'react';
 import {SafeAreaContainer} from '@components';
-import auth from '@react-native-firebase/auth';
 import {CCNavigationButton} from 'components/Common';
 import {loggedUserVar, storage} from 'apollo/client';
 import {Alert, ScrollView, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {showMessage} from 'react-native-flash-message';
 import {useMutation, useReactiveVar} from '@apollo/client';
 
 const menu = [
@@ -27,23 +27,15 @@ const SettingsScreen = () => {
   const [logout, {loading}] = useMutation(LOGOUT, {
     onCompleted: data => {
       console.log(data?.logout?.message);
-      auth()
-        .signOut()
-        .then(() => {
-          console.log('User signed out!');
-          storage.clearAll();
-          loggedUserVar(null);
-        });
+      storage.clearAll();
+      loggedUserVar(null);
     },
     onError: err => {
-      console.log(err);
-      auth()
-        .signOut()
-        .then(() => {
-          console.log('User signed out!');
-          storage.clearAll();
-          loggedUserVar(null);
-        });
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+        icon: 'danger',
+      });
     },
   });
 

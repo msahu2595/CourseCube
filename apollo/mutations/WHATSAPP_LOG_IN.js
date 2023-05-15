@@ -1,14 +1,14 @@
 import {gql} from '@apollo/client';
 
-export const GOOGLE_LOG_IN = gql`
-  mutation googleLogIn(
-    $idToken: String!
+export const WHATSAPP_LOG_IN = gql`
+  mutation whatsAppLogIn(
+    $waId: String!
     $FCMToken: String
     $platform: Platform!
     $acceptTnC: Boolean!
   ) {
-    googleLogIn(
-      idToken: $idToken
+    whatsAppLogIn(
+      waId: $waId
       FCMToken: $FCMToken
       platform: $platform
       acceptTnC: $acceptTnC

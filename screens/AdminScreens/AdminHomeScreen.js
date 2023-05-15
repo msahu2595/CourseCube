@@ -3,32 +3,25 @@ import {LOGOUT} from '@mutations';
 import {Alert} from 'react-native';
 import React, {useCallback} from 'react';
 import {useMutation} from '@apollo/client';
-import auth from '@react-native-firebase/auth';
-import {CCNavigationButton} from 'components/Common';
 import {loggedUserVar, storage} from 'apollo/client';
+import {CCNavigationButton} from 'components/Common';
+import {showMessage} from 'react-native-flash-message';
 import {SafeAreaContainer, LoadingIndicator} from '@components';
 
 const AdminHomeScreen = ({navigation}) => {
   const [logout, {loading}] = useMutation(LOGOUT, {
     onCompleted: data => {
       console.log(data?.logout?.message);
-      auth()
-        .signOut()
-        .then(() => {
-          console.log('User signed out!');
-          storage.clearAll();
-          loggedUserVar(null);
-        });
+      storage.clearAll();
+      loggedUserVar(null);
     },
     onError: err => {
       console.log(err);
-      auth()
-        .signOut()
-        .then(() => {
-          console.log('User signed out!');
-          storage.clearAll();
-          loggedUserVar(null);
-        });
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+        icon: 'danger',
+      });
     },
   });
 

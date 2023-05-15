@@ -1,6 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {LoginIntroScreen, MobileNumberScreen, OTPVerifyScreen} from '@screens';
+import {LoginIntroScreen} from '@screens';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -11,8 +11,6 @@ const authStackGroup = () => {
         headerShown: false,
       }}>
       <Stack.Screen name="LoginIntroScreen" component={LoginIntroScreen} />
-      <Stack.Screen name="MobileNumberScreen" component={MobileNumberScreen} />
-      <Stack.Screen name="OTPVerifyScreen" component={OTPVerifyScreen} />
     </Stack.Group>
   );
 };

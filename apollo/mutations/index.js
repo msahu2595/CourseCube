@@ -5,6 +5,7 @@ export * from './BOOKMARK';
 export * from './UNBOOKMARK';
 //
 export * from './GOOGLE_LOG_IN';
+export * from './WHATSAPP_LOG_IN';
 export * from './LOGOUT';
 //
 export * from './CREATE_ANSWER';

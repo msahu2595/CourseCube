@@ -1,18 +1,24 @@
-import * as React from 'react';
+import React, {memo, useEffect} from 'react';
 import {
   Text,
+  View,
+  Image,
+  Linking,
   Platform,
   StatusBar,
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {
+  statusCodes,
+  GoogleSignin,
+} from '@react-native-google-signin/google-signin';
 import {LoadingIndicator, SafeAreaContainer} from '@components';
+import {GOOGLE_LOG_IN, WHATSAPP_LOG_IN} from '@mutations';
 import messaging from '@react-native-firebase/messaging';
+import {showMessage} from 'react-native-flash-message';
 import {loggedUserVar, storage} from 'apollo/client';
-import auth from '@react-native-firebase/auth';
 import {useMutation} from '@apollo/client';
-import {GOOGLE_LOG_IN} from '@mutations';
 import tw from '@lib/tailwind';
 
 GoogleSignin.configure({
@@ -20,34 +26,118 @@ GoogleSignin.configure({
     '712761607011-pen5ucovsnc3pm7uf6hgic9k63s3bq6a.apps.googleusercontent.com',
 });
 
-const LoginIntroScreen = () => {
-  const [googleLogIn, {loading}] = useMutation(GOOGLE_LOG_IN, {
-    onCompleted: data => {
-      storage.set('user', JSON.stringify(data?.googleLogIn?.payload));
-      loggedUserVar(data?.googleLogIn?.payload);
+const LoginIntroScreen = ({route}) => {
+  const [googleLogIn, {loading: googleLogInLoading}] = useMutation(
+    GOOGLE_LOG_IN,
+    {
+      onCompleted: data => {
+        storage.set('user', JSON.stringify(data?.googleLogIn?.payload));
+        loggedUserVar(data?.googleLogIn?.payload);
+      },
+      onError: err => {
+        showMessage({
+          message: err?.message || 'Some unknown error occurred. Try again!!',
+          type: 'danger',
+          icon: 'danger',
+        });
+      },
     },
-    onError: err => {
-      console.log(err);
-      auth()
-        .signOut()
-        .then(() => console.log('User signed out!'));
-    },
-  });
+  );
 
-  const signIn = async () => {
+  const [whatsAppLogIn, {loading: whatsAppLogInLoading}] = useMutation(
+    WHATSAPP_LOG_IN,
+    {
+      onCompleted: data => {
+        storage.set('user', JSON.stringify(data?.whatsAppLogIn?.payload));
+        loggedUserVar(data?.whatsAppLogIn?.payload);
+      },
+      onError: err => {
+        showMessage({
+          message: err?.message || 'Some unknown error occurred. Try again!!',
+          type: 'danger',
+          icon: 'danger',
+        });
+      },
+    },
+  );
+
+  useEffect(() => {
+    async function login(waId) {
+      try {
+        const FCMToken =
+          Platform.OS === 'ios' ? '' : await messaging().getToken();
+        whatsAppLogIn({
+          variables: {
+            waId,
+            FCMToken,
+            platform: Platform.OS,
+            acceptTnC: true,
+          },
+        });
+      } catch (error) {
+        showMessage({
+          message: error?.message || 'Some unknown error occurred. Try again!!',
+          type: 'danger',
+          icon: 'danger',
+        });
+      }
+    }
+    if (route.params?.waId) {
+      login(route.params?.waId);
+    }
+  }, [route.params?.waId, whatsAppLogIn]);
+
+  const handleGoogleSignIn = async () => {
     try {
-      const FCMToken =
-        Platform.OS === 'ios' ? '' : await messaging().getToken();
-      const {idToken} = await GoogleSignin.signIn();
-      console.log('{idToken, FCMToken} ==> ', {idToken, FCMToken});
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-      await auth().signInWithCredential(googleCredential);
-      console.log('User signed in! ==> ', googleCredential);
-      googleLogIn({
-        variables: {idToken, acceptTnC: true, FCMToken},
-      });
+      if (await GoogleSignin.hasPlayServices()) {
+        const {idToken} = await GoogleSignin.signIn();
+        const FCMToken =
+          Platform.OS === 'ios' ? '' : await messaging().getToken();
+        googleLogIn({
+          variables: {
+            idToken,
+            FCMToken,
+            platform: Platform.OS,
+            acceptTnC: true,
+          },
+        });
+      }
     } catch (error) {
-      console.log('GoogleSignin.signIn() error ==> ', error);
+      let message =
+        error?.message || 'Some unknown error occurred. Try again!!';
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+        return;
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+        message = 'Google signin is in progress already';
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+        message = 'Play services not available or outdated in your mobile.';
+      }
+      showMessage({message, type: 'danger', icon: 'danger'});
+    }
+  };
+
+  const handleWhatsAppSignIn = async () => {
+    try {
+      const url =
+        'https://courseqube.authlink.me?redirectUri=coursequbeotpless://otpless';
+      if (await Linking.canOpenURL(url)) {
+        await Linking.openURL(url);
+      } else {
+        showMessage({
+          message: 'Facing issue with whatsapp login, please try again.',
+          type: 'danger',
+          icon: 'danger',
+        });
+      }
+    } catch (error) {
+      showMessage({
+        message: error?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+        icon: 'danger',
+      });
     }
   };
 
@@ -63,7 +153,7 @@ const LoginIntroScreen = () => {
           resizeMode="cover"
           style={tw`flex-1 justify-end p-4`}>
           <Text style={tw`text-white text-3xl leading-10 font-avBold`}>
-            Lakshya with BHAVESH GAJPAL
+            Lakshya PSC Academy
           </Text>
           <Text style={tw`text-white font-avReg text-base mt-2`}>
             Planting the seeds of knowledge.
@@ -71,19 +161,39 @@ const LoginIntroScreen = () => {
           <Text style={tw`text-white font-avReg text-xs mb-4 mt-2`}>
             CGPSC/CGVYAPAM/SSC/BANKING/RAILWAYS
           </Text>
-          <TouchableOpacity
-            disabled={loading}
-            onPress={signIn}
-            style={tw`bg-green-500 justify-center items-center p-3 rounded-lg`}>
-            <Text style={tw`text-white font-avBold text-base`}>
-              Login with Google
-            </Text>
-          </TouchableOpacity>
+          <View style={tw`flex-row justify-between`}>
+            <LoginButton
+              onPress={handleGoogleSignIn}
+              imageStyle={tw`h-8 w-8`}
+              imageSource={require('@images/icons8-google-48.png')}
+              disabled={googleLogInLoading || whatsAppLogInLoading}
+            />
+            <View style={tw`w-2`} />
+            <LoginButton
+              onPress={handleWhatsAppSignIn}
+              imageStyle={tw`h-10 w-10`}
+              imageSource={require('@images/icons8-whatsapp-48.png')}
+              disabled={googleLogInLoading || whatsAppLogInLoading}
+            />
+          </View>
         </ImageBackground>
       </SafeAreaContainer>
-      <LoadingIndicator loading={loading} />
+      <LoadingIndicator loading={googleLogInLoading || whatsAppLogInLoading} />
     </>
   );
 };
 
 export default LoginIntroScreen;
+
+const LoginButton = memo(({onPress, imageSource, imageStyle, disabled}) => (
+  <TouchableOpacity
+    onPress={onPress}
+    disabled={disabled}
+    style={tw`py-1 flex-1 flex-row bg-gray-100 justify-center items-center rounded-lg shadow-lg`}>
+    <Text style={tw`text-gray-600 font-avSemi`}>Login with</Text>
+    <Image
+      source={imageSource}
+      style={tw.style('h-8 w-8 ml-2', {...imageStyle})}
+    />
+  </TouchableOpacity>
+));

@@ -1,3 +1,4 @@
+#import <React/RCTLinkingManager.h> // Deep linking
 #import <Firebase.h> // Firebase: @react-native-firebase
 #import "AppDelegate.h"
 
@@ -138,6 +139,23 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 // react-native-orientation-locker
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
   return [Orientation getOrientation];
+}
+
+// Deep linking
+- (BOOL)application:(UIApplication *)application
+   openURL:(NSURL *)url
+   options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+  return [RCTLinkingManager application:application openURL:url options:options];
+}
+
+// Deep linking (universal-links)
+- (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
+ restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler
+{
+ return [RCTLinkingManager application:application
+                  continueUserActivity:userActivity
+                    restorationHandler:restorationHandler];
 }
 
 @end
