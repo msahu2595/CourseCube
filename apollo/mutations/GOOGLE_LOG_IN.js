@@ -18,8 +18,8 @@ export const GOOGLE_LOG_IN = gql`
         emailVerified
         phoneNumber
         fullName
-        picture
         gender
+        picture
         about
         education
         workAt
@@ -36,13 +36,10 @@ export const GOOGLE_LOG_IN = gql`
         area
         street
         landmark
+        role
         FCMToken
         platform
         acceptTnC
-        role
-        followers
-        followings
-        history
         createdAt
         updatedAt
       }
