@@ -12,6 +12,7 @@ export const CCRadio = memo(
     horizontal = true,
     error,
     touched,
+    info,
     ...rest
   }) => {
     const initial = useMemo(
@@ -36,6 +37,11 @@ export const CCRadio = memo(
             {...rest}
           />
         </View>
+        {info ? (
+          <Text style={tw`text-[10px] text-gray-400 font-avReg p-1`}>
+            {info}
+          </Text>
+        ) : null}
         {error && touched ? (
           <Text style={tw`text-sm text-red-600 font-avReg p-1`}>{error}</Text>
         ) : null}

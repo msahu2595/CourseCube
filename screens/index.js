@@ -20,6 +20,7 @@ import {
   AdminPlaylistCourseBundleListScreen,
 } from './AdminScreens';
 import {LoginIntroScreen} from './AuthScreens';
+import {CreateProfileScreen} from './VerifyUserScreens';
 import {
   CommunityScreen,
   PostViewScreen,
@@ -102,6 +103,7 @@ export {
   AdminPlaylistCourseBundleListScreen,
   //
   LoginIntroScreen,
+  CreateProfileScreen,
   CommunityScreen,
   CreatePostScreen,
   CommunityNotificationScreen,

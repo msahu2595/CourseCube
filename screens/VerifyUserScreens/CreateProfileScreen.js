@@ -1,17 +1,23 @@
 import {tw} from '@lib';
 import React from 'react';
+import {
+  CCRadio,
+  CCButton,
+  CCTextInput,
+  CCImageUploader,
+} from 'components/Common';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import {View, ScrollView} from 'react-native';
-import {gql, useMutation, useReactiveVar} from '@apollo/client';
+import {gql, useMutation} from '@apollo/client';
 import {loggedUserVar, storage} from 'apollo/client';
 import {showMessage} from 'react-native-flash-message';
+import {CommonActions} from '@react-navigation/native';
 import {ExampleListItem, SafeAreaContainer} from '@components';
-import {CCButton, CCTextInput, CCImageUploader} from 'components/Common';
 
-const EDIT_PROFILE = gql`
-  mutation editProfile($userInput: EditProfileInput!) {
-    editProfile(userInput: $userInput) {
+const CREATE_PROFILE = gql`
+  mutation createProfile($userInput: CreateProfileInput!) {
+    createProfile(userInput: $userInput) {
       code
       success
       message
@@ -57,7 +63,19 @@ const EDIT_PROFILE = gql`
   }
 `;
 
-const EditProfileValidationSchema = yup.object({
+const CreateProfileValidationSchema = yup.object({
+  fullName: yup
+    .string()
+    .required('Please enter your full name.')
+    .min(2, 'Too short!!')
+    .max(80, 'Too big!!'),
+  gender: yup
+    .string()
+    .oneOf(
+      ['MALE', 'FEMALE', 'UNKNOWN'],
+      'Please select one of the following option.',
+    )
+    .required('Please select your gender.'),
   picture: yup.string().url('Picture should be a link.'),
   about: yup
     .string()
@@ -66,19 +84,24 @@ const EditProfileValidationSchema = yup.object({
     .max(320, 'Too big!!'),
 });
 
-const EditProfileScreen = () => {
-  const loggedUser = useReactiveVar(loggedUserVar);
+const loggedUser = loggedUserVar();
 
-  const [editProfile, {loading: submitting}] = useMutation(EDIT_PROFILE, {
+export const CreateProfileScreen = ({navigation}) => {
+  const [createProfile, {loading: submitting}] = useMutation(CREATE_PROFILE, {
     onCompleted: data => {
-      console.log(data?.editProfile?.payload);
-      storage.set('user', JSON.stringify(data?.editProfile?.payload));
-      loggedUserVar(data?.editProfile?.payload);
+      storage.set('user', JSON.stringify(data?.createProfile?.payload));
+      loggedUserVar(data?.createProfile?.payload);
       showMessage({
-        message: 'Your profile is successfully edited.',
+        message: 'Your profile is successfully created.',
         type: 'success',
         icon: 'success',
       });
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'MainBottomTabNavigator'}],
+        }),
+      );
     },
     onError: err => {
       showMessage({
@@ -96,19 +119,23 @@ const EditProfileScreen = () => {
       <ScrollView contentContainerStyle={tw`px-3 bg-white`}>
         <Formik
           initialValues={{
+            fullName: loggedUser?.fullName ?? '',
+            gender: loggedUser?.gender ?? 'UNKNOWN',
             picture: loggedUser?.picture ?? '',
             about: loggedUser?.about ?? '',
           }}
-          validationSchema={EditProfileValidationSchema}
+          validationSchema={CreateProfileValidationSchema}
           onSubmit={values => {
             console.log({values});
             const userInput = {
+              fullName: values.fullName,
+              gender: values.gender,
               about: values.about,
             };
             if (values.picture) {
               userInput.picture = values.picture;
             }
-            editProfile({variables: {userInput}});
+            createProfile({variables: {userInput}});
           }}>
           {({
             handleChange,
@@ -132,6 +159,31 @@ const EditProfileScreen = () => {
                     editable={!submitting}
                   />
                 </View>
+                <CCTextInput
+                  required
+                  label="Full Name"
+                  error={errors.fullName}
+                  touched={touched.fullName}
+                  onChangeText={handleChange('fullName')}
+                  onBlur={handleBlur('fullName')}
+                  value={values.fullName}
+                  editable={!submitting}
+                  info="Please be careful, you will be not able to change this in future."
+                />
+                <CCRadio
+                  required
+                  label="Gender"
+                  radio_props={[
+                    {label: 'Male   ', value: 'MALE'},
+                    {label: 'Female   ', value: 'FEMALE'},
+                    {label: 'Prefer not to say   ', value: 'UNKNOWN'},
+                  ]}
+                  value={values.gender}
+                  onPress={value => {
+                    setFieldValue('gender', value);
+                  }}
+                  info="Please be careful, you will be not able to change this in future."
+                />
                 <CCTextInput
                   required
                   label="About"
@@ -168,5 +220,3 @@ const EditProfileScreen = () => {
     </SafeAreaContainer>
   );
 };
-
-export default EditProfileScreen;

@@ -29,6 +29,7 @@ export const GOOGLE_LOG_IN = gql`
         gender
         picture
         about
+        userVerified
         education
         workAt
         workAs

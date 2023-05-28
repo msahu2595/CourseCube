@@ -38,6 +38,7 @@ import MediaItem from './MediaItem';
 import MenuOptionItem from './MenuOptionItem';
 import LoadingIndicator from './LoadingIndicator';
 import NetworkStatusProvider from './NetworkStatusProvider';
+import ExampleListItem, {ExampleItem} from './ExampleListItem';
 
 export {
   FocusAwareStatusBar,
@@ -90,4 +91,6 @@ export {
   MenuOptionItem,
   LoadingIndicator,
   NetworkStatusProvider,
+  ExampleListItem,
+  ExampleItem,
 };

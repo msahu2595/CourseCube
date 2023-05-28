@@ -2,6 +2,7 @@ import React from 'react';
 import {
   adminStackGroup,
   authStackGroup,
+  verifyUserStackGroup,
   tabStackGroup,
   homeStackGroup,
   myProfileStackGroup,
@@ -27,6 +28,7 @@ const MainNativeStackNavigator = () => {
       {loggedUser ? (
         <>
           {loggedUser?.role === 'ADMIN' && adminStackGroup()}
+          {!loggedUser?.userVerified && verifyUserStackGroup()}
           {tabStackGroup()}
           {homeStackGroup()}
           {myProfileStackGroup()}

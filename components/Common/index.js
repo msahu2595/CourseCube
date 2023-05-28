@@ -7,6 +7,7 @@ import {CCCheckBox} from './CCCheckBox';
 import {CCTextInput} from './CCTextInput';
 import {CCLikeButton} from './CCLikeButton';
 import {CCSearchInput} from './CCSearchInput';
+import {CCImageUploader} from './CCImageUploader';
 import {CCBookmarkButton} from './CCBookmarkButton';
 import {CCNavigationButton} from './CCNavigationButton';
 
@@ -20,6 +21,7 @@ export {
   CCTextInput,
   CCLikeButton,
   CCSearchInput,
+  CCImageUploader,
   CCBookmarkButton,
   CCNavigationButton,
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import tw from '@lib/tailwind';
+import {useGenderImage} from 'hooks';
 import {loggedUserVar} from 'apollo/client';
 import {useReactiveVar} from '@apollo/client';
 import {useNavigation} from '@react-navigation/core';
@@ -10,20 +11,17 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 const UserInfo = ({edit}) => {
   const navigation = useNavigation();
 
+  const imageByGender = useGenderImage();
   const loggedUser = useReactiveVar(loggedUserVar);
 
   return (
     <View style={tw`p-4 bg-white`}>
       <View style={tw`flex-row justify-between items-center`}>
         <Image
-          source={
-            loggedUser?.picture
-              ? {uri: loggedUser?.picture}
-              : loggedUser?.gender === 'MALE'
-              ? require('@images/person-male.png')
-              : require('@images/person-female.png')
-          }
           resizeMode="contain"
+          source={
+            loggedUser?.picture ? {uri: loggedUser?.picture} : imageByGender
+          }
           style={tw.style('rounded-full border border-gray-300', {
             height: 84,
             width: 84,
@@ -64,6 +62,7 @@ const UserInfo = ({edit}) => {
       </View>
       <View style={tw`mt-4 flex-row items-center justify-center`}>
         <TouchableOpacity
+          onPress={() => navigation.navigate('EditProfileScreen')}
           style={tw`p-2 flex-1 flex-row items-center justify-center bg-blue-600 rounded shadow`}>
           <Feather
             name={edit ? 'edit' : 'user-plus'}

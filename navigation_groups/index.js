@@ -1,5 +1,6 @@
 import adminStackGroup from './adminStackGroup';
 import authStackGroup from './authStackGroup';
+import verifyUserStackGroup from './verifyUserStackGroup';
 import tabStackGroup from './tabStackGroup';
 import homeStackGroup from './homeStackGroup';
 import myProfileStackGroup from './myProfileStackGroup';
@@ -12,6 +13,7 @@ import settingStackGroup from './settingStackGroup';
 export {
   adminStackGroup,
   authStackGroup,
+  verifyUserStackGroup,
   tabStackGroup,
   homeStackGroup,
   myProfileStackGroup,
