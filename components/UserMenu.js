@@ -37,7 +37,8 @@ const UserMenu = () => {
               key={icon}
               style={tw.style(
                 'mb-2',
-                'p-4',
+                'py-4',
+                'px-2',
                 'flex-row',
                 'items-center',
                 'justify-center',
@@ -47,12 +48,14 @@ const UserMenu = () => {
                 {width: '44%'},
               )}>
               <Feather
-                name={icon}
-                color={tw.color('blue-600')}
                 size={16}
+                name={icon}
                 style={tw`px-2`}
+                color={tw.color('blue-600')}
               />
-              <Text style={tw`flex-1 text-center font-avSemi text-black`}>
+              <Text
+                numberOfLines={1}
+                style={tw`flex-1 text-center font-avSemi text-black`}>
                 {name}
               </Text>
             </TouchableOpacity>

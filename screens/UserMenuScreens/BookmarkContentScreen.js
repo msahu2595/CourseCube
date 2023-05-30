@@ -3,7 +3,7 @@ import {ContentItem} from '@components';
 import React, {useCallback} from 'react';
 import {gql, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {View, FlatList, RefreshControl} from 'react-native';
+import {View, FlatList, RefreshControl, Text} from 'react-native';
 
 const BOOKMARKS = gql`
   query bookmarks($limit: Int, $offset: Int, $filter: BookmarksFilterInput) {
@@ -125,6 +125,15 @@ const BookmarkContentScreen = ({navigation}) => {
         //
         contentContainerStyle={tw`p-2 pb-4`}
         ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+        ListEmptyComponent={
+          loading
+            ? null
+            : () => (
+                <Text style={tw`font-avReg text-[14px] text-black text-center`}>
+                  Nothing bookmarked yet.
+                </Text>
+              )
+        }
         //
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={refetch} />
