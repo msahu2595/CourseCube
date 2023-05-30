@@ -76,9 +76,12 @@ const EditProfileScreen = () => {
 
   const [editProfile, {loading: submitting}] = useMutation(EDIT_PROFILE, {
     onCompleted: data => {
-      console.log(data?.editProfile?.payload);
-      storage.set('user', JSON.stringify(data?.editProfile?.payload));
-      loggedUserVar(data?.editProfile?.payload);
+      console.log({...loggedUser, ...data?.editProfile?.payload});
+      storage.set(
+        'user',
+        JSON.stringify({...loggedUser, ...data?.editProfile?.payload}),
+      );
+      loggedUserVar({...loggedUser, ...data?.editProfile?.payload});
       showMessage({
         message: 'Your profile is successfully edited.',
         type: 'success',

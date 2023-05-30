@@ -89,8 +89,12 @@ export const CreateProfileScreen = ({navigation}) => {
 
   const [createProfile, {loading: submitting}] = useMutation(CREATE_PROFILE, {
     onCompleted: data => {
-      storage.set('user', JSON.stringify(data?.createProfile?.payload));
-      loggedUserVar(data?.createProfile?.payload);
+      console.log({...loggedUser, ...data?.editProfile?.payload});
+      storage.set(
+        'user',
+        JSON.stringify({...loggedUser, ...data?.editProfile?.payload}),
+      );
+      loggedUserVar({...loggedUser, ...data?.editProfile?.payload});
       showMessage({
         message: 'Your profile is successfully created.',
         type: 'success',
