@@ -6,6 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import {showMessage} from 'react-native-flash-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Text, View, TouchableOpacity, ActivityIndicator} from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const statistics = [
   {
@@ -13,28 +14,32 @@ const statistics = [
     icon: 'playcircleo',
     value: 'videos',
     type: 'Watched',
-    screen: '',
+    screen: 'HistoryListScreen',
+    params: {headerTitle: 'Watched Videos', subType: 'Video'},
   },
   {
     name: "PDF's",
     icon: 'pdffile1',
     value: 'documents',
     type: 'Read',
-    screen: '',
+    screen: 'HistoryListScreen',
+    params: {headerTitle: 'Read PDFs', subType: 'Document'},
   },
   {
     name: "Test's",
     icon: 'form',
     value: 'tests',
     type: 'Attempted',
-    screen: '',
+    screen: 'HistoryListScreen',
+    params: {headerTitle: 'Attempted Tests', subType: 'Test'},
   },
   {
     name: "Article's",
     icon: 'profile',
     value: 'articles',
     type: 'Read',
-    screen: '',
+    screen: 'HistoryListScreen',
+    params: {headerTitle: 'Read Articles', type: 'Article'},
   },
 ];
 
@@ -51,9 +56,13 @@ const UserStatistics = ({userId}) => {
 
   const navigation = useNavigation();
 
+  const handleSeeAll = useCallback(() => {
+    navigation.navigate('HistoryListScreen', {headerTitle: 'History'});
+  }, [navigation]);
+
   const handleMenuPress = useCallback(
-    screen => {
-      navigation.navigate(screen);
+    (screen, params) => {
+      navigation.navigate(screen, params);
     },
     [navigation],
   );
@@ -69,13 +78,23 @@ const UserStatistics = ({userId}) => {
     <View style={tw`py-4 bg-white`}>
       <View style={tw`flex-row justify-between items-center px-4 bg-white`}>
         <Text style={tw`font-avSemi text-base text-gray-600`}>Statistics</Text>
+        <TouchableOpacity
+          onPress={handleSeeAll}
+          style={tw`flex-row items-center`}>
+          <Text style={tw`font-avSemi text-gray-600 text-[10px]`}>SEE ALL</Text>
+          <MaterialCommunityIcons
+            size={16}
+            color="#52525B"
+            name="chevron-right"
+          />
+        </TouchableOpacity>
       </View>
       <View
         style={tw`pt-2 flex-row flex-wrap items-center justify-evenly bg-white`}>
-        {statistics.map(({name, icon, value, type, screen}) => {
+        {statistics.map(({name, icon, value, type, screen, params}) => {
           return (
             <TouchableOpacity
-              onPress={() => (screen ? handleMenuPress(screen) : null)}
+              onPress={() => (screen ? handleMenuPress(screen, params) : null)}
               key={icon}
               style={tw.style(
                 'mb-2',

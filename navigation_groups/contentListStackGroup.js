@@ -40,6 +40,10 @@ const contentListStackGroup = () => {
         name="HistoryListScreen"
         component={HistoryListScreen}
         options={({route}) => ({
+          headerShown: true,
+          headerStyle: tw`bg-blue-600`,
+          headerTitleStyle: tw`font-avSemi`,
+          headerTintColor: tw.color('white'),
           headerTitle: route?.params?.headerTitle || 'History',
         })}
       />

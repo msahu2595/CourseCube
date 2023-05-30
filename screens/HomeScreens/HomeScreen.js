@@ -36,9 +36,9 @@ const HomeScreen = props => {
         </View>
         <AdvertBar type="MEDIUM" containerStyle={tw`py-1`} />
         <AdvertBar type="LARGE" containerStyle={tw`py-1`} />
-        {/* <View style={tw`pt-1`}>
+        <View style={tw`pt-1`}>
           <HistoryBar title="Continue Learning" />
-        </View> */}
+        </View>
         {/* <View style={tw`mt-1`}>
           <FullSyllabusCourseBar title="Prepare with Full Syllabus Course" />
         </View> */}

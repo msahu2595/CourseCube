@@ -1,16 +1,155 @@
-import React from 'react';
 import tw from '@lib/tailwind';
-import {View, Text, FlatList, Pressable} from 'react-native';
-import HistoryItem from './HistoryItem';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import HISTORY_BAR_DATA from '@utils/history_bar_data.json';
+import React, {useCallback} from 'react';
+import {gql, useQuery} from '@apollo/client';
+import ContentItem from 'components/ContentItem';
 import {useNavigation} from '@react-navigation/core';
+import {showMessage} from 'react-native-flash-message';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {View, Text, FlatList, Pressable, RefreshControl} from 'react-native';
+
+const HISTORY = gql`
+  query history($limit: Int, $offset: Int, $filter: HistoryFilterInput) {
+    history(limit: $limit, offset: $offset, filter: $filter) {
+      code
+      success
+      message
+      token
+      limit
+      offset
+      filter {
+        userId
+        type
+        subType
+      }
+      payload {
+        __typename
+        _id
+        ref {
+          ... on BundleContent {
+            __typename
+            _id
+            subject
+            image
+            title
+            type
+          }
+          ... on Content {
+            __typename
+            _id
+            subject
+            title
+            image
+            type
+          }
+          ... on Article {
+            __typename
+            _id
+            subject
+            image
+            title
+          }
+        }
+        type
+        subType
+        visible
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+const horizontal = true;
 
 const HistoryBar = props => {
   const navigation = useNavigation();
-  const renderItem = ({index, item}) => <HistoryItem index={index} {...item} />;
 
-  if (!HISTORY_BAR_DATA?.length) {
+  const {loading, data, refetch, fetchMore} = useQuery(HISTORY, {
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+  });
+
+  const handleNavigation = useCallback(() => {
+    navigation.navigate('HistoryListScreen', {headerTitle: 'History'});
+  }, [navigation]);
+
+  const handlePress = useCallback(
+    ({contentId, contentTitle, contentType, contentSubType}) => {
+      switch (contentType) {
+        case 'Content':
+          switch (contentSubType) {
+            case 'Video':
+              navigation.navigate('VideoViewScreen', {contentId});
+              break;
+            case 'Test':
+              navigation.navigate('TestViewScreen', {
+                contentId,
+                title: contentTitle,
+              });
+              break;
+            case 'Document':
+              navigation.navigate('DocumentViewScreen', {
+                contentId,
+                title: contentTitle,
+              });
+              break;
+            default:
+              break;
+          }
+          break;
+        case 'BundleContent':
+          switch (contentSubType) {
+            case 'Video':
+              navigation.navigate('CourseVideoViewScreen', {
+                bundleContentId: contentId,
+              });
+              break;
+            case 'Test':
+              navigation.navigate('CourseTestViewScreen', {
+                bundleContentId: contentId,
+                title: contentTitle,
+              });
+              break;
+            case 'Document':
+              navigation.navigate('CourseDocumentViewScreen', {
+                bundleContentId: contentId,
+                title: contentTitle,
+              });
+              break;
+            default:
+              break;
+          }
+          break;
+        case 'Article':
+          navigation.navigate('CurrentAffairViewScreen', {
+            articleId: contentId,
+            title: contentTitle,
+          });
+          break;
+        default:
+          break;
+      }
+    },
+    [navigation],
+  );
+
+  const _renderItem = useCallback(
+    ({item}) => (
+      <ContentItem
+        {...item?.ref}
+        createdAt={item?.createdAt}
+        horizontal={horizontal}
+        onPress={handlePress}
+      />
+    ),
+    [handlePress],
+  );
+
+  if (!data?.history?.payload?.length) {
     return null;
   }
 
@@ -20,9 +159,7 @@ const HistoryBar = props => {
         <Text style={tw`font-avSemi text-base text-gray-600`}>
           {props.title}
         </Text>
-        <Pressable
-          onPress={() => navigation.navigate('HistoryListScreen')}
-          style={tw`flex-row items-center`}>
+        <Pressable onPress={handleNavigation} style={tw`flex-row items-center`}>
           <Text
             style={tw.style('font-avSemi', 'text-gray-600', {fontSize: 10})}>
             SEE ALL
@@ -31,15 +168,30 @@ const HistoryBar = props => {
         </Pressable>
       </View>
       <FlatList
-        horizontal
-        data={HISTORY_BAR_DATA}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
+        bounces={true}
+        horizontal={horizontal}
         showsHorizontalScrollIndicator={false}
+        //
+        data={data?.history?.payload}
+        keyExtractor={item => item._id}
+        renderItem={_renderItem}
+        //
         contentContainerStyle={tw`bg-white pt-2`}
         ItemSeparatorComponent={() => <View style={tw`w-3`} />}
         ListHeaderComponent={() => <View style={tw`w-4`} />}
         ListFooterComponent={() => <View style={tw`w-4`} />}
+        //
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={refetch} />
+        }
+        onEndReached={() => {
+          fetchMore({
+            variables: {
+              offset: data?.history?.payload.length,
+              limit: 10,
+            },
+          });
+        }}
       />
     </View>
   );

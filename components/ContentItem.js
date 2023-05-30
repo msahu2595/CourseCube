@@ -13,7 +13,10 @@ const ContentItem = memo(props => (
         contentType: props?.__typename,
       })
     }>
-    <View style={tw`flex-row rounded-lg shadow-sm bg-gray-50`}>
+    <View
+      style={tw`flex-row rounded-lg shadow-sm bg-gray-50 ${
+        props?.horizontal ? 'w-[320px]' : ''
+      }`}>
       <ImageBackground
         resizeMode="cover"
         source={{uri: props?.image}}
@@ -29,15 +32,13 @@ const ContentItem = memo(props => (
           })}
         />
       </ImageBackground>
-      <View style={tw`flex-1 px-2 py-3 justify-between`}>
+      <View style={tw`flex-1 px-2 py-2 justify-between`}>
         <Text
-          style={tw`font-avSemi text-indigo-700 capitalize text-[10px]`}
+          style={tw`font-avSemi text-indigo-700 text-[10px]`}
           numberOfLines={1}>
           {props?.subject}
         </Text>
-        <Text
-          style={tw`font-avSemi text-xs text-gray-600 capitalize`}
-          numberOfLines={2}>
+        <Text style={tw`font-avSemi text-xs text-gray-600`} numberOfLines={2}>
           {props?.title}
         </Text>
         <Text
