@@ -5,6 +5,7 @@ import {CCButton} from './CCButton';
 import {CCDuration} from './CCDuration';
 import {CCCheckBox} from './CCCheckBox';
 import {CCTextInput} from './CCTextInput';
+import {CCTextExpand} from './CCTextExpand';
 import {CCLikeButton} from './CCLikeButton';
 import {CCSearchInput} from './CCSearchInput';
 import {CCImageUploader} from './CCImageUploader';
@@ -19,6 +20,7 @@ export {
   CCDuration,
   CCCheckBox,
   CCTextInput,
+  CCTextExpand,
   CCLikeButton,
   CCSearchInput,
   CCImageUploader,

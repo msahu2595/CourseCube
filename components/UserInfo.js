@@ -1,6 +1,7 @@
 import React from 'react';
 import tw from '@lib/tailwind';
 import {useGenderImage} from 'hooks';
+import {CCTextExpand} from './Common';
 import {loggedUserVar} from 'apollo/client';
 import {useReactiveVar} from '@apollo/client';
 import {useNavigation} from '@react-navigation/core';
@@ -31,11 +32,11 @@ const UserInfo = ({edit}) => {
           <Text style={tw`font-avSemi text-lg text-blue-600`} numberOfLines={1}>
             {loggedUser?.fullName}
           </Text>
-          <Text
-            style={tw`font-avReg text-xs text-gray-500 py-1`}
-            numberOfLines={2}>
+          <CCTextExpand
+            numberOfLines={2}
+            style={tw`font-avReg text-xs text-gray-500 py-1`}>
             {loggedUser?.about}
-          </Text>
+          </CCTextExpand>
           <View style={tw`flex-row justify-between pt-2`}>
             <TouchableOpacity
               onPress={() => navigation.navigate('FollowListTopTabNavigator')}
