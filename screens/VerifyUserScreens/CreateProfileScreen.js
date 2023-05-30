@@ -9,11 +9,11 @@ import {
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import {View, ScrollView} from 'react-native';
-import {gql, useMutation} from '@apollo/client';
 import {loggedUserVar, storage} from 'apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import {CommonActions} from '@react-navigation/native';
 import {ExampleListItem, SafeAreaContainer} from '@components';
+import {gql, useMutation, useReactiveVar} from '@apollo/client';
 
 const CREATE_PROFILE = gql`
   mutation createProfile($userInput: CreateProfileInput!) {
@@ -84,9 +84,9 @@ const CreateProfileValidationSchema = yup.object({
     .max(320, 'Too big!!'),
 });
 
-const loggedUser = loggedUserVar();
-
 export const CreateProfileScreen = ({navigation}) => {
+  const loggedUser = useReactiveVar(loggedUserVar);
+
   const [createProfile, {loading: submitting}] = useMutation(CREATE_PROFILE, {
     onCompleted: data => {
       storage.set('user', JSON.stringify(data?.createProfile?.payload));
