@@ -13,6 +13,7 @@ export const CCRadio = memo(
     error,
     touched,
     info,
+    disabled = false,
     ...rest
   }) => {
     const initial = useMemo(
@@ -27,7 +28,9 @@ export const CCRadio = memo(
           {label}
           {required && <Text style={tw`text-red-600`}>*</Text>}
         </Text>
-        <View style={tw`my-1`}>
+        <View
+          pointerEvents={disabled ? 'none' : 'auto'}
+          style={tw`my-1 ${disabled ? 'opacity-50' : ''}`}>
           <RadioForm
             formHorizontal={horizontal}
             buttonColor={tw.color('blue-600')}

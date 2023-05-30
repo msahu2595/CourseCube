@@ -1,13 +1,18 @@
 import {tw} from '@lib';
 import React from 'react';
+import {
+  CCRadio,
+  CCButton,
+  CCTextInput,
+  CCImageUploader,
+} from 'components/Common';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import {View, ScrollView} from 'react-native';
-import {gql, useMutation, useReactiveVar} from '@apollo/client';
 import {loggedUserVar, storage} from 'apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import {ExampleListItem, SafeAreaContainer} from '@components';
-import {CCButton, CCTextInput, CCImageUploader} from 'components/Common';
+import {gql, useMutation, useReactiveVar} from '@apollo/client';
 
 const EDIT_PROFILE = gql`
   mutation editProfile($userInput: EditProfileInput!) {
@@ -133,6 +138,35 @@ const EditProfileScreen = () => {
                   />
                 </View>
                 <CCTextInput
+                  label="Full Name"
+                  value={loggedUser?.fullName}
+                  editable={false}
+                />
+                <CCRadio
+                  label="Gender"
+                  radio_props={[
+                    {label: 'Male   ', value: 'MALE'},
+                    {label: 'Female   ', value: 'FEMALE'},
+                    {label: 'Prefer not to say   ', value: 'UNKNOWN'},
+                  ]}
+                  value={loggedUser?.gender}
+                  disabled={true}
+                />
+                {loggedUser?.email ? (
+                  <CCTextInput
+                    label="Email"
+                    value={loggedUser?.email}
+                    editable={false}
+                  />
+                ) : null}
+                {loggedUser?.mobile ? (
+                  <CCTextInput
+                    label="Mobile"
+                    value={loggedUser?.mobile}
+                    editable={false}
+                  />
+                ) : null}
+                <CCTextInput
                   required
                   label="About"
                   error={errors.about}
@@ -143,6 +177,7 @@ const EditProfileScreen = () => {
                   value={values.about}
                   multiline={true}
                   numberOfLines={4}
+                  editable={!submitting}
                 />
                 {values.about.length < 10 && (
                   <ExampleListItem

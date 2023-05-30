@@ -182,6 +182,7 @@ export const CreateProfileScreen = ({navigation}) => {
                   onPress={value => {
                     setFieldValue('gender', value);
                   }}
+                  disabled={submitting}
                   info="Please be careful, you will be not able to change this in future."
                 />
                 <CCTextInput
@@ -195,6 +196,7 @@ export const CreateProfileScreen = ({navigation}) => {
                   value={values.about}
                   multiline={true}
                   numberOfLines={4}
+                  editable={!submitting}
                 />
                 {values.about.length < 10 && (
                   <ExampleListItem
