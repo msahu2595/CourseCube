@@ -147,9 +147,9 @@ const LoginIntroScreen = ({route}) => {
         statusBgColor="#1A368D"
         statusBarStyle="dark-content"
         containerStyle={tw`bg-[#1A368D]`}>
-        <StatusBar backgroundColor="#1b368d" />
+        <StatusBar backgroundColor="#185366" />
         <ImageBackground
-          source={require('@images/LoginBackground.png')}
+          source={require('@images/LoginBackground.jpg')}
           resizeMode="cover"
           style={tw`flex-1 justify-end p-4`}>
           <Text style={tw`text-white text-3xl leading-10 font-avBold`}>
