@@ -1,12 +1,13 @@
 import tw from '@lib/tailwind';
 import {STATISTICS} from '@queries';
-import {useQuery} from '@apollo/client';
-import React, {useCallback} from 'react';
+import {useQuery, useReactiveVar} from '@apollo/client';
+import React, {useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {showMessage} from 'react-native-flash-message';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Text, View, TouchableOpacity, ActivityIndicator} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {loggedUserVar} from 'apollo/client';
 
 const statistics = [
   {
@@ -44,7 +45,11 @@ const statistics = [
 ];
 
 const UserStatistics = ({userId}) => {
-  const {loading, data} = useQuery(STATISTICS, {
+  const navigation = useNavigation();
+
+  const loggedUser = useReactiveVar(loggedUserVar);
+
+  const {loading, data, startPolling, stopPolling} = useQuery(STATISTICS, {
     variables: userId ? {userId} : {},
     onError: err => {
       showMessage({
@@ -54,7 +59,12 @@ const UserStatistics = ({userId}) => {
     },
   });
 
-  const navigation = useNavigation();
+  useEffect(() => {
+    startPolling(300000);
+    return () => {
+      stopPolling();
+    };
+  }, [startPolling, stopPolling]);
 
   const handleSeeAll = useCallback(() => {
     navigation.navigate('HistoryListScreen', {headerTitle: 'History'});
@@ -78,22 +88,27 @@ const UserStatistics = ({userId}) => {
     <View style={tw`py-4 bg-white`}>
       <View style={tw`flex-row justify-between items-center px-4 bg-white`}>
         <Text style={tw`font-avSemi text-base text-gray-600`}>Statistics</Text>
-        <TouchableOpacity
-          onPress={handleSeeAll}
-          style={tw`flex-row items-center`}>
-          <Text style={tw`font-avSemi text-gray-600 text-[10px]`}>SEE ALL</Text>
-          <MaterialCommunityIcons
-            size={16}
-            color="#52525B"
-            name="chevron-right"
-          />
-        </TouchableOpacity>
+        {(!userId || userId === loggedUser?._id) && (
+          <TouchableOpacity
+            onPress={handleSeeAll}
+            style={tw`flex-row items-center`}>
+            <Text style={tw`font-avSemi text-gray-600 text-[10px]`}>
+              SEE ALL
+            </Text>
+            <MaterialCommunityIcons
+              size={16}
+              color="#52525B"
+              name="chevron-right"
+            />
+          </TouchableOpacity>
+        )}
       </View>
       <View
         style={tw`pt-2 flex-row flex-wrap items-center justify-evenly bg-white`}>
         {statistics.map(({name, icon, value, type, screen, params}) => {
           return (
             <TouchableOpacity
+              disabled={userId && userId !== loggedUser?._id}
               onPress={() => (screen ? handleMenuPress(screen, params) : null)}
               key={icon}
               style={tw.style(

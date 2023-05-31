@@ -8,6 +8,7 @@ import {CCTextInput} from './CCTextInput';
 import {CCTextExpand} from './CCTextExpand';
 import {CCLikeButton} from './CCLikeButton';
 import {CCSearchInput} from './CCSearchInput';
+import {CCFollowButton} from './CCFollowButton';
 import {CCImageUploader} from './CCImageUploader';
 import {CCBookmarkButton} from './CCBookmarkButton';
 import {CCNavigationButton} from './CCNavigationButton';
@@ -23,6 +24,7 @@ export {
   CCTextExpand,
   CCLikeButton,
   CCSearchInput,
+  CCFollowButton,
   CCImageUploader,
   CCBookmarkButton,
   CCNavigationButton,

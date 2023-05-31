@@ -10,36 +10,34 @@ import {
   DocumentBar,
 } from '@components';
 
-const UserProfileScreen = () => {
-  return (
-    <SafeAreaContainer
-      statusBgColor={tw.color('blue-600')}
-      statusBarStyle="light-content">
-      <ScrollView>
-        <View style={tw`pt-1`}>
-          <UserInfo />
-        </View>
-        <View style={tw`pt-1`}>
-          <UserStatistics userId="62f530154409e1693842209b" />
-        </View>
-        {/* <View style={tw`pt-1`}>
+const UserProfileScreen = ({route}) => (
+  <SafeAreaContainer
+    statusBgColor={tw.color('blue-600')}
+    statusBarStyle="light-content">
+    <ScrollView>
+      <View style={tw`pt-1`}>
+        <UserInfo userId={route?.params?.userId} />
+      </View>
+      <View style={tw`pt-1`}>
+        <UserStatistics userId={route?.params?.userId} />
+      </View>
+      {/* <View style={tw`pt-1`}>
           <FullSyllabusCourseBar title="Full Syllabus Course's" />
         </View> */}
-        <View style={tw`pt-1`}>
-          <VideoBar title="Video's" />
-        </View>
-        <View style={tw`pt-1`}>
-          <TestBar title="Test's" />
-        </View>
-        <View style={tw`pt-1`}>
-          <DocumentBar title="PDF's" />
-        </View>
-        {/* <View style={tw`pt-1`}>
+      <View style={tw`pt-1`}>
+        <VideoBar title="Video's" />
+      </View>
+      <View style={tw`pt-1`}>
+        <TestBar title="Test's" />
+      </View>
+      <View style={tw`pt-1`}>
+        <DocumentBar title="PDF's" />
+      </View>
+      {/* <View style={tw`pt-1`}>
           <SubjectWiseCourseBar title="Subject Wise Course's" />
         </View> */}
-      </ScrollView>
-    </SafeAreaContainer>
-  );
-};
+    </ScrollView>
+  </SafeAreaContainer>
+);
 
 export default UserProfileScreen;

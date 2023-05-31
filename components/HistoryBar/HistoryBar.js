@@ -1,7 +1,7 @@
 import tw from '@lib/tailwind';
-import React, {useCallback} from 'react';
 import {gql, useQuery} from '@apollo/client';
 import ContentItem from 'components/ContentItem';
+import React, {useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {showMessage} from 'react-native-flash-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -64,14 +64,22 @@ const horizontal = true;
 const HistoryBar = props => {
   const navigation = useNavigation();
 
-  const {loading, data, refetch, fetchMore} = useQuery(HISTORY, {
-    onError: err => {
-      showMessage({
-        message: err?.message || 'Some unknown error occurred. Try again!!',
-        type: 'danger',
-      });
-    },
-  });
+  const {loading, data, refetch, fetchMore, startPolling, stopPolling} =
+    useQuery(HISTORY, {
+      onError: err => {
+        showMessage({
+          message: err?.message || 'Some unknown error occurred. Try again!!',
+          type: 'danger',
+        });
+      },
+    });
+
+  useEffect(() => {
+    startPolling(30000);
+    return () => {
+      stopPolling();
+    };
+  }, [startPolling, stopPolling]);
 
   const handleNavigation = useCallback(() => {
     navigation.navigate('HistoryListScreen', {headerTitle: 'History'});

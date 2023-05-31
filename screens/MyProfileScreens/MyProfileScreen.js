@@ -24,7 +24,7 @@ const MyProfileScreen = () => {
       statusBarStyle="light-content">
       <ScrollView>
         <View style={tw`pt-1`}>
-          <UserInfo edit />
+          <UserInfo />
         </View>
         <View style={tw`pt-1`}>
           <UserMenu />

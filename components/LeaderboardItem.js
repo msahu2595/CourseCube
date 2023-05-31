@@ -1,30 +1,43 @@
-import React from 'react';
 import tw from '@lib/tailwind';
+import {useGenderImage} from 'hooks';
+import React, {useCallback, useMemo} from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {Image, Text, View, Pressable} from 'react-native';
 
-const LeaderboardItem = ({index, image, name, activities, followers}) => {
+const LeaderboardItem = ({
+  index,
+  _id,
+  fullName,
+  gender,
+  picture,
+  followers,
+  activities,
+}) => {
   const navigation = useNavigation();
-  let medal;
-  switch (index) {
-    case 0:
-      medal = require('@images/gold_medal.png');
-      break;
-    case 1:
-      medal = require('@images/bronze_medal.png');
-      break;
-    case 2:
-      medal = require('@images/silver_medal.png');
-      break;
-  }
+
+  const imageByGender = useGenderImage(gender);
+
+  const medal = useMemo(() => {
+    switch (index) {
+      case 0:
+        return require('@images/gold_medal.png');
+      case 1:
+        return require('@images/bronze_medal.png');
+      case 2:
+        return require('@images/silver_medal.png');
+    }
+  }, [index]);
+
+  const handleNavigation = useCallback(() => {
+    navigation.navigate('UserProfileScreen', {userId: _id});
+  }, [navigation, _id]);
+
   return (
     <Pressable
-      onPress={() => {
-        navigation.navigate('UserProfileScreen');
-      }}
+      onPress={handleNavigation}
       style={tw`flex-row items-center px-4 py-3`}>
       <Image
-        source={{uri: image}}
+        source={picture ? {uri: picture} : imageByGender}
         resizeMode="contain"
         style={tw.style('rounded-full', {
           width: 40,
@@ -32,7 +45,7 @@ const LeaderboardItem = ({index, image, name, activities, followers}) => {
         })}
       />
       <View style={tw`flex-1 px-4`}>
-        <Text style={tw`font-avSemi text-sm text-black`}>{name}</Text>
+        <Text style={tw`font-avSemi text-sm text-black`}>{fullName}</Text>
         <Text style={tw`font-avReg text-xs text-black`}>
           <Text style={tw`font-avSemi text-blue-500`}>{activities}</Text>{' '}
           Activities |{' '}
