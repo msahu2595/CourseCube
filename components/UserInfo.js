@@ -90,7 +90,14 @@ const UserInfo = ({userId}) => {
           </CCTextExpand>
           <View style={tw`flex-row justify-between pt-2`}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('FollowListTopTabNavigator')}
+              onPress={() =>
+                navigation.navigate('FollowListTopTabNavigator', {
+                  screen: 'FollowerListScreen',
+                  userId: user?._id,
+                  followers: user?.followers,
+                  followings: user?.followings,
+                })
+              }
               style={tw`flex-row items-center bg-blue-50 py-1 px-3 rounded shadow`}>
               <Feather name="users" size={16} color={tw.color('blue-600')} />
               <Text style={tw`font-avReg text-xs pl-1 text-blue-600`}>
@@ -98,7 +105,14 @@ const UserInfo = ({userId}) => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate('FollowListTopTabNavigator')}
+              onPress={() =>
+                navigation.navigate('FollowListTopTabNavigator', {
+                  screen: 'FollowingListScreen',
+                  userId: user?._id,
+                  followers: user?.followers,
+                  followings: user?.followings,
+                })
+              }
               style={tw`flex-row items-center bg-blue-50 py-1 px-3 rounded shadow`}>
               <Feather
                 name="user-check"
@@ -113,34 +127,42 @@ const UserInfo = ({userId}) => {
         </View>
       </View>
       <View style={tw`mt-4 flex-row items-center justify-center`}>
-        {user?._id === loggedUser?._id ? (
-          <TouchableOpacity
-            onPress={handleEdit}
-            style={tw`p-2 flex-1 flex-row items-center justify-center bg-blue-600 rounded shadow`}>
-            <Feather name="edit" size={16} color={tw.color('white')} />
-            <Text style={tw`font-avSemi text-sm pl-2 text-white`}>Edit</Text>
-          </TouchableOpacity>
+        {user ? (
+          user?._id === loggedUser?._id ? (
+            <TouchableOpacity
+              onPress={handleEdit}
+              style={tw`p-2 flex-1 flex-row items-center justify-center bg-blue-600 rounded shadow`}>
+              <Feather name="edit" size={16} color={tw.color('white')} />
+              <Text style={tw`font-avSemi text-sm pl-2 text-white`}>Edit</Text>
+            </TouchableOpacity>
+          ) : (
+            <CCFollowButton
+              refId={user?._id}
+              style={tw`p-2 flex-1 flex-row items-center justify-center bg-blue-600 rounded shadow`}>
+              {({loading, followed}) =>
+                loading ? (
+                  <ActivityIndicator size="small" color={tw.color('white')} />
+                ) : (
+                  <>
+                    <Feather
+                      size={16}
+                      color={tw.color('white')}
+                      name={followed ? 'user-minus' : 'user-plus'}
+                    />
+                    <Text style={tw`font-avSemi text-sm pl-2 text-white`}>
+                      {followed ? 'Unfollow' : 'Follow'}
+                    </Text>
+                  </>
+                )
+              }
+            </CCFollowButton>
+          )
         ) : (
-          <CCFollowButton
-            refId={user?._id}
+          <TouchableOpacity
+            disabled={true}
             style={tw`p-2 flex-1 flex-row items-center justify-center bg-blue-600 rounded shadow`}>
-            {({loading, followed}) =>
-              loading ? (
-                <ActivityIndicator size="small" color={tw`white`} />
-              ) : (
-                <>
-                  <Feather
-                    size={16}
-                    color={tw.color('white')}
-                    name={followed ? 'user-minus' : 'user-plus'}
-                  />
-                  <Text style={tw`font-avSemi text-sm pl-2 text-white`}>
-                    {followed ? 'Unfollow' : 'Follow'}
-                  </Text>
-                </>
-              )
-            }
-          </CCFollowButton>
+            <ActivityIndicator size="small" color={tw.color('white')} />
+          </TouchableOpacity>
         )}
         <TouchableOpacity
           disabled
