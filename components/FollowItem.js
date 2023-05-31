@@ -1,6 +1,6 @@
-import React, {useCallback} from 'react';
 import tw from '@lib/tailwind';
 import {useGenderImage} from 'hooks';
+import React, {useCallback} from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {Image, Text, View, Pressable} from 'react-native';
 
@@ -41,33 +41,6 @@ const FollowItem = ({
           Followers
         </Text>
       </View>
-      {/* {medal ? (
-        <Image
-          source={medal}
-          resizeMode="contain"
-          style={tw.style('self-center', {
-            width: 32,
-            height: 32,
-          })}
-        />
-      ) : (
-        <Text
-          style={tw.style(
-            'font-avSemi',
-            'text-xs',
-            'text-center',
-            'text-blue-600',
-            'bg-blue-50',
-            'rounded-full',
-            {
-              width: 32,
-              height: 32,
-              textAlignVertical: 'center',
-            },
-          )}>
-          #{index + 1}
-        </Text>
-      )} */}
     </Pressable>
   );
 };
