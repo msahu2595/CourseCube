@@ -41,6 +41,7 @@ const FollowerListScreen = ({route}) => {
         type: 'danger',
       });
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const _renderItem = useCallback(

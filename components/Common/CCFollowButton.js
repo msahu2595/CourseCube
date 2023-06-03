@@ -4,6 +4,27 @@ import {TouchableOpacity} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {gql, useMutation, useQuery} from '@apollo/client';
 
+const USER = gql`
+  query user($userId: ID) {
+    user(userId: $userId) {
+      code
+      success
+      message
+      token
+      refresh
+      payload {
+        _id
+        fullName
+        gender
+        picture
+        about
+        followers
+        followings
+      }
+    }
+  }
+`;
+
 const FOLLOWING = gql`
   query following($userId: ID!) {
     following(userId: $userId) {
@@ -71,6 +92,7 @@ export const CCFollowButton = memo(({refId, style, children}) => {
       });
       setFollowed(false);
     },
+    refetchQueries: [{query: USER, variables: {userId: refId}}],
   });
 
   const [unFollow] = useMutation(UN_FOLLOW, {
@@ -87,6 +109,7 @@ export const CCFollowButton = memo(({refId, style, children}) => {
       });
       setFollowed(true);
     },
+    refetchQueries: [{query: USER, variables: {userId: refId}}],
   });
 
   const onPress = () => {
