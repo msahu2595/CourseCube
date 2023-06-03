@@ -24,6 +24,7 @@ const DocumentListScreen = () => {
         type: 'danger',
       });
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const onChangeSearchText = useCallback(

@@ -24,6 +24,7 @@ const VideoListScreen = () => {
         type: 'danger',
       });
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const onChangeSearchText = useCallback(

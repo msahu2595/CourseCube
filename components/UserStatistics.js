@@ -1,13 +1,14 @@
 import tw from '@lib/tailwind';
 import {STATISTICS} from '@queries';
-import {useQuery, useReactiveVar} from '@apollo/client';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback} from 'react';
+import {loggedUserVar} from 'apollo/client';
 import {useNavigation} from '@react-navigation/native';
 import {showMessage} from 'react-native-flash-message';
+import {useFocusEffect} from '@react-navigation/native';
+import {useLazyQuery, useReactiveVar} from '@apollo/client';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Text, View, TouchableOpacity, ActivityIndicator} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {loggedUserVar} from 'apollo/client';
 
 const statistics = [
   {
@@ -49,7 +50,7 @@ const UserStatistics = ({userId}) => {
 
   const loggedUser = useReactiveVar(loggedUserVar);
 
-  const {loading, data, startPolling, stopPolling} = useQuery(STATISTICS, {
+  const [fetchStatistics, {loading, data}] = useLazyQuery(STATISTICS, {
     variables: userId ? {userId} : {},
     onError: err => {
       showMessage({
@@ -57,14 +58,14 @@ const UserStatistics = ({userId}) => {
         type: 'danger',
       });
     },
+    fetchPolicy: 'cache-and-network',
   });
 
-  useEffect(() => {
-    startPolling(300000);
-    return () => {
-      stopPolling();
-    };
-  }, [startPolling, stopPolling]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchStatistics();
+    }, [fetchStatistics]),
+  );
 
   const handleSeeAll = useCallback(() => {
     navigation.navigate('HistoryListScreen', {headerTitle: 'History'});

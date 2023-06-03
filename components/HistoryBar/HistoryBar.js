@@ -1,9 +1,10 @@
 import tw from '@lib/tailwind';
-import {gql, useQuery} from '@apollo/client';
+import React, {useCallback} from 'react';
+import {gql, useLazyQuery} from '@apollo/client';
 import ContentItem from 'components/ContentItem';
-import React, {useCallback, useEffect} from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {showMessage} from 'react-native-flash-message';
+import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {View, Text, FlatList, Pressable, RefreshControl} from 'react-native';
 
@@ -64,22 +65,24 @@ const horizontal = true;
 const HistoryBar = props => {
   const navigation = useNavigation();
 
-  const {loading, data, refetch, fetchMore, startPolling, stopPolling} =
-    useQuery(HISTORY, {
+  const [fetchHistory, {loading, data, refetch, fetchMore}] = useLazyQuery(
+    HISTORY,
+    {
       onError: err => {
         showMessage({
           message: err?.message || 'Some unknown error occurred. Try again!!',
           type: 'danger',
         });
       },
-    });
+      fetchPolicy: 'cache-and-network',
+    },
+  );
 
-  useEffect(() => {
-    startPolling(30000);
-    return () => {
-      stopPolling();
-    };
-  }, [startPolling, stopPolling]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchHistory();
+    }, [fetchHistory]),
+  );
 
   const handleNavigation = useCallback(() => {
     navigation.navigate('HistoryListScreen', {headerTitle: 'History'});

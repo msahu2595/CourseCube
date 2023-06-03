@@ -71,6 +71,7 @@ const HistoryListScreen = ({
         type: 'danger',
       });
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const handlePress = useCallback(

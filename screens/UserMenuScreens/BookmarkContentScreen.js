@@ -47,6 +47,7 @@ const BookmarkContentScreen = ({navigation}) => {
         type: 'danger',
       });
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const handlePress = useCallback(

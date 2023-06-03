@@ -24,6 +24,7 @@ const TestListScreen = () => {
         type: 'danger',
       });
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const onChangeSearchText = useCallback(

@@ -53,6 +53,7 @@ const BookmarkArticleScreen = () => {
         type: 'danger',
       });
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const _renderItem = useCallback(

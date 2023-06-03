@@ -2,11 +2,20 @@ import tw from '@lib/tailwind';
 import {ARTICLES} from '@queries';
 import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
+import {showMessage} from 'react-native-flash-message';
 import {View, FlatList, RefreshControl} from 'react-native';
 import {CurrentAffairItem, SafeAreaContainer} from '@components';
 
 const CurrentAffairListScreen = () => {
-  const {loading, data, refetch, fetchMore} = useQuery(ARTICLES);
+  const {loading, data, refetch, fetchMore} = useQuery(ARTICLES, {
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+    fetchPolicy: 'cache-and-network',
+  });
 
   const _renderItem = useCallback(
     ({item}) => <CurrentAffairItem {...item} />,
