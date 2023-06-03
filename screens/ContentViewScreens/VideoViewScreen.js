@@ -146,13 +146,13 @@ const VideoViewScreen = ({route}) => {
                 )}
               </CCBookmarkButton>
               <TouchableOpacity>
-                <CCIcon icon="sharealt" label="Share" />
+                <CCIcon icon="download" label="Download" />
               </TouchableOpacity>
               <TouchableOpacity>
                 <CCIcon icon="questioncircleo" label="Doubts" />
               </TouchableOpacity>
               <TouchableOpacity>
-                <CCIcon icon="download" label="Download" />
+                <CCIcon icon="sharealt" label="Share" />
               </TouchableOpacity>
             </View>
             <ScrollView style={tw`flex-1`}>

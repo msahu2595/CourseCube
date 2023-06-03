@@ -1,11 +1,23 @@
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import Pdf from 'react-native-pdf';
-import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
 import openWebURL from 'utils/openWebURL';
-import {Fab, SafeAreaContainer} from '@components';
+import {SafeAreaContainer} from '@components';
+import {showMessage} from 'react-native-flash-message';
+import {gql, useMutation, useQuery} from '@apollo/client';
 import {View, Alert, ActivityIndicator, Text} from 'react-native';
+
+const ADD_VIEW = gql`
+  mutation addView($refId: ID!) {
+    addView(refId: $refId) {
+      code
+      success
+      message
+      token
+    }
+  }
+`;
 
 const DocumentViewScreen = ({route}) => {
   const {
@@ -16,9 +28,28 @@ const DocumentViewScreen = ({route}) => {
     variables: {contentId: route.params.contentId},
   });
 
-  const handledLoadComplete = useCallback((numberOfPages, filePath) => {
-    console.log(`Number of pages: ${numberOfPages}, File path: ${filePath}`);
-  }, []);
+  const data = queryData?.content?.payload || {};
+
+  const [addView] = useMutation(ADD_VIEW, {
+    variables: {refId: data?._id},
+    onCompleted: res => {
+      console.log('addView', res);
+    },
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+  });
+
+  const handledLoadComplete = useCallback(
+    (numberOfPages, filePath) => {
+      console.log(`Number of pages: ${numberOfPages}, File path: ${filePath}`);
+      addView();
+    },
+    [addView],
+  );
 
   const handlePageChanged = useCallback((page, numberOfPages) => {
     console.log(`Current page: ${page}, Total page: ${numberOfPages}`);
@@ -56,7 +87,7 @@ const DocumentViewScreen = ({route}) => {
           trustAllCerts={false}
           style={tw`flex-1 bg-black`}
           source={{
-            uri: queryData?.content?.payload?.media?.url,
+            uri: data?.media?.url,
             cache: true,
           }}
           onLoadComplete={handledLoadComplete}
@@ -65,7 +96,6 @@ const DocumentViewScreen = ({route}) => {
           onError={handleError}
         />
       )}
-      <Fab bgColor={tw.color('teal-600')} iconName="download" onPress={null} />
     </SafeAreaContainer>
   );
 };

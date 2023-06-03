@@ -29,6 +29,20 @@ const TestItem = memo(({width = 184, ...rest}) => {
     return '';
   }, [rest?.media?.duration]);
 
+  const info = useMemo(() => {
+    const infoArr = [];
+    if (rest?.media?.questions?.length) {
+      infoArr.push(`${rest?.media?.questions?.length} Ques`);
+    }
+    if (duration) {
+      infoArr.push(`${duration}`);
+    }
+    if (rest?.views) {
+      infoArr.push(`${rest?.views} Attempts`);
+    }
+    return infoArr.join(' | ');
+  }, [rest, duration]);
+
   return (
     <Pressable onPress={handleNavigation}>
       <View
@@ -73,7 +87,7 @@ const TestItem = memo(({width = 184, ...rest}) => {
           <Text
             style={tw.style('font-avReg text-gray-500 text-[10px]')}
             numberOfLines={1}>
-            {`${rest?.media?.questions?.length} Ques | ${duration} | 180 Attempts`}
+            {info}
           </Text>
           {rest?.paid && !rest?.purchased ? (
             <View style={tw`flex-row items-center justify-between`}>

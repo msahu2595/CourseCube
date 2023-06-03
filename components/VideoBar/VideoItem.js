@@ -1,10 +1,24 @@
 import tw from '@lib/tailwind';
-import React, {memo, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/core';
+import React, {memo, useCallback, useMemo} from 'react';
 import {View, Image, Text, Pressable, ImageBackground} from 'react-native';
 
 const VideoItem = memo(({width = 224, ...rest}) => {
   const navigation = useNavigation();
+
+  const info = useMemo(() => {
+    const infoArr = [];
+    if (rest?.media?.time) {
+      infoArr.push(`${rest?.media?.time} Mins`);
+    }
+    if (rest?.likes) {
+      infoArr.push(`${rest?.likes} Likes`);
+    }
+    if (rest?.views) {
+      infoArr.push(`${rest?.views} Watches`);
+    }
+    return infoArr.join(' | ');
+  }, [rest]);
 
   const handleNavigation = useCallback(() => {
     navigation.navigate('VideoViewScreen', {
@@ -56,7 +70,7 @@ const VideoItem = memo(({width = 224, ...rest}) => {
           <Text
             style={tw`font-avReg text-gray-500 text-[10px]`}
             numberOfLines={1}>
-            {`${rest?.media?.time} Mins | ${rest?.likes} Likes | 50k Watched`}
+            {info}
           </Text>
           {rest?.paid && !rest?.purchased ? (
             <View style={tw`flex-row items-center justify-between`}>

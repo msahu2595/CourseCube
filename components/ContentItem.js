@@ -34,11 +34,13 @@ const ContentItem = memo(props => (
       </ImageBackground>
       <View style={tw`flex-1 px-2 py-2 justify-between`}>
         <Text
-          style={tw`font-avSemi text-indigo-700 text-[10px]`}
+          style={tw`font-avSemi text-indigo-700 capitalize text-[10px]`}
           numberOfLines={1}>
           {props?.subject}
         </Text>
-        <Text style={tw`font-avSemi text-xs text-gray-600`} numberOfLines={2}>
+        <Text
+          style={tw`font-avSemi text-xs text-gray-600 capitalize`}
+          numberOfLines={2}>
           {props?.title}
         </Text>
         <Text

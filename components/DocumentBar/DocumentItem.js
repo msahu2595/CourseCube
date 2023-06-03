@@ -1,10 +1,24 @@
 import tw from '@lib/tailwind';
-import React, {memo, useCallback} from 'react';
 import {useNavigation} from '@react-navigation/core';
+import React, {memo, useCallback, useMemo} from 'react';
 import {View, Image, Text, Pressable, ImageBackground} from 'react-native';
 
 const DocumentItem = memo(({width = 144, ...rest}) => {
   const navigation = useNavigation();
+
+  const info = useMemo(() => {
+    const infoArr = [];
+    if (rest?.media?.pages) {
+      infoArr.push(`${rest?.media?.pages} Pages`);
+    }
+    if (rest?.likes) {
+      infoArr.push(`${rest?.likes} Likes`);
+    }
+    if (rest?.views) {
+      infoArr.push(`${rest?.views} Reads`);
+    }
+    return infoArr.join(infoArr.length > 2 ? '|' : ' | ');
+  }, [rest]);
 
   const handleNavigation = useCallback(() => {
     navigation.navigate('DocumentViewScreen', {
@@ -57,7 +71,7 @@ const DocumentItem = memo(({width = 144, ...rest}) => {
           <Text
             style={tw`font-avReg text-gray-500 text-[10px]`}
             numberOfLines={1}>
-            {`${rest?.media?.pages} P | ${rest?.likes} Likes | 131 Reads`}
+            {info}
           </Text>
           {rest?.paid && !rest?.purchased ? (
             <View style={tw`flex-row items-center justify-between`}>
