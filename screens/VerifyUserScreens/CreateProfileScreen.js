@@ -131,7 +131,7 @@ export const CreateProfileScreen = ({navigation}) => {
         <Formik
           initialValues={{
             fullName: loggedUser?.fullName ?? '',
-            gender: loggedUser?.gender ?? 'UNKNOWN',
+            gender: loggedUser?.gender ?? 'MALE',
             picture: loggedUser?.picture ?? '',
             about: loggedUser?.about ?? '',
           }}
@@ -187,7 +187,7 @@ export const CreateProfileScreen = ({navigation}) => {
                   radio_props={[
                     {label: 'Male   ', value: 'MALE'},
                     {label: 'Female   ', value: 'FEMALE'},
-                    {label: 'Prefer not to say   ', value: 'UNKNOWN'},
+                    {label: 'Others   ', value: 'UNKNOWN'},
                   ]}
                   value={values.gender}
                   onPress={value => {

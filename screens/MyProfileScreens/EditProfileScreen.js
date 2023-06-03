@@ -157,7 +157,7 @@ const EditProfileScreen = () => {
                   radio_props={[
                     {label: 'Male   ', value: 'MALE'},
                     {label: 'Female   ', value: 'FEMALE'},
-                    {label: 'Prefer not to say   ', value: 'UNKNOWN'},
+                    {label: 'Others   ', value: 'UNKNOWN'},
                   ]}
                   value={loggedUser?.gender}
                   disabled={true}
