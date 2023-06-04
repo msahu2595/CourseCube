@@ -27,7 +27,7 @@ const GetCallFromUs = () => {
           <TouchableOpacity
             onPress={() =>
               openWebURL(
-                `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=Hi`,
+                `whatsapp://send?phone=${WHATSAPP_NUMBER}&text=Hello, can we connect?`,
                 false,
               )
             }
