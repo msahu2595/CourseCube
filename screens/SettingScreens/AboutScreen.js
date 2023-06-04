@@ -2,21 +2,25 @@ import {tw} from '@lib';
 import React from 'react';
 import {View, Text, ScrollView} from 'react-native';
 import HighlightText from '@sanar/react-native-highlight-text';
+import {SafeAreaContainer} from '@components';
 import openWebURL from 'utils/openWebURL';
 
 const AboutScreen = props => {
   return (
-    <ScrollView>
-      <View style={tw`p-4 border-t border-gray-100`}>
-        <Text
-          style={tw`font-avSemi text-center text-lg text-gray-600 py-2`}
-          numberOfLines={2}>
-          Lakshya PSC Academy
-        </Text>
-        <HighlightText
-          highlightStyle={tw`font-bold`}
-          searchWords={['Lakshya PSC Academy']}
-          textToHighlight={`Welcome to our online study application 'Lakshya PSC Academy' We're glad you're here, and we'd love to tell you more about who we are and what we stand for.
+    <SafeAreaContainer
+      statusBgColor={tw.color('blue-600')}
+      statusBarStyle="light-content">
+      <ScrollView>
+        <View style={tw`p-4 border-t border-gray-100`}>
+          <Text
+            style={tw`font-avSemi text-center text-lg text-gray-600 py-2`}
+            numberOfLines={2}>
+            Lakshya PSC Academy
+          </Text>
+          <HighlightText
+            highlightStyle={tw`font-bold`}
+            searchWords={['Lakshya PSC Academy']}
+            textToHighlight={`Welcome to our online study application 'Lakshya PSC Academy' We're glad you're here, and we'd love to tell you more about who we are and what we stand for.
 
           Our mission is to provide accessible and effective online education to learners around the world. We believe that education should be available to everyone, regardless of their background, location, or financial means. We're committed to making that vision a reality by creating high-quality, engaging courses that are affordable and easy to access.
           
@@ -29,28 +33,29 @@ const AboutScreen = props => {
           Thank you for choosing our online study application Lakshya PSC Academy. We're honored to be a part of your learning journey, and we look forward to helping you achieve your goals.
           
           If you have any query, please contact us at`}
-          textComponent={({children}) => {
-            return (
-              <Text
-                style={tw`pt-2 text-xs  text-justify leading-5 font-avReg tracking-wider text-gray-900`}>
-                {children}
+            textComponent={({children}) => {
+              return (
                 <Text
-                  style={tw`text-blue-600 font-bold`}
-                  onPress={() =>
-                    openWebURL(
-                      'mailto:lakshyapscacademylwbg@gmail.com?subject=Query&body=Hello,',
-                      false,
-                    )
-                  }>
-                  {` lakshyapscacademylwbg@gmail.com`}
+                  style={tw`pt-2 text-xs  text-justify leading-5 font-avReg tracking-wider text-gray-900`}>
+                  {children}
+                  <Text
+                    style={tw`text-blue-600 font-bold`}
+                    onPress={() =>
+                      openWebURL(
+                        'mailto:lakshyapscacademylwbg@gmail.com?subject=Query&body=Hello,',
+                        false,
+                      )
+                    }>
+                    {` lakshyapscacademylwbg@gmail.com`}
+                  </Text>
                 </Text>
-              </Text>
-            );
-          }}
-        />
-      </View>
-      <View style={tw.style({height: 72})} />
-    </ScrollView>
+              );
+            }}
+          />
+        </View>
+        <View style={tw.style({height: 72})} />
+      </ScrollView>
+    </SafeAreaContainer>
   );
 };
 

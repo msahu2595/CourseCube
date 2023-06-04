@@ -2,34 +2,38 @@ import {tw} from '@lib';
 import React from 'react';
 import {View, Text, ScrollView} from 'react-native';
 import HighlightText from '@sanar/react-native-highlight-text';
+import {SafeAreaContainer} from '@components';
 import openWebURL from 'utils/openWebURL';
 
 const TermsConditionsScreen = () => {
   return (
-    <ScrollView>
-      <View style={tw`p-4 border-t border-gray-100`}>
-        <Text
-          style={tw`font-avSemi text-center text-lg text-gray-600 py-2`}
-          numberOfLines={2}>
-          Lakshya PSC Academy
-        </Text>
-        <HighlightText
-          highlightStyle={tw`font-bold`}
-          searchWords={[
-            'Lakshya PSC Academy',
-            'Acceptance of Terms:',
-            'Use of the Service:',
-            'User Accounts:',
-            'User Content:',
-            'Prohibited Activities:',
-            'Intellectual Property:',
-            'Disclaimers:',
-            'Limitation of Liability:',
-            'Modification of Terms:',
-            'Governing Law:',
-            'Contact Us:',
-          ]}
-          textToHighlight={`Welcome to our online study application. Before you start using our service, please read these terms and conditions carefully.
+    <SafeAreaContainer
+      statusBgColor={tw.color('blue-600')}
+      statusBarStyle="light-content">
+      <ScrollView>
+        <View style={tw`p-4 border-t border-gray-100`}>
+          <Text
+            style={tw`font-avSemi text-center text-lg text-gray-600 py-2`}
+            numberOfLines={2}>
+            Lakshya PSC Academy
+          </Text>
+          <HighlightText
+            highlightStyle={tw`font-bold`}
+            searchWords={[
+              'Lakshya PSC Academy',
+              'Acceptance of Terms:',
+              'Use of the Service:',
+              'User Accounts:',
+              'User Content:',
+              'Prohibited Activities:',
+              'Intellectual Property:',
+              'Disclaimers:',
+              'Limitation of Liability:',
+              'Modification of Terms:',
+              'Governing Law:',
+              'Contact Us:',
+            ]}
+            textToHighlight={`Welcome to our online study application. Before you start using our service, please read these terms and conditions carefully.
 
 Acceptance of Terms: By accessing or using our online study application, you agree to be bound by these Terms and Conditions and our Privacy Policy.
           
@@ -62,28 +66,29 @@ Modification of Terms: We reserve the right to modify these Terms and Conditions
 Governing Law: These Terms and Conditions shall be governed by and construed in accordance with the laws of the jurisdiction in which the company is located.
           
           If you have any questions or comments about these Terms and Conditions, please contact us at`}
-          textComponent={({children}) => {
-            return (
-              <Text
-                style={tw`pt-2 text-xs  text-justify leading-5 font-avReg tracking-wider text-gray-900`}>
-                {children}
+            textComponent={({children}) => {
+              return (
                 <Text
-                  style={tw`text-blue-600 font-bold`}
-                  onPress={() =>
-                    openWebURL(
-                      'mailto:lakshyapscacademylwbg@gmail.com?subject=Query regarding Terms and Conditions&body=Hello,',
-                      false,
-                    )
-                  }>
-                  {` lakshyapscacademylwbg@gmail.com`}
+                  style={tw`pt-2 text-xs  text-justify leading-5 font-avReg tracking-wider text-gray-900`}>
+                  {children}
+                  <Text
+                    style={tw`text-blue-600 font-bold`}
+                    onPress={() =>
+                      openWebURL(
+                        'mailto:lakshyapscacademylwbg@gmail.com?subject=Query regarding Terms and Conditions&body=Hello,',
+                        false,
+                      )
+                    }>
+                    {` lakshyapscacademylwbg@gmail.com`}
+                  </Text>
                 </Text>
-              </Text>
-            );
-          }}
-        />
-      </View>
-      <View style={tw.style({height: 72})} />
-    </ScrollView>
+              );
+            }}
+          />
+        </View>
+        <View style={tw.style({height: 72})} />
+      </ScrollView>
+    </SafeAreaContainer>
   );
 };
 
