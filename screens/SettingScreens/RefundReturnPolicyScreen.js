@@ -16,6 +16,7 @@ const RefundReturnPolicyScreen = () => {
         <HighlightText
           highlightStyle={tw`font-bold`}
           searchWords={[
+            'Lakshya PSC Academy',
             'no refund policy',
             'We will not issue any refunds for any reason.',
           ]}
@@ -31,7 +32,7 @@ const RefundReturnPolicyScreen = () => {
           
           Please note that this is just a sample policy, and you should always consult with a legal professional to ensure that your policy complies with all applicable laws and regulations.
           
-          If you have any questions or comments about these Terms and Conditions, please contact us at`}
+          If you have any questions or comments about these Refund & Return Policy, please contact us at`}
           textComponent={({children}) => {
             return (
               <Text
@@ -41,7 +42,7 @@ const RefundReturnPolicyScreen = () => {
                   style={tw`text-blue-600 font-bold`}
                   onPress={() =>
                     openWebURL(
-                      'mailto:lakshyapscacademylwbg@gmail.com?subject=Query regarding Terms and Conditions&body=Hello,',
+                      'mailto:lakshyapscacademylwbg@gmail.com?subject=Query regarding Refund and Return Policy&body=Hello,',
                       false,
                     )
                   }>

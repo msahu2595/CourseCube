@@ -16,6 +16,7 @@ const TermsConditionsScreen = () => {
         <HighlightText
           highlightStyle={tw`font-bold`}
           searchWords={[
+            'Lakshya PSC Academy',
             'Acceptance of Terms:',
             'Use of the Service:',
             'User Accounts:',

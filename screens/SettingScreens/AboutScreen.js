@@ -2,6 +2,7 @@ import {tw} from '@lib';
 import React from 'react';
 import {View, Text, ScrollView} from 'react-native';
 import HighlightText from '@sanar/react-native-highlight-text';
+import openWebURL from 'utils/openWebURL';
 
 const AboutScreen = props => {
   return (
@@ -14,7 +15,7 @@ const AboutScreen = props => {
         </Text>
         <HighlightText
           highlightStyle={tw`font-bold`}
-          searchWords={['Lakshya', 'PSC', 'Academy']}
+          searchWords={['Lakshya PSC Academy']}
           textToHighlight={`Welcome to our online study application 'Lakshya PSC Academy' We're glad you're here, and we'd love to tell you more about who we are and what we stand for.
 
           Our mission is to provide accessible and effective online education to learners around the world. We believe that education should be available to everyone, regardless of their background, location, or financial means. We're committed to making that vision a reality by creating high-quality, engaging courses that are affordable and easy to access.
@@ -25,12 +26,24 @@ const AboutScreen = props => {
           
           At our core, we're driven by a deep commitment to education and a belief in the transformative power of learning. We're passionate about helping our users achieve their goals and unlock their full potential, and we're committed to providing them with the tools and resources they need to succeed.
           
-          Thank you for choosing our online study application Lakshya PSC Academy. We're honored to be a part of your learning journey, and we look forward to helping you achieve your goals.`}
+          Thank you for choosing our online study application Lakshya PSC Academy. We're honored to be a part of your learning journey, and we look forward to helping you achieve your goals.
+          
+          If you have any query, please contact us at`}
           textComponent={({children}) => {
             return (
               <Text
                 style={tw`pt-2 text-xs  text-justify leading-5 font-avReg tracking-wider text-gray-900`}>
                 {children}
+                <Text
+                  style={tw`text-blue-600 font-bold`}
+                  onPress={() =>
+                    openWebURL(
+                      'mailto:lakshyapscacademylwbg@gmail.com?subject=Query&body=Hello,',
+                      false,
+                    )
+                  }>
+                  {` lakshyapscacademylwbg@gmail.com`}
+                </Text>
               </Text>
             );
           }}
