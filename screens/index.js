@@ -69,6 +69,7 @@ import {
 import {
   PrivacyPolicyScreen,
   TermsConditionsScreen,
+  RefundReturnPolicyScreen,
   AboutScreen,
 } from './SettingScreens';
 import {
@@ -148,6 +149,7 @@ export {
   UserSearchScreen,
   PrivacyPolicyScreen,
   TermsConditionsScreen,
+  RefundReturnPolicyScreen,
   AboutScreen,
   BookmarkContentScreen,
   BookmarkArticleScreen,

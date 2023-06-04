@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   PrivacyPolicyScreen,
   TermsConditionsScreen,
+  RefundReturnPolicyScreen,
   AboutScreen,
 } from '@screens';
 
@@ -31,6 +32,13 @@ const settingStackGroup = () => {
         component={TermsConditionsScreen}
         options={{
           headerTitle: 'Terms & Conditions',
+        }}
+      />
+      <Stack.Screen
+        name="RefundReturnPolicyScreen"
+        component={RefundReturnPolicyScreen}
+        options={{
+          headerTitle: 'Refund & Return Policy',
         }}
       />
       <Stack.Screen

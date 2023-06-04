@@ -16,6 +16,11 @@ const menu = [
     icon: 'file-text',
     screen: 'TermsConditionsScreen',
   },
+  {
+    name: 'Refund & Return Policy',
+    icon: 'dollar-sign',
+    screen: 'RefundReturnPolicyScreen',
+  },
   {name: 'About', icon: 'info', screen: 'AboutScreen'},
   {name: 'Logout', icon: 'log-out', screen: 'Logout'},
 ];
