@@ -70,6 +70,7 @@
     "id": "SHORTCUT_11",
     "icon": "phone",
     "firstName": "Contact",
-    "lastName": "Us"
+    "lastName": "Us",
+    "screen": "HelpSupportScreen"
   }
 ]
