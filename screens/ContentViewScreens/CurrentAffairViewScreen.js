@@ -105,7 +105,7 @@ const CurrentAffairViewScreen = ({route}) => {
                   {`• ${data?.subject}`}
                 </Text>
                 <Text
-                  style={tw`font-avBold text-gray-600 text-${
+                  style={tw`font-avBold font-bold text-gray-600 text-${
                     size ? (size < 2 ? 'lg' : 'xl') : 'base'
                   }`}
                   numberOfLines={3}>
