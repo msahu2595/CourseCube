@@ -1,9 +1,11 @@
 import React from 'react';
 import tw from '@lib/tailwind'; //Tailwind Imports
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {BookmarkListTopTabNavigator} from '@navigators';
 import {
-  DownloadsScreen,
+  BookmarkListTopTabNavigator,
+  DownloadListTopTabNavigator,
+} from '@navigators';
+import {
   HelpSupportScreen,
   MyCoursesScreen,
   PaymentsScreen,
@@ -31,10 +33,11 @@ const settingStackGroup = () => {
         }}
       />
       <Stack.Screen
-        name="DownloadsScreen"
-        component={DownloadsScreen}
+        name="DownloadListTopTabNavigator"
+        component={DownloadListTopTabNavigator}
         options={{
           headerTitle: 'Downloads',
+          headerShadowVisible: false,
         }}
       />
       <Stack.Screen
