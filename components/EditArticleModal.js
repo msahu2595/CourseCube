@@ -42,8 +42,9 @@ const EditArticleModal = ({article, onClose}) => {
       onClose={onClose}>
       <Formik
         initialValues={{
-          title: article?.title,
+          subject: article?.subject,
           image: article?.image,
+          title: article?.title,
           description: article?.description,
           author: article?.author,
           visible: article?.visible,
@@ -51,6 +52,7 @@ const EditArticleModal = ({article, onClose}) => {
         validationSchema={EditArticleValidationSchema}
         onSubmit={values => {
           const articleInput = {
+            subject: values.subject,
             title: values.title,
             description: values.description,
             author: values.author,
@@ -85,6 +87,16 @@ const EditArticleModal = ({article, onClose}) => {
                 onChangeText={handleChange('title')}
                 onBlur={handleBlur('title')}
                 value={values.title}
+                editable={!submitting}
+              />
+              <CCTextInput
+                required
+                label="Subject"
+                error={errors.subject}
+                touched={touched.subject}
+                onChangeText={handleChange('subject')}
+                onBlur={handleBlur('subject')}
+                value={values.subject}
                 editable={!submitting}
               />
               <CCTextInput
