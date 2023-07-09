@@ -34,17 +34,8 @@ export const CONTENT = gql`
             title
             thumbnail
             instructions
-            questions {
-              _id
-              question
-              image
-              passage
-              options
-              answerIndex
-              mark
-              negativeMark
-            }
             duration
+            questions
             totalMarks
             enable
             createdAt

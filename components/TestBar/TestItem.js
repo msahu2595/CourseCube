@@ -31,8 +31,8 @@ const TestItem = memo(({width = 184, ...rest}) => {
 
   const info = useMemo(() => {
     const infoArr = [];
-    if (rest?.media?.questions?.length) {
-      infoArr.push(`${rest?.media?.questions?.length} Ques`);
+    if (rest?.media?.questions) {
+      infoArr.push(`${rest?.media?.questions} Ques`);
     }
     if (duration) {
       infoArr.push(`${duration}`);

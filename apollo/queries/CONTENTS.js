@@ -52,10 +52,8 @@ export const CONTENTS = gql`
             #
             instructions
             duration
+            questions
             totalMarks
-            questions {
-              _id
-            }
             #
             enable
             createdAt

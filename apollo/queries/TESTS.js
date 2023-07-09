@@ -24,6 +24,7 @@ export const TESTS = gql`
         thumbnail
         instructions
         duration
+        questions
         totalMarks
         enable
         createdAt

@@ -13,16 +13,7 @@ export const TEST = gql`
         thumbnail
         instructions
         duration
-        questions {
-          _id
-          question
-          image
-          passage
-          options
-          answerIndex
-          mark
-          negativeMark
-        }
+        questions
         totalMarks
         enable
         createdAt
