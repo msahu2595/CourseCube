@@ -43,10 +43,12 @@ const CurrentAffairItem = memo(
               },
             )}>
             <View style={tw`flex-row justify-between`}>
-              <Text
-                style={tw`px-2 py-1 font-avReg text-gray-100 text-xs bg-black bg-opacity-50 rounded-br-lg rounded-tl-lg `}>
-                {dayjs(parseInt(createdAt, 10)).format('DD MMM')}
-              </Text>
+              <View
+                style={tw`items-center px-2 py-1 bg-black bg-opacity-50 rounded-br-lg rounded-tl-lg`}>
+                <Text style={tw`font-avReg text-gray-100 text-xs`}>
+                  {dayjs(parseInt(createdAt, 10)).format('DD MMM')}
+                </Text>
+              </View>
               {!!likes && (
                 <View
                   style={tw`items-center flex-row px-2 py-1 bg-black bg-opacity-50 rounded-bl-lg rounded-tr-lg`}>
@@ -61,7 +63,7 @@ const CurrentAffairItem = memo(
                 </View>
               )}
             </View>
-            <View style={tw`py-2 bg-black bg-opacity-50 rounded-b-lg`}>
+            <View style={tw`py-2 bg-black bg-opacity-75 rounded-b-lg`}>
               <Text
                 style={tw`px-3 font-avSemi text-gray-100 text-[12px]`}
                 numberOfLines={1}>
