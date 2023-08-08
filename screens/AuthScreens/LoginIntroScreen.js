@@ -143,41 +143,36 @@ const LoginIntroScreen = ({route}) => {
 
   return (
     <>
-      <SafeAreaContainer
-        statusBgColor="#1A368D"
-        statusBarStyle="dark-content"
-        containerStyle={tw`bg-[#1A368D]`}>
-        <StatusBar backgroundColor="#185366" />
-        <ImageBackground
-          source={require('@images/LoginBackground.jpg')}
-          resizeMode="cover"
-          style={tw`flex-1 justify-end p-4`}>
-          <Text style={tw`text-white text-3xl leading-10 font-avBold`}>
-            Lakshya PSC Academy
-          </Text>
-          <Text style={tw`text-white font-avReg text-base mt-2`}>
-            Planting the seeds of knowledge.
-          </Text>
-          <Text style={tw`text-white font-avReg text-xs mb-4 mt-2`}>
-            CGPSC/CGVYAPAM/SSC/BANKING/RAILWAYS
-          </Text>
-          <View style={tw`flex-row justify-between`}>
-            <LoginButton
-              onPress={handleGoogleSignIn}
-              imageStyle={tw`h-8 w-8`}
-              imageSource={require('@images/google-48.png')}
-              disabled={googleLogInLoading || whatsAppLogInLoading}
-            />
-            <View style={tw`w-2`} />
-            <LoginButton
-              onPress={handleWhatsAppSignIn}
-              imageStyle={tw`h-10 w-10`}
-              imageSource={require('@images/whatsapp-52.png')}
-              disabled={googleLogInLoading || whatsAppLogInLoading}
-            />
-          </View>
-        </ImageBackground>
-      </SafeAreaContainer>
+      <StatusBar backgroundColor="#185366" />
+      <ImageBackground
+        source={require('@images/LoginBackground.jpg')}
+        resizeMode="cover"
+        style={tw`flex-1 justify-end p-4 ios:pb-8`}>
+        <Text style={tw`text-white text-3xl leading-10 font-avBold`}>
+          Lakshya PSC Academy
+        </Text>
+        <Text style={tw`text-white font-avReg text-base mt-2`}>
+          Planting the seeds of knowledge.
+        </Text>
+        <Text style={tw`text-white font-avReg text-xs mb-4 mt-2`}>
+          CGPSC/CGVYAPAM/SSC/BANKING/RAILWAYS
+        </Text>
+        <View style={tw`flex-row justify-between`}>
+          <LoginButton
+            onPress={handleGoogleSignIn}
+            imageStyle={tw`h-8 w-8`}
+            imageSource={require('@images/google-48.png')}
+            disabled={googleLogInLoading || whatsAppLogInLoading}
+          />
+          <View style={tw`w-2`} />
+          <LoginButton
+            onPress={handleWhatsAppSignIn}
+            imageStyle={tw`h-10 w-10`}
+            imageSource={require('@images/whatsapp-52.png')}
+            disabled={googleLogInLoading || whatsAppLogInLoading}
+          />
+        </View>
+      </ImageBackground>
       <LoadingIndicator loading={googleLogInLoading || whatsAppLogInLoading} />
     </>
   );
