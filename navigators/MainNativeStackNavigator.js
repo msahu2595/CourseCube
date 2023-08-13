@@ -11,6 +11,7 @@ import {
   contentViewStackGroup,
   userMenuStackGroup,
   settingStackGroup,
+  examStackGroup,
 } from '@navigation_groups';
 import {loggedUserVar} from 'apollo/client';
 import {useReactiveVar} from '@apollo/client';
@@ -37,6 +38,7 @@ const MainNativeStackNavigator = () => {
           {contentViewStackGroup()}
           {userMenuStackGroup()}
           {settingStackGroup()}
+          {examStackGroup()}
         </>
       ) : (
         authStackGroup()

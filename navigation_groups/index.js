@@ -9,6 +9,7 @@ import contentListStackGroup from './contentListStackGroup';
 import contentViewStackGroup from './contentViewStackGroup';
 import userMenuStackGroup from './userMenuStackGroup';
 import settingStackGroup from './settingStackGroup';
+import examStackGroup from './examStackGroup';
 
 export {
   adminStackGroup,
@@ -22,4 +23,5 @@ export {
   contentViewStackGroup,
   userMenuStackGroup,
   settingStackGroup,
+  examStackGroup,
 };
