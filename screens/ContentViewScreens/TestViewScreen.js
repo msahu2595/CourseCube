@@ -2,82 +2,143 @@ import {
   View,
   Text,
   Image,
-  Alert,
-  FlatList,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
   useWindowDimensions,
 } from 'react-native';
+import {
+  CCIcon,
+  CCModal,
+  CCButton,
+  CCCheckBox,
+  CCLikeButton,
+  CCBookmarkButton,
+} from 'components/Common';
 import dayjs from 'dayjs';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
-import {useQuery} from '@apollo/client';
-import {SafeAreaContainer} from '@components';
+import formatNumber from 'utils/formatNumber';
+import React, {useCallback, useState} from 'react';
+import {showMessage} from 'react-native-flash-message';
+import {useFocusEffect} from '@react-navigation/native';
+import {InfoItem, SafeAreaContainer} from '@components';
 import LinearGradient from 'react-native-linear-gradient';
-import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {gql, useLazyQuery, useMutation, useQuery} from '@apollo/client';
 
-const TestViewScreen = ({route}) => {
-  const flatListRef = useRef();
-  const width = useWindowDimensions().width;
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [questions, setQuestions] = useState([]);
+const EXAM_ATTEMPTED = gql`
+  query examAttempted($contentId: ID!, $testId: ID!) {
+    examAttempted(contentId: $contentId, testId: $testId) {
+      code
+      success
+      message
+      token
+      payload
+    }
+  }
+`;
+
+const ADD_VIEW = gql`
+  mutation addView($refId: ID!) {
+    addView(refId: $refId) {
+      code
+      success
+      message
+      token
+    }
+  }
+`;
+
+const ATTEMPT_EXAM = gql`
+  mutation attemptExam($contentId: ID!) {
+    attemptExam(contentId: $contentId) {
+      code
+      success
+      message
+      token
+      payload {
+        _id
+        title
+        thumbnail
+        instructions
+        duration
+        questions {
+          _id
+          question
+          image
+          passage
+          options
+          answeredIndex
+          mark
+          negativeMark
+        }
+        totalMarks
+        gotMarks
+        submitted
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+const TestViewScreen = ({route, navigation}) => {
+  const {width} = useWindowDimensions();
+
+  const [visible, setVisible] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   const {loading: queryLoading, data: queryData} = useQuery(CONTENT, {
     variables: {contentId: route.params.contentId},
-    onCompleted: data => {
-      setQuestions(data?.content?.payload?.media?.questions);
+  });
+
+  const [addView] = useMutation(ADD_VIEW, {
+    variables: {refId: route.params.contentId},
+    onCompleted: res => {
+      console.log('addView', res);
+    },
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
     },
   });
 
-  const navigateQuestion = useCallback(index => {
-    flatListRef.current?.scrollToIndex({index});
-    setActiveIndex(index);
-  }, []);
-
-  const handlePrev = useCallback(() => {
-    if (activeIndex > 0) {
-      flatListRef.current?.scrollToIndex({index: activeIndex - 1});
-      setActiveIndex(activeIndex - 1);
-    }
-  }, [activeIndex]);
-
-  const handleNext = useCallback(() => {
-    if (activeIndex < questions.length - 1) {
-      flatListRef.current?.scrollToIndex({index: activeIndex + 1});
-      setActiveIndex(activeIndex + 1);
-    }
-  }, [activeIndex, questions]);
-
-  const handleSelect = useCallback(
-    (qId, index) => {
-      console.log(qId, index);
-      setQuestions(
-        questions.map(q => {
-          if (q._id === qId) {
-            return {...q, selectedIndex: index};
-          } else {
-            return q;
-          }
-        }),
-      );
+  const [attemptExam, {loading: submitting}] = useMutation(ATTEMPT_EXAM, {
+    variables: {contentId: route.params.contentId},
+    onCompleted: data => {
+      addView();
+      navigation.navigate('ExamAttemptScreen', data?.attemptExam?.payload);
     },
-    [questions],
-  );
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+        icon: 'danger',
+      });
+    },
+  });
 
-  const handleSubmit = useCallback(() => {
-    Alert.alert('Submit', 'Are you sure, you want to submit test ?', [
-      {text: 'No', style: 'cancel'},
-      {text: 'Yes', style: 'destructive'},
-    ]);
+  const toggleModal = useCallback(() => {
+    setVisible(prev => !prev);
   }, []);
 
-  const renderItem = useCallback(
-    ({item}) => <Item {...item} onSelect={handleSelect} />,
-    [handleSelect],
+  const handleResult = useCallback(
+    ({contentId, testId}) => {
+      navigation.navigate('ExamResultScreen', {contentId, testId});
+    },
+    [navigation],
   );
+
+  const data = queryData?.content?.payload || {};
 
   return (
-    <SafeAreaContainer statusBgColor={tw.color('amber-200')}>
+    <SafeAreaContainer
+      statusBgColor={tw.color('amber-200')}
+      statusBarStyle="dark-content">
       <LinearGradient
         locations={[0, 0.2, 0.5]}
         colors={[
@@ -86,173 +147,223 @@ const TestViewScreen = ({route}) => {
           tw.color('white'),
         ]}
         style={tw`flex-1`}>
-        <View style={tw`flex-1 flex-row`}>
-          <ScrollView
-            contentContainerStyle={tw`items-center py-2`}
-            showsVerticalScrollIndicator={false}
-            style={tw.style('flex-none', {
-              width: (width * 15) / 100,
-            })}>
-            {questions.map((_, index) => {
-              return (
-                <TouchableOpacity
-                  onPress={() => navigateQuestion(index)}
-                  key={'QUESTION' + index}
-                  style={tw.style(
-                    'rounded-full',
-                    `bg-${activeIndex === index ? 'amber-100' : 'white'}`,
-                    'my-1',
-                    'justify-center',
-                    'items-center',
-                    'shadow-lg',
-                    {
-                      width: 40,
-                      height: 40,
-                    },
-                  )}>
-                  <Text
-                    style={tw`text-base font-avSemi text-${
-                      activeIndex === index ? 'amber-600' : 'gray-600'
-                    }`}>
-                    {index + 1}
-                  </Text>
+        <ScrollView style={tw`flex-1`}>
+          {queryLoading ? (
+            <View style={tw`flex-1 justify-center`}>
+              <ActivityIndicator size="large" color={tw.color('amber-600')} />
+            </View>
+          ) : (
+            <>
+              <Image
+                source={{uri: data?.image}}
+                resizeMode="cover"
+                style={tw.style('self-center', 'mt-4', {
+                  borderRadius: 10,
+                  width: width - 16,
+                  aspectRatio: 1 / 1,
+                })}
+              />
+              <View style={tw`px-4 py-2`}>
+                <Text
+                  style={tw`font-avSemi text-amber-700 capitalize text-[10px]`}
+                  numberOfLines={1}>
+                  {data?.subject}
+                </Text>
+                <Text
+                  style={tw`py-1 font-avSemi text-base text-gray-600`}
+                  numberOfLines={2}>
+                  {data?.title}
+                </Text>
+                <Text
+                  style={tw`font-avReg text-xs text-amber-600`}
+                  numberOfLines={1}>
+                  #CGPSE #ACS #SSC #Mains
+                </Text>
+                <Text
+                  style={tw.style('font-avReg', 'text-gray-600', 'text-sm', {
+                    fontSize: 10,
+                  })}
+                  numberOfLines={1}>
+                  {`${data?.media?.questions} Ques. | ${
+                    data?.media?.totalMarks
+                  } Marks | ${
+                    dayjs.duration(data?.media?.duration).hours() > 0
+                      ? dayjs.duration(data?.media?.duration).hours() + ' Hour'
+                      : ''
+                  } ${
+                    dayjs.duration(data?.media?.duration).minutes() > 0
+                      ? dayjs.duration(data?.media?.duration).minutes() +
+                        ' Minute'
+                      : ''
+                  } | ${data?.likes} Likes | ${formatNumber(
+                    data?.views,
+                    0,
+                  )} Attempted`}
+                </Text>
+              </View>
+              <View
+                style={tw`flex-row justify-around border-t border-b border-amber-200 px-2`}>
+                <CCLikeButton
+                  refId={data?._id}
+                  initial={data?.liked === 1 ? true : false}
+                  refetchQueries={[
+                    {query: CONTENT, variables: {contentId: data?._id}},
+                  ]}>
+                  {liked => (
+                    <CCIcon
+                      color="amber-600"
+                      icon={liked ? 'like1' : 'like2'}
+                      label={liked ? 'Liked' : 'Like'}
+                    />
+                  )}
+                </CCLikeButton>
+                <CCBookmarkButton
+                  refId={data?._id}
+                  type={data?.__typename}
+                  subType={data?.media?.__typename}
+                  initial={data?.bookmarked === 1 ? true : false}
+                  refetchQueries={[
+                    {query: CONTENT, variables: {contentId: data?._id}},
+                  ]}>
+                  {bookmarked => (
+                    <CCIcon
+                      color="amber-600"
+                      icon={bookmarked ? 'bookmark' : 'bookmark-o'}
+                      label={bookmarked ? 'Bookmarked' : 'Bookmark'}
+                      IconComponent={FontAwesome}
+                    />
+                  )}
+                </CCBookmarkButton>
+                <TouchableOpacity>
+                  <CCIcon color="amber-600" icon="download" label="Download" />
                 </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-          <FlatList
-            ref={flatListRef}
-            horizontal
-            pagingEnabled
-            data={questions}
-            scrollEnabled={false}
-            renderItem={renderItem}
-            keyExtractor={item => item._id}
-            contentContainerStyle={tw``}
-            showsHorizontalScrollIndicator={false}
-          />
-        </View>
-        <View style={tw`flex-row items-center justify-between p-2 pt-1 pb-3`}>
-          <Duration
-            duration={queryData?.content?.payload?.media?.duration}
-            style={tw`w-18 text-center py-2 tracking-widest font-avSemi rounded text-xs bg-black text-white shadow-sm`}
-          />
-          <TouchableOpacity onPress={handlePrev}>
-            <Text
-              style={tw`font-avSemi rounded text-xs px-4 py-2 bg-amber-100 text-amber-600 shadow-sm`}>
-              {'< Prev'}
-            </Text>
-          </TouchableOpacity>
-          <Text style={tw`text-base font-avReg text-gray-600`}>
-            {`${activeIndex + 1} / ${questions.length}`}
-          </Text>
-          <TouchableOpacity onPress={handleNext}>
-            <Text
-              style={tw`font-avSemi rounded text-xs px-4 py-2 bg-amber-100 text-amber-600 shadow-sm`}>
-              {'Next >'}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleSubmit}>
-            <Text
-              style={tw`font-avSemi rounded text-xs px-4 py-2 bg-amber-600 text-amber-100 shadow-sm`}>
-              Submit
-            </Text>
-          </TouchableOpacity>
-        </View>
+                <TouchableOpacity>
+                  <CCIcon
+                    color="amber-600"
+                    icon="questioncircleo"
+                    label="Doubts"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <CCIcon color="amber-600" icon="sharealt" label="Share" />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <InfoItem label="Highlight" value={data?.highlight} />
+                <InfoItem
+                  inline
+                  label="Language"
+                  value={data?.language === 'HI' ? 'हिन्दी' : 'English'}
+                />
+                <InfoItem
+                  label="Instructors"
+                  value={data?.instructors?.join(', ')}
+                />
+                <InfoItem label="Index" value={data?.index} />
+                <InfoItem label="Description" value={data?.description} />
+              </View>
+            </>
+          )}
+        </ScrollView>
       </LinearGradient>
+      <CCModal
+        title="Instructions"
+        visible={visible}
+        submitting={submitting}
+        onClose={toggleModal}>
+        <View style={tw`p-2 my-2 border border-gray-600 rounded-md`}>
+          <Text style={tw`text-gray-900 font-avReg leading-7`}>
+            {`* Total number of questions is ${
+              data?.media?.questions
+            }.\n* Total marks is ${
+              data?.media?.totalMarks
+            }.\n* Total duration of exam is ${
+              dayjs.duration(data?.media?.duration).hours() > 0
+                ? dayjs.duration(data?.media?.duration).hours() + ' Hour'
+                : ''
+            } ${
+              dayjs.duration(data?.media?.duration).minutes() > 0
+                ? dayjs.duration(data?.media?.duration).minutes() + ' Minute'
+                : ''
+            }.\n${data?.media?.instructions}`}
+          </Text>
+        </View>
+        <CCCheckBox
+          label="Tick this, if you agree."
+          checked={checked}
+          onPress={setChecked}
+          style={tw`mb-3`}
+        />
+        <CCButton
+          label="Attempt"
+          loading={submitting}
+          disabled={!checked || submitting}
+          onPress={attemptExam}
+        />
+      </CCModal>
+      <ExamStatusButton
+        contentId={data?._id}
+        testId={data?.media?._id}
+        seeResult={handleResult}
+        attemptExam={toggleModal}
+      />
     </SafeAreaContainer>
   );
 };
 
-const Duration = memo(({duration, style}) => {
-  const [time, setTime] = useState(dayjs.duration(duration).asMilliseconds());
+const ExamStatusButton = ({contentId, testId, seeResult, attemptExam}) => {
+  const [fetchExamStatus, {loading: queryLoading, data: queryData}] =
+    useLazyQuery(EXAM_ATTEMPTED, {
+      variables: {contentId, testId},
+      fetchPolicy: 'no-cache',
+    });
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(prev => {
-        if (prev) {
-          return prev - 1000;
-        } else {
-          return 0;
-        }
-      });
-    }, 1000);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-  return (
-    <Text style={style}>{new Date(time).toISOString().slice(11, 19)}</Text>
+  useFocusEffect(
+    useCallback(() => {
+      fetchExamStatus();
+    }, [fetchExamStatus]),
   );
-});
 
-const Item = memo(props => {
-  const width = useWindowDimensions().width;
-  const [passageVisible, setPassageVisible] = useState(false);
-  const togglePassageVisibility = useCallback(() => {
-    setPassageVisible(!passageVisible);
-  }, [passageVisible]);
+  const handleResult = useCallback(() => {
+    seeResult({contentId, testId});
+  }, [contentId, testId, seeResult]);
+
+  const data = queryData?.examAttempted?.payload;
+
   return (
-    <View style={tw.style('pr-2', {width: (width * 85) / 100})}>
-      {!!props?.passage && (
-        <View style={tw`mt-2 bg-white shadow-sm rounded-lg`}>
-          <TouchableOpacity
-            onPress={togglePassageVisibility}
-            style={tw`flex-row justify-between px-4 py-2 `}>
-            <Text style={tw`text-base font-avSemi text-gray-600`}>Passage</Text>
-            <Text style={tw`text-base font-avSemi text-gray-600`}>{'>'}</Text>
-          </TouchableOpacity>
-          {passageVisible && (
-            <ScrollView
-              contentContainerStyle={tw`p-3`}
-              style={tw`max-h-48 border-t border-yellow-100`}>
-              <Text style={tw`text-sm font-avReg text-gray-600 leading-5`}>
-                {props?.passage}
+    <>
+      <LinearGradient
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}
+        colors={[
+          tw.color('amber-200'),
+          tw.color('white'),
+          tw.color('amber-50'),
+        ]}
+        style={tw`absolute bottom-0 right-0 m-4 rounded-lg shadow-sm`}>
+        <TouchableOpacity
+          disabled={queryLoading}
+          onPress={data ? handleResult : attemptExam}
+          style={tw`py-4 w-[176px] flex-row items-center justify-around`}>
+          {queryLoading ? (
+            <ActivityIndicator color={tw.color('amber-600')} size="small" />
+          ) : (
+            <>
+              <Text style={tw`px-4 font-avSemi text-sm text-amber-600`}>
+                {data ? 'See Result' : 'Attempt Now'}
               </Text>
-            </ScrollView>
+              <AntDesign
+                name="arrowright"
+                size={20}
+                color={tw.color('amber-600')}
+                style={tw`pr-4`}
+              />
+            </>
           )}
-        </View>
-      )}
-      <ScrollView
-        contentContainerStyle={tw`p-3`}
-        style={tw`flex-1 bg-white mt-2 shadow-sm rounded-lg`}>
-        <Text style={tw`text-base font-avReg text-gray-600 leading-5`}>
-          {props?.question}
-        </Text>
-        {!!props?.image && (
-          <Image
-            source={{uri: props?.image}}
-            resizeMode="contain"
-            style={tw.style({
-              marginTop: 8,
-              width: '100%',
-              aspectRatio: 1,
-            })}
-          />
-        )}
-      </ScrollView>
-      <View style={tw`my-1`}>
-        {props?.options.map((value, index) => {
-          return (
-            <TouchableOpacity
-              onPress={() => props?.onSelect(props?._id, index)}
-              key={`${index}-OPTION`}
-              style={tw`flex-row p-4 bg-${
-                props?.selectedIndex === index ? 'green-400' : 'yellow-50'
-              } my-1 shadow-sm rounded-lg`}>
-              <Text style={tw`font-avReg text-black text-sm`}>
-                {index + 1}.
-              </Text>
-              <Text style={tw`font-avReg text-black text-sm pl-2`}>
-                {value}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    </View>
+        </TouchableOpacity>
+      </LinearGradient>
+    </>
   );
-});
+};
 
 export default TestViewScreen;

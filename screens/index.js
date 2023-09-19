@@ -56,11 +56,7 @@ import {
   CourseDocumentViewScreen,
   CurrentAffairViewScreen,
 } from './ContentViewScreens';
-import {
-  ExamAttemptScreen,
-  ExamResultScreen,
-  ExamSubmitScreen,
-} from './ExamScreens';
+import {ExamAttemptScreen, ExamResultScreen} from './ExamScreens';
 import {FollowerListScreen, FollowingListScreen} from './FollowListScreens';
 import {HomeScreen, SearchScreen, PrepareExamScreen} from './HomeScreens';
 import {
@@ -143,7 +139,6 @@ export {
   CurrentAffairViewScreen,
   ExamAttemptScreen,
   ExamResultScreen,
-  ExamSubmitScreen,
   PostViewScreen,
   FollowerListScreen,
   FollowingListScreen,

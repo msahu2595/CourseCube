@@ -1,3 +1,11 @@
+import React, {
+  memo,
+  useRef,
+  useState,
+  useEffect,
+  forwardRef,
+  useCallback,
+} from 'react';
 import {
   View,
   Text,
@@ -18,7 +26,6 @@ import {showMessage} from 'react-native-flash-message';
 import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
 
 const ADD_ANSWER = gql`
   mutation addAnswer(
@@ -67,6 +74,19 @@ const SUBMIT_EXAM = gql`
         duration
         questions {
           _id
+          testQuestion {
+            _id
+            question
+            image
+            passage
+            options
+            answerIndex
+            mark
+            negativeMark
+            position
+            invalid
+            enable
+          }
           question
           image
           passage
@@ -86,13 +106,27 @@ const SUBMIT_EXAM = gql`
 `;
 
 const ExamAttemptScreen = ({route, navigation}) => {
+  const timer = useRef(null);
   const flatListRef = useRef();
+  const unsubscribe = useRef(null);
+  const appStateListener = useRef(null);
+
   const insets = useSafeAreaInsets();
 
   const [submitExam, {loading}] = useMutation(SUBMIT_EXAM, {
     variables: {examId: route?.params?._id || ''},
-    onCompleted: data => {
-      navigation.navigate('ExamSubmitScreen', data?.submitExam?.payload);
+    onCompleted: async () => {
+      console.log('Removing listener');
+      if (unsubscribe.current) {
+        await unsubscribe.current();
+      }
+      if (timer.current) {
+        clearInterval(timer.current);
+      }
+      if (appStateListener.current) {
+        await appStateListener.current?.remove();
+      }
+      navigation?.goBack();
     },
     onError: error => {
       showMessage({
@@ -103,22 +137,19 @@ const ExamAttemptScreen = ({route, navigation}) => {
     },
   });
 
-  useEffect(() => {
-    navigation.addListener('beforeRemove', e => {
-      e.preventDefault();
-      Alert.alert('Submit', 'Are you sure, you want to submit test ?', [
-        {text: 'No', style: 'cancel', onPress: () => {}},
-        {text: 'Yes', style: 'destructive', onPress: submitExam},
-      ]);
-    });
-  }, [navigation, submitExam]);
-
   const handleSubmit = useCallback(() => {
     Alert.alert('Submit', 'Are you sure, you want to submit test ?', [
       {text: 'No', style: 'cancel', onPress: () => {}},
       {text: 'Yes', style: 'destructive', onPress: submitExam},
     ]);
   }, [submitExam]);
+
+  useEffect(() => {
+    unsubscribe.current = navigation.addListener('beforeRemove', e => {
+      e.preventDefault();
+      handleSubmit();
+    });
+  }, [navigation, handleSubmit]);
 
   const navigateQuestion = useCallback(index => {
     flatListRef.current?.scrollToIndex({index});
@@ -146,8 +177,9 @@ const ExamAttemptScreen = ({route, navigation}) => {
         <View
           style={tw`flex-row items-center justify-between px-2 android:pt-2`}>
           <Duration
-            duration={route?.params?.duration || 'PT0S'}
+            ref={timer}
             onTimeUp={submitExam}
+            duration={route?.params?.duration || 'PT0S'}
             textStyle={tw`tracking-widest font-avSemi text-xs text-white`}
             containerStyle={tw`w-18 items-center py-2 rounded bg-gray-900 shadow-sm`}
           />
@@ -180,78 +212,83 @@ const ExamAttemptScreen = ({route, navigation}) => {
           />
         </View>
       </LinearGradient>
-      <BackgroundNotice exitExam={submitExam} />
+      <BackgroundNotice ref={appStateListener} exitExam={submitExam} />
       <LoadingIndicator loading={loading} color={tw.color('bg-amber-600')} />
     </>
   );
 };
 
-const BackgroundNotice = memo(props => {
-  const backgroundTimes = useRef(0);
-  const activeTimestamp = useRef(null);
-  const appState = useRef(AppState.currentState);
+const BackgroundNotice = memo(
+  forwardRef((props, appStateListener) => {
+    const backgroundTimes = useRef(0);
+    const activeTimestamp = useRef(null);
+    const appState = useRef(AppState.currentState);
 
-  useEffect(() => {
-    const appStateListener = AppState.addEventListener(
-      'change',
-      nextAppState => {
-        console.log('===========appStateListener=============');
-        switch (nextAppState) {
-          case 'background':
-            console.log('App is in BACKGROUND state.');
-            if (!activeTimestamp.current && appState.current === 'active') {
-              appState.current = 'background';
-              activeTimestamp.current = dayjs();
-            }
-            break;
-          case 'active':
-            console.log('App is in ACTIVE state.');
-            if (activeTimestamp.current && appState.current === 'background') {
-              appState.current = 'active';
-              backgroundTimes.current += 1;
-              const timeDifference = dayjs().diff(
-                activeTimestamp.current,
-                'second',
-              );
-              console.log('timeDifference ==> ', timeDifference);
-              activeTimestamp.current = null;
-              if (timeDifference > 30) {
-                Alert.alert(
-                  'Disqualify',
-                  'As per our exam rule, We are disqualify yor from this exam as you are in background for more than 30 second. Please take care on your next exam.',
-                  [{text: 'Ok', onPress: props?.exitExam}],
+    useEffect(() => {
+      appStateListener.current = AppState.addEventListener(
+        'change',
+        nextAppState => {
+          console.log('===========appStateListener=============');
+          switch (nextAppState) {
+            case 'background':
+              console.log('App is in BACKGROUND state.');
+              if (!activeTimestamp.current && appState.current === 'active') {
+                appState.current = 'background';
+                activeTimestamp.current = dayjs();
+              }
+              break;
+            case 'active':
+              console.log('App is in ACTIVE state.');
+              if (
+                activeTimestamp.current &&
+                appState.current === 'background'
+              ) {
+                appState.current = 'active';
+                backgroundTimes.current += 1;
+                const timeDifference = dayjs().diff(
+                  activeTimestamp.current,
+                  'second',
                 );
-              } else {
-                if (backgroundTimes.current < 3) {
-                  Alert.alert(
-                    'Warning',
-                    `This is ${
-                      backgroundTimes.current < 2 ? '1st' : 'last'
-                    } warning, if you minimize the app while exam is in progress we can disqualify yor from this exam.`,
-                  );
-                } else {
+                console.log('timeDifference ==> ', timeDifference);
+                activeTimestamp.current = null;
+                if (timeDifference > 30) {
                   Alert.alert(
                     'Disqualify',
-                    'As per our exam rule, We are disqualify yor from this exam as you had minimized app more than 2 times while exam is in progress.',
+                    'As per our exam rule, We are disqualify yor from this exam as you are in background for more than 30 second. Please take care on your next exam.',
                     [{text: 'Ok', onPress: props?.exitExam}],
                   );
+                } else {
+                  if (backgroundTimes.current < 3) {
+                    Alert.alert(
+                      'Warning',
+                      `This is ${
+                        backgroundTimes.current < 2 ? '1st' : 'last'
+                      } warning, if you minimize the app while exam is in progress we can disqualify yor from this exam.`,
+                    );
+                  } else {
+                    Alert.alert(
+                      'Disqualify',
+                      'As per our exam rule, We are disqualify yor from this exam as you had minimized app more than 2 times while exam is in progress.',
+                      [{text: 'Ok', onPress: props?.exitExam}],
+                    );
+                  }
                 }
               }
-            }
-            break;
-          default:
-            break;
-        }
-        console.log('===========appStateListener=============');
-      },
-    );
-    return () => {
-      appStateListener?.remove();
-    };
-  }, [props?.exitExam]);
+              break;
+            default:
+              break;
+          }
+          console.log('===========appStateListener=============');
+        },
+      );
+      return () => {
+        appStateListener.current?.remove();
+      };
+    }, [appStateListener, props?.exitExam]);
 
-  return null;
-});
+    return null;
+  }),
+);
 
 const IndexList = memo(({data, onPress}) => {
   const width = useWindowDimensions().width;
@@ -314,7 +351,7 @@ const IndexList = memo(({data, onPress}) => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <View style={tw`mr-1 ios:pb-4 items-center rounded-tr-lg`}>
+      <View style={tw`mr-1 pb-4 items-center rounded-tr-lg`}>
         <TouchableOpacity onPress={handlePrev} style={tw`py-1`}>
           <AntDesign size={36} name="upcircle" color={tw.color('amber-600')} />
         </TouchableOpacity>
@@ -335,39 +372,41 @@ const IndexList = memo(({data, onPress}) => {
   );
 });
 
-const Duration = memo(({duration, onTimeUp, containerStyle, textStyle}) => {
-  const [time, setTime] = useState(dayjs.duration(duration).asMilliseconds());
+const Duration = memo(
+  forwardRef(({duration, onTimeUp, containerStyle, textStyle}, timer) => {
+    const [time, setTime] = useState(dayjs.duration(duration).asMilliseconds());
 
-  useEffect(() => {
-    if (time <= 0) {
-      onTimeUp();
-    }
-  }, [time, onTimeUp]);
+    useEffect(() => {
+      if (time <= 0) {
+        onTimeUp();
+      }
+    }, [time, onTimeUp]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(prev => {
-        if (prev - 1000 > 0) {
-          return prev - 1000;
-        } else {
-          clearInterval(timer);
-          return 0;
-        }
-      });
-    }, 1000);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+    useEffect(() => {
+      timer.current = setInterval(() => {
+        setTime(prev => {
+          if (prev - 1000 > 0) {
+            return prev - 1000;
+          } else {
+            clearInterval(timer.current);
+            return 0;
+          }
+        });
+      }, 1000);
+      return () => {
+        clearInterval(timer.current);
+      };
+    }, [timer]);
 
-  return (
-    <View style={containerStyle}>
-      <Text style={textStyle}>
-        {new Date(time).toISOString().slice(11, 19)}
-      </Text>
-    </View>
-  );
-});
+    return (
+      <View style={containerStyle}>
+        <Text style={textStyle}>
+          {new Date(time).toISOString().slice(11, 19)}
+        </Text>
+      </View>
+    );
+  }),
+);
 
 const Item = memo(props => {
   const width = useWindowDimensions().width;

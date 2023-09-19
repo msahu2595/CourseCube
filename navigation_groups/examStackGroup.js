@@ -1,7 +1,7 @@
 import React from 'react';
 import tw from '@lib/tailwind'; //Tailwind Imports
+import {ExamAttemptScreen, ExamResultScreen} from '@screens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {ExamAttemptScreen, ExamResultScreen, ExamSubmitScreen} from '@screens';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -24,14 +24,6 @@ const examStackGroup = () => {
           orientation: 'portrait',
           navigationBarHidden: true,
           autoHideHomeIndicator: true,
-        }}
-      />
-      <Stack.Screen
-        name="ExamSubmitScreen"
-        component={ExamSubmitScreen}
-        options={{
-          headerTitle: 'Submission',
-          gestureEnabled: false,
         }}
       />
       <Stack.Screen
