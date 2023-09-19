@@ -36,7 +36,7 @@ const AddContentValidationSchema = yup.object({
 });
 
 const AddContentModal = ({media, onClose}) => {
-  const [addContent, {submitting: submitting}] = useMutation(ADD_CONTENT, {
+  const [addContent, {loading: submitting}] = useMutation(ADD_CONTENT, {
     onCompleted: () => {
       onClose();
       showMessage({
