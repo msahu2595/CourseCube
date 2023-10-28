@@ -1,143 +1,206 @@
 import {
+  Text,
   View,
   Alert,
   Image,
-  Linking,
-  Platform,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
 import {tw} from '@lib';
 import {useGenderImage} from 'hooks';
-import {gql, useMutation} from '@apollo/client';
+import {imageUploader} from 'lib/fileHandler';
+import {loggedUserVar, storage} from 'apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import React, {memo, useCallback, useState} from 'react';
-import ImageCropPicker from 'react-native-image-crop-picker';
+import {REACT_APP_DEV_URI, REACT_APP_PROD_URI} from '@env';
+import {gql, useMutation, useReactiveVar} from '@apollo/client';
+import React, {memo, useCallback, useRef, useState} from 'react';
+import {BottomModal, ModalContent, ModalPortal} from 'react-native-modals';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const UPLOAD_IMAGE = gql`
-  mutation uploadImage {
-    uploadImage {
+const ADD_PROFILE_IMAGE = gql`
+  mutation addProfileImage($picture: String!) {
+    addProfileImage(picture: $picture) {
       code
       success
       message
       token
+      refresh
       payload {
-        id
-        uploadURL
+        __typename
+        picture
       }
     }
   }
 `;
 
-let image;
-
-export const CCImageUploader = memo(
-  ({name, gender, value, onUploadImage, editable = true, size = 108}) => {
-    const [loading, setLoading] = useState(false);
-
-    const [uploadImage] = useMutation(UPLOAD_IMAGE, {
-      onCompleted: async response => {
-        try {
-          const {id, uploadURL} = response.uploadImage.payload;
-          const file = {
-            name: `${name}.jpg`,
-            type: image.mime,
-            uri:
-              Platform.OS === 'android'
-                ? image.path
-                : image.path.replace('file://', ''),
-          };
-          const body = new FormData();
-          body.append('file', file);
-          await fetch(uploadURL, {
-            method: 'post',
-            body,
-          });
-          onUploadImage(
-            `https://imagedelivery.net/nMSC_wBKsLFA7zWhgLIlhw/${id}/public`,
-          );
-          setLoading(false);
-        } catch (err) {
-          setLoading(false);
-          showMessage({
-            message: err?.message || 'Some unknown error occurred. Try again!!',
-            type: 'danger',
-            icon: 'danger',
-          });
-        }
-      },
-      onError: err => {
-        setLoading(false);
-        showMessage({
-          message: err?.message || 'Some unknown error occurred. Try again!!',
-          type: 'danger',
-          icon: 'danger',
-        });
-      },
-    });
-
-    const handleImageUpload = useCallback(async () => {
-      try {
-        image = await ImageCropPicker.openPicker({
-          width: 102,
-          height: 102,
-          cropping: true,
-          cropperCircleOverlay: true,
-        });
-        setLoading(true);
-        uploadImage();
-      } catch (error) {
-        if (error?.message !== 'User cancelled image selection') {
-          if (error?.message === 'User did not grant camera permission.') {
-            Alert.alert(
-              'Open Settings',
-              'Need camera permission to capture image.',
-              [
-                {text: 'Cancel', style: 'default'},
-                {
-                  text: 'Go to Settings',
-                  style: 'destructive',
-                  onPress: () => Linking.openSettings(),
-                },
-              ],
-            );
-          } else if (
-            error?.message === 'User did not grant library permission.'
-          ) {
-            Alert.alert(
-              'Open Settings',
-              'Need library permission to select image.',
-              [
-                {text: 'Cancel', style: 'default'},
-                {
-                  text: 'Go to Settings',
-                  style: 'destructive',
-                  onPress: () => Linking.openSettings(),
-                },
-              ],
-            );
-          } else {
-            showMessage({
-              message: error?.message,
-              type: 'danger',
-              icon: 'danger',
-            });
-          }
-        }
+const REMOVE_PROFILE_IMAGE = gql`
+  mutation removeProfileImage {
+    removeProfileImage {
+      code
+      success
+      message
+      token
+      refresh
+      payload {
+        __typename
+        picture
       }
-    }, [uploadImage]);
+    }
+  }
+`;
 
-    const imageByGender = useGenderImage(gender);
+export const CCImageUploader = memo(({editable = true, size = 108}) => {
+  const loggedUser = useReactiveVar(loggedUserVar);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const viewImageModalRef = useRef(null);
+  const bottomModalRef = useRef(null);
 
-    return (
+  const [addProfileImage] = useMutation(ADD_PROFILE_IMAGE, {
+    onCompleted: data => {
+      storage.set(
+        'user',
+        JSON.stringify({
+          ...loggedUser,
+          ...data?.addProfileImage?.payload,
+        }),
+      );
+      loggedUserVar({
+        ...loggedUser,
+        ...data?.addProfileImage?.payload,
+      });
+      setLoading(false);
+      showMessage({
+        message: 'Your profile picture successfully added.',
+        type: 'success',
+        icon: 'success',
+      });
+    },
+    onError: err => {
+      setLoading(false);
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+        icon: 'danger',
+      });
+    },
+  });
+
+  const [removeProfileImage] = useMutation(REMOVE_PROFILE_IMAGE, {
+    onCompleted: data => {
+      storage.set(
+        'user',
+        JSON.stringify({
+          ...loggedUser,
+          ...data?.removeProfileImage?.payload,
+        }),
+      );
+      loggedUserVar({
+        ...loggedUser,
+        ...data?.removeProfileImage?.payload,
+      });
+      setLoading(false);
+      showMessage({
+        message: 'Your profile picture successfully removed.',
+        type: 'success',
+        icon: 'success',
+      });
+    },
+    onError: err => {
+      setLoading(false);
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+        icon: 'danger',
+      });
+    },
+  });
+
+  const handleAddImage = useCallback(async () => {
+    setOpen(false);
+    try {
+      setLoading(true);
+      const result = await imageUploader();
+      addProfileImage({variables: {picture: result.path}});
+    } catch (error) {
+      setLoading(false);
+      showMessage({
+        message: error?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+        icon: 'danger',
+      });
+    }
+  }, [addProfileImage]);
+
+  const handleRemoveImage = useCallback(() => {
+    setOpen(false);
+    Alert.alert(
+      'Warning',
+      'Are you sure, you want to remove your profile picture?',
+      [
+        {
+          text: 'Yes',
+          style: 'default',
+          onPress: () => {
+            setLoading(true);
+            removeProfileImage();
+          },
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+          isPreferred: true,
+        },
+      ],
+    );
+  }, [removeProfileImage]);
+
+  const handleViewImage = useCallback(() => {
+    setOpen(false);
+    viewImageModalRef.current = ModalPortal.show(
+      <View>
+        <Image
+          source={{
+            uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/${
+              loggedUser?.picture
+            }`,
+          }}
+          style={tw`w-[256px] h-[256px]`}
+        />
+        <TouchableOpacity
+          style={tw`bg-black py-2 items-center justify-center`}
+          onPress={() => {
+            ModalPortal.dismiss(viewImageModalRef.current);
+          }}>
+          <Text style={tw`font-avSemi text-xs text-gray-100`}>Close</Text>
+        </TouchableOpacity>
+      </View>,
+    );
+  }, [loggedUser?.picture]);
+
+  const toggleMenu = useCallback(() => {
+    setOpen(prev => !prev);
+  }, []);
+
+  const imageByGender = useGenderImage(loggedUser?.gender);
+
+  return (
+    <>
       <TouchableOpacity
         activeOpacity={0.5}
-        onPress={handleImageUpload}
+        onPress={toggleMenu}
         disabled={loading || !editable}
         style={tw`relative w-[${size}px] h-[${size}px]`}>
         <Image
-          source={value ? {uri: value} : imageByGender}
+          source={
+            loggedUser?.picture
+              ? {
+                  uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/${
+                    loggedUser?.picture
+                  }`,
+                }
+              : imageByGender
+          }
           style={tw`rounded-full border border-gray-400 w-[${size - 1}px] h-[${
             size - 1
           }px]`}
@@ -157,6 +220,46 @@ export const CCImageUploader = memo(
           </View>
         ) : null}
       </TouchableOpacity>
-    );
-  },
-);
+      <BottomModal
+        ref={bottomModalRef}
+        visible={open}
+        onTouchOutside={() => {
+          setOpen(false);
+        }}>
+        <ModalContent style={tw`p-0`}>
+          <MenuItem
+            label={'Add/Change profile picture'}
+            onPress={handleAddImage}
+          />
+          {loggedUser?.picture ? (
+            <>
+              <MenuItem
+                label={'Remove profile picture'}
+                onPress={handleRemoveImage}
+              />
+              <MenuItem
+                label={'View profile picture'}
+                onPress={handleViewImage}
+              />
+            </>
+          ) : null}
+        </ModalContent>
+      </BottomModal>
+    </>
+  );
+});
+
+const MenuItem = memo(({label, onPress, positive, danger}) => {
+  return (
+    <TouchableOpacity
+      style={tw`px-6 py-4 border-b border-gray-100`}
+      onPress={onPress}>
+      <Text
+        style={tw`font-avSemi text-xs ${
+          danger ? 'text-red-600' : positive ? 'text-blue-600' : 'text-gray-600'
+        }`}>
+        {label}
+      </Text>
+    </TouchableOpacity>
+  );
+});

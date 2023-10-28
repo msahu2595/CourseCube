@@ -64,6 +64,7 @@
     "react-native-linear-gradient": "^2.6.2",
     "react-native-media-controls": "^2.3.0",
     "react-native-mmkv": "2.5.1",
+    "react-native-modals": "^0.22.3",
     "react-native-orientation-locker": "^1.5.0",
     "react-native-pager-view": "^6.1.0",
     "react-native-pdf": "^6.6.2",

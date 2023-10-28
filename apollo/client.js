@@ -151,9 +151,12 @@ console.log({REACT_APP_DEV_URI});
 console.log({REACT_APP_PROD_URI});
 console.log({Authorization: `Bearer ${storage.getString('token')}`});
 console.log({'refresh-token': storage.getString('refresh')});
+console.log({
+  uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/graphql`,
+});
 
 const httpLink = createHttpLink({
-  uri: __DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI,
+  uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/graphql`,
 });
 
 const setTokenLink = new ApolloLink((operation, forward) => {

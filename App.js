@@ -4,6 +4,7 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import {ApolloProvider} from '@apollo/client';
+import {ModalPortal} from 'react-native-modals';
 import {MenuProvider} from 'react-native-popup-menu';
 import FlashMessage from 'react-native-flash-message';
 import {NavigationContainer} from '@react-navigation/native';
@@ -24,6 +25,7 @@ const App = () => {
           </ApolloProvider>
         </NavigationContainer>
         <SafeAreaFlashMessage position="top" />
+        <ModalPortal />
       </SafeAreaProvider>
     </MenuProvider>
   );

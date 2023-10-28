@@ -76,7 +76,6 @@ const CreateProfileValidationSchema = yup.object({
       'Please select one of the following option.',
     )
     .required('Please select your gender.'),
-  picture: yup.string().url('Picture should be a link.'),
   about: yup
     .string()
     .required('Please write something about yourself.')
@@ -146,7 +145,6 @@ export const CreateProfileScreen = ({navigation}) => {
           initialValues={{
             fullName: loggedUser?.fullName ?? '',
             gender: loggedUser?.gender ?? 'MALE',
-            picture: loggedUser?.picture ?? '',
             about: loggedUser?.about ?? '',
             education: loggedUser?.education ?? '',
             workAt: loggedUser?.workAt ?? '',
@@ -168,9 +166,6 @@ export const CreateProfileScreen = ({navigation}) => {
               gender: values.gender,
               about: values.about,
             };
-            if (values.picture) {
-              userInput.picture = values.picture;
-            }
             if (values.education) {
               userInput.education = values.education;
             }
@@ -218,15 +213,7 @@ export const CreateProfileScreen = ({navigation}) => {
             <>
               <View style={tw`pt-2 pb-4`}>
                 <View style={tw`items-center justify-center py-2`}>
-                  <CCImageUploader
-                    name={loggedUser._id}
-                    gender={values?.gender}
-                    value={values?.picture}
-                    onUploadImage={value => {
-                      setFieldValue('picture', value);
-                    }}
-                    editable={!submitting}
-                  />
+                  <CCImageUploader editable={!submitting} />
                 </View>
                 <CCTextInput
                   required
