@@ -12,6 +12,7 @@ import {useNavigation} from '@react-navigation/core';
 import {CCFollowButton, CCTextExpand} from './Common';
 import {showMessage} from 'react-native-flash-message';
 import Feather from 'react-native-vector-icons/Feather';
+import {REACT_APP_DEV_URI, REACT_APP_PROD_URI} from '@env';
 import React, {useCallback, useEffect, useState} from 'react';
 import {gql, useLazyQuery, useReactiveVar} from '@apollo/client';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -73,7 +74,15 @@ const UserInfo = ({userId}) => {
       <View style={tw`flex-row justify-between items-center`}>
         <Image
           resizeMode="contain"
-          source={user?.picture ? {uri: user?.picture} : imageByGender}
+          source={
+            user?.picture
+              ? {
+                  uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/${
+                    user?.picture
+                  }`,
+                }
+              : imageByGender
+          }
           style={tw.style('rounded-full border border-gray-300', {
             height: 84,
             width: 84,
