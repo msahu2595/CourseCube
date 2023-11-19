@@ -1,4 +1,5 @@
 import {CCIcon} from './CCIcon';
+import {CCText} from './CCText';
 import {CCModal} from './CCModal';
 import {CCRadio} from './CCRadio';
 import {CCButton} from './CCButton';
@@ -7,6 +8,7 @@ import {CCCheckBox} from './CCCheckBox';
 import {CCTextInput} from './CCTextInput';
 import {CCTextExpand} from './CCTextExpand';
 import {CCLikeButton} from './CCLikeButton';
+import {CCOptionInput} from './CCOptionInput';
 import {CCSearchInput} from './CCSearchInput';
 import {CCFollowButton} from './CCFollowButton';
 import {CCImageUploader} from './CCImageUploader';
@@ -15,6 +17,7 @@ import {CCNavigationButton} from './CCNavigationButton';
 
 export {
   CCIcon,
+  CCText,
   CCModal,
   CCRadio,
   CCButton,
@@ -23,6 +26,7 @@ export {
   CCTextInput,
   CCTextExpand,
   CCLikeButton,
+  CCOptionInput,
   CCSearchInput,
   CCFollowButton,
   CCImageUploader,

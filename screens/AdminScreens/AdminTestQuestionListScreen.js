@@ -1,22 +1,51 @@
 import {tw} from '@lib';
-import {TEST} from '@queries';
-import {useQuery} from '@apollo/client';
-import {SafeAreaContainer} from '@components';
+import {gql, useQuery} from '@apollo/client';
 import {CCSearchInput} from 'components/Common';
-import React, {useCallback, useState} from 'react';
 import {showMessage} from 'react-native-flash-message';
-import {Alert, FlatList, RefreshControl, Text, View} from 'react-native';
+import React, {memo, useCallback, useState} from 'react';
+import {FlatList, RefreshControl, Text, View} from 'react-native';
+import AddTestQuestionModal from 'components/AddTestQuestionModal';
+import {Fab, MenuOptionItem, SafeAreaContainer} from '@components';
+import EditTestQuestionModal from 'components/EditTestQuestionModal';
+import {Menu, MenuOptions, MenuTrigger} from 'react-native-popup-menu';
+import DeleteTestQuestionModal from 'components/DeleteTestQuestionModal';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const TEST_QUESTIONS = gql`
+  query testQuestions($testId: ID!, $offset: Int, $limit: Int) {
+    testQuestions(testId: $testId, offset: $offset, limit: $limit) {
+      code
+      success
+      message
+      token
+      offset
+      limit
+      testId
+      payload {
+        _id
+        question
+        image
+        passage
+        options
+        answerIndex
+        mark
+        negativeMark
+        position
+        invalid
+        enable
+      }
+    }
+  }
+`;
 
 const AdminTestQuestionListScreen = ({route: {params}}) => {
   const [search, setSearch] = useState('');
+  const [addTestQuestionModal, setAddTestQuestionModal] = useState(false);
+  const [editTestQuestionModal, setEditTestQuestionModal] = useState(null);
+  const [deleteTestQuestionModal, setDeleteTestQuestionModal] = useState(null);
 
-  const {loading, data, refetch} = useQuery(TEST, {
+  const {loading, data, refetch} = useQuery(TEST_QUESTIONS, {
     variables: {testId: params?.testId},
-    onCompleted: ({test}) => {
-      if (!test?.payload?.questions.length) {
-        Alert.alert('Alert', 'No questions are added into this test.');
-      }
-    },
     onError: err => {
       showMessage({
         message: err?.message || 'Some unknown error occurred. Try again!!',
@@ -43,16 +72,19 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
     refetch({search: ''});
   }, [refetch]);
 
-  const Item = useCallback(
-    ({item}) => (
-      <View>
-        <Text>{item.question}</Text>
-      </View>
+  const _renderItem = useCallback(
+    ({item, index}) => (
+      <Item
+        index={index}
+        onEdit={setEditTestQuestionModal}
+        onDelete={setDeleteTestQuestionModal}
+        {...item}
+      />
     ),
     [],
   );
 
-  console.log(data?.test?.payload);
+  console.log(data?.testQuestions?.payload);
 
   return (
     <SafeAreaContainer>
@@ -65,18 +97,138 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
       <FlatList
         bounces={true}
         //
-        data={data?.test?.payload?.questions}
+        data={data?.testQuestions?.payload}
         keyExtractor={item => item._id}
-        renderItem={({item}) => <Item {...item} />}
+        renderItem={_renderItem}
         //
         contentContainerStyle={tw`px-1`}
+        ListFooterComponent={() => <View style={tw`h-[56px]`} />}
         //
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={refetch} />
         }
+      />
+      <AddTestQuestionModal
+        testId={params?.testId}
+        visible={addTestQuestionModal}
+        onClose={() => {
+          setAddTestQuestionModal(false);
+        }}
+      />
+      <EditTestQuestionModal
+        question={editTestQuestionModal}
+        onClose={() => {
+          setEditTestQuestionModal(null);
+        }}
+      />
+      <DeleteTestQuestionModal
+        questionId={deleteTestQuestionModal}
+        onClose={() => {
+          setDeleteTestQuestionModal(null);
+        }}
+      />
+      <Fab
+        iconName="plus"
+        bgColor={tw.color('blue-600')}
+        onPress={() => setAddTestQuestionModal(true)}
       />
     </SafeAreaContainer>
   );
 };
 
 export default AdminTestQuestionListScreen;
+
+const Item = memo(({onEdit, onDelete, ...item}) => {
+  return (
+    <View key={item?._id} style={tw`bg-white p-2 mx-2 mb-4 rounded-lg`}>
+      {!item?.enable && (
+        <Text style={tw`pl-2 pb-2 text-xs font-avReg text-red-600`}>
+          {`Question is deleted${item?.invalid ? ' & Invalid' : ''}.`}
+        </Text>
+      )}
+      <View style={tw`opacity-${item?.enable ? 100 : 50}`}>
+        <View style={tw`px-4 py-4 bg-white rounded-lg border border-gray-200`}>
+          <Text
+            style={tw`text-base font-avReg text-${
+              item?.invalid ? 'red-600' : 'gray-900'
+            } leading-5`}>
+            {`Q.${item?.index + 1}. ${item?.question}`}
+          </Text>
+        </View>
+        <View style={tw`my-1`}>
+          {item?.options?.map((option, index) => {
+            return (
+              <View
+                key={`${index}-OPTION`}
+                style={tw`flex-row justify-between p-4 bg-${
+                  item?.answerIndex === index ? 'green-400' : 'yellow-50'
+                } my-1 shadow-sm rounded-lg ios:border ios:border-gray-200`}>
+                <View style={tw`flex-1 mr-2 flex-row`}>
+                  <Text style={tw`font-avReg text-black text-sm`}>
+                    {index + 1}.
+                  </Text>
+                  <Text style={tw`font-avReg text-black text-sm pl-2`}>
+                    {option}
+                  </Text>
+                </View>
+                {item?.answerIndex === index && (
+                  <View style={tw`justify-center`}>
+                    <MaterialCommunityIcons
+                      size={20}
+                      name="check"
+                      color={tw.color('gray-900')}
+                    />
+                  </View>
+                )}
+              </View>
+            );
+          })}
+        </View>
+        <View style={tw`flex-1 flex-row justify-between`}>
+          <View style={tw`flex-1 flex-row flex-wrap`}>
+            <View
+              style={tw`mr-2 items-center px-4 py-2 rounded bg-gray-50 shadow-sm border border-gray-400`}>
+              <Text style={tw`font-avSemi text-xs text-gray-900`}>
+                Marks: {item.mark}
+              </Text>
+            </View>
+            {item.negativeMark > 0 && (
+              <View
+                style={tw`mr-2 items-center px-4 py-2 rounded bg-gray-50 shadow-sm border border-gray-400`}>
+                <Text style={tw`font-avSemi text-xs text-gray-900`}>
+                  Negative Marks: - {item.negativeMark}
+                </Text>
+              </View>
+            )}
+          </View>
+          <Menu>
+            <MenuTrigger
+              disabled={!item?.enable}
+              style={tw`mr-2 items-center px-2 py-2 rounded bg-gray-50 shadow-sm border border-gray-400`}>
+              <MaterialCommunityIcons
+                name="dots-vertical"
+                size={20}
+                color={tw.color('gray-900')}
+              />
+            </MenuTrigger>
+            <MenuOptions style={tw`py-2`}>
+              <MenuOptionItem
+                label="Edit"
+                onSelect={() => {
+                  onEdit(item);
+                }}
+              />
+              <MenuOptionItem
+                danger
+                label="Delete"
+                onSelect={() => {
+                  onDelete(item?._id);
+                }}
+              />
+            </MenuOptions>
+          </Menu>
+        </View>
+      </View>
+    </View>
+  );
+});
