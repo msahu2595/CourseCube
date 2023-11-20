@@ -53,8 +53,6 @@ const DeleteTestQuestionModal = memo(({questionId, onClose}) => {
     },
   );
 
-  console.log({questionId, invalid});
-
   return (
     <CCModal
       title="Delete Test Question"

@@ -44,7 +44,7 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
   const [editTestQuestionModal, setEditTestQuestionModal] = useState(null);
   const [deleteTestQuestionModal, setDeleteTestQuestionModal] = useState(null);
 
-  const {loading, data, refetch} = useQuery(TEST_QUESTIONS, {
+  const {loading, data, refetch, fetchMore} = useQuery(TEST_QUESTIONS, {
     variables: {testId: params?.testId},
     onError: err => {
       showMessage({
@@ -84,8 +84,6 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
     [],
   );
 
-  console.log(data?.testQuestions?.payload);
-
   return (
     <SafeAreaContainer>
       <CCSearchInput
@@ -107,6 +105,15 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={refetch} />
         }
+        onEndReached={() => {
+          fetchMore({
+            variables: {
+              testId: params?.testId,
+              offset: data?.testQuestions?.payload.length,
+              limit: 10,
+            },
+          });
+        }}
       />
       <AddTestQuestionModal
         testId={params?.testId}
@@ -184,7 +191,7 @@ const Item = memo(({onEdit, onDelete, ...item}) => {
             );
           })}
         </View>
-        <View style={tw`flex-1 flex-row justify-between`}>
+        <View style={tw`flex-row justify-between`}>
           <View style={tw`flex-1 flex-row flex-wrap`}>
             <View
               style={tw`mr-2 items-center px-4 py-2 rounded bg-gray-50 shadow-sm border border-gray-400`}>

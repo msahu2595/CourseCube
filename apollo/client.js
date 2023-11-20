@@ -45,6 +45,16 @@ export const cache = new InMemoryCache({
             };
           },
         },
+        testQuestions: {
+          keyArgs: false,
+          merge(existing = {payload: []}, incoming) {
+            return {
+              ...existing,
+              ...incoming,
+              payload: [...existing.payload, ...incoming.payload],
+            };
+          },
+        },
         documents: {
           keyArgs: false,
           merge(existing = {payload: []}, incoming) {
