@@ -39,7 +39,10 @@ const TEST_QUESTIONS = gql`
 
 const AdminTestQuestionListScreen = ({route: {params}}) => {
   const [search, setSearch] = useState('');
-  const [addTestQuestionModal, setAddTestQuestionModal] = useState(false);
+  const [addTestQuestionModal, setAddTestQuestionModal] = useState({
+    visible: false,
+    position: null,
+  });
   const [editTestQuestionModal, setEditTestQuestionModal] = useState(null);
   const [deleteTestQuestionModal, setDeleteTestQuestionModal] = useState(null);
 
@@ -75,6 +78,7 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
     ({item, index}) => (
       <Item
         index={index}
+        onCreate={setAddTestQuestionModal}
         onEdit={setEditTestQuestionModal}
         onDelete={setDeleteTestQuestionModal}
         {...item}
@@ -116,9 +120,9 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
       />
       <AddTestQuestionModal
         testId={params?.testId}
-        visible={addTestQuestionModal}
+        data={addTestQuestionModal}
         onClose={() => {
-          setAddTestQuestionModal(false);
+          setAddTestQuestionModal({visible: false, position: null});
         }}
       />
       <EditTestQuestionModal
@@ -136,7 +140,7 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
       <Fab
         iconName="plus"
         bgColor={tw.color('blue-600')}
-        onPress={() => setAddTestQuestionModal(true)}
+        onPress={() => setAddTestQuestionModal({visible: true, position: null})}
       />
     </SafeAreaContainer>
   );
@@ -144,7 +148,7 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
 
 export default AdminTestQuestionListScreen;
 
-const Item = memo(({onEdit, onDelete, ...item}) => {
+const Item = memo(({onCreate, onEdit, onDelete, ...item}) => {
   return (
     <View key={item?._id} style={tw`bg-white p-2 mx-2 mb-4 rounded-lg`}>
       {!item?.enable && (
@@ -219,14 +223,21 @@ const Item = memo(({onEdit, onDelete, ...item}) => {
             </MenuTrigger>
             <MenuOptions style={tw`py-2`}>
               <MenuOptionItem
-                label="Edit"
+                positive
+                label="Add Question Above"
+                onSelect={() => {
+                  onCreate({visible: true, position: item?.index});
+                }}
+              />
+              <MenuOptionItem
+                label="Edit Question"
                 onSelect={() => {
                   onEdit(item);
                 }}
               />
               <MenuOptionItem
                 danger
-                label="Delete"
+                label="Delete Question"
                 onSelect={() => {
                   onDelete(item?._id);
                 }}

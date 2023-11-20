@@ -8,8 +8,16 @@ import {showMessage} from 'react-native-flash-message';
 import {CCButton, CCModal, CCTextInput, CCOptionInput} from './Common';
 
 const ADD_TEST_QUESTION = gql`
-  mutation addTestQuestion($testId: ID!, $questionInput: TestQuestionInput!) {
-    addTestQuestion(testId: $testId, questionInput: $questionInput) {
+  mutation addTestQuestion(
+    $testId: ID!
+    $position: NonNegativeInt
+    $questionInput: TestQuestionInput!
+  ) {
+    addTestQuestion(
+      testId: $testId
+      position: $position
+      questionInput: $questionInput
+    ) {
       code
       success
       message
@@ -56,7 +64,7 @@ const AddTestQuestionValidationSchema = yup.object({
   negativeMark: yup.number().min(0).nullable(),
 });
 
-const AddTestQuestionModal = memo(({testId, visible, onClose}) => {
+const AddTestQuestionModal = memo(({testId, data, onClose}) => {
   const [addTestQuestion, {loading: submitting}] = useMutation(
     ADD_TEST_QUESTION,
     {
@@ -80,7 +88,7 @@ const AddTestQuestionModal = memo(({testId, visible, onClose}) => {
   return (
     <CCModal
       title="Add Test Question"
-      visible={visible}
+      visible={data?.visible}
       submitting={submitting}
       onClose={onClose}>
       <Formik
@@ -113,7 +121,11 @@ const AddTestQuestionModal = memo(({testId, visible, onClose}) => {
           if (values.negativeMark) {
             questionInput.negativeMark = parseFloat(values.negativeMark);
           }
-          addTestQuestion({variables: {testId, questionInput}});
+          const variables = {testId, questionInput};
+          if (typeof data?.position === 'number' && data?.position > -1) {
+            variables.position = data?.position;
+          }
+          addTestQuestion({variables});
         }}>
         {({
           handleChange,
