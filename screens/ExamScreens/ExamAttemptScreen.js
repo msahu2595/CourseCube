@@ -83,7 +83,6 @@ const SUBMIT_EXAM = gql`
             answerIndex
             mark
             negativeMark
-            position
             invalid
             enable
           }

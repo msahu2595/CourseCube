@@ -23,7 +23,6 @@ const ADD_TEST_QUESTION = gql`
         answerIndex
         mark
         negativeMark
-        position
         invalid
         enable
       }
@@ -104,7 +103,6 @@ const AddTestQuestionModal = memo(({testId, visible, onClose}) => {
             options: values.options.map(({option}) => option),
             answerIndex: values.answerIndex,
             mark: parseFloat(values.mark),
-            position: 1,
           };
           if (values.image) {
             questionInput.image = values.image;

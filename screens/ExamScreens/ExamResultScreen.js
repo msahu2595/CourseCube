@@ -30,7 +30,6 @@ const RESULT = gql`
             answerIndex
             mark
             negativeMark
-            position
             invalid
             enable
           }

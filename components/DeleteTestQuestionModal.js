@@ -21,7 +21,6 @@ const DELETE_TEST_QUESTION = gql`
         answerIndex
         mark
         negativeMark
-        position
         invalid
         enable
       }
