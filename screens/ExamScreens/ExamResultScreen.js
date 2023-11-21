@@ -116,7 +116,7 @@ const HeaderComponent = ({questions, totalMarks, gotMarks, duration}) => {
 
   return (
     <>
-      <View style={tw`pb-4 m-4`}>
+      <View style={tw`flex-1 pb-4 m-4`}>
         <View style={tw`items-center pb-4`}>
           <MaterialCommunityIcons
             size={128}
@@ -195,7 +195,7 @@ const HeaderComponent = ({questions, totalMarks, gotMarks, duration}) => {
         <View
           style={tw`absolute w-[${width * 3}px] h-[${
             width * 3
-          }px] rounded-full bg-gray-100`}
+          }px] rounded-full bg-gray-100 shadow-lg`}
         />
         <View style={tw`flex-1 w-[${width}px] py-6 items-center`}>
           <Text style={tw`text-[28px] text-gray-900 font-avBold`}>
