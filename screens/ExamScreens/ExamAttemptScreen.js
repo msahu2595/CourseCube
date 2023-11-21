@@ -1,6 +1,7 @@
 import React, {
   memo,
   useRef,
+  useMemo,
   useState,
   useEffect,
   forwardRef,
@@ -217,6 +218,8 @@ const ExamAttemptScreen = ({route, navigation}) => {
   );
 };
 
+export default ExamAttemptScreen;
+
 const BackgroundNotice = memo(
   forwardRef((props, appStateListener) => {
     const backgroundTimes = useRef(0);
@@ -423,11 +426,6 @@ const Item = memo(props => {
   } = props;
 
   const [selectedIndex, setSelectedIndex] = useState(answeredIndex);
-  const [passageVisible, setPassageVisible] = useState(false);
-
-  const togglePassageVisibility = useCallback(() => {
-    setPassageVisible(!passageVisible);
-  }, [passageVisible]);
 
   const [addAnswer] = useMutation(ADD_ANSWER, {
     onCompleted: data => {
@@ -471,65 +469,39 @@ const Item = memo(props => {
     [selectedIndex, examId, questionId, addAnswer, removeAnswer],
   );
 
-  return (
-    <View style={tw.style('pr-2', {width: (width * 85) / 100})}>
-      {!!passage && (
-        <View style={tw`mt-2 bg-white shadow-sm rounded-lg`}>
-          <TouchableOpacity
-            onPress={togglePassageVisibility}
-            style={tw`flex-row justify-between px-4 py-2 `}>
-            <Text style={tw`text-base font-avSemi text-gray-600`}>Passage</Text>
-            <Text style={tw`text-base font-avSemi text-gray-600`}>{'>'}</Text>
-          </TouchableOpacity>
-          {passageVisible && (
-            <ScrollView
-              contentContainerStyle={tw`p-3`}
-              style={tw`max-h-48 border-t border-yellow-100`}>
-              <Text style={tw`text-sm font-avReg text-gray-600 leading-5`}>
-                {passage}
-              </Text>
-            </ScrollView>
-          )}
-        </View>
-      )}
-      <ScrollView
-        contentContainerStyle={tw`p-3`}
-        style={tw`flex-1 bg-white mt-2 rounded-lg border border-gray-200`}>
-        <Text style={tw`text-base font-avReg text-gray-600 leading-5`}>
-          {question}
-        </Text>
-        {!!image && (
-          <Image
-            source={{uri: image}}
-            resizeMode="contain"
-            style={tw.style({
-              marginTop: 8,
-              width: '100%',
-              aspectRatio: 1,
-            })}
-          />
-        )}
-      </ScrollView>
-      <View style={tw`my-1`}>
-        {options.map((value, index) => {
-          return (
-            <TouchableOpacity
-              onPress={() => onSelect(index)}
-              key={`${index}-OPTION`}
-              style={tw`flex-row p-4 bg-${
-                selectedIndex === index ? 'green-400' : 'yellow-50'
-              } my-1 shadow-sm rounded-lg ios:border ios:border-gray-200`}>
-              <Text style={tw`font-avReg text-black text-sm`}>
-                {index + 1}.
-              </Text>
-              <Text style={tw`font-avReg text-black text-sm pl-2`}>
-                {value}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-      <View style={tw`flex-row justify-between mb-2`}>
+  const imageViewer = useMemo(
+    () =>
+      image ? (
+        <Image
+          source={{uri: image}}
+          resizeMode="contain"
+          style={tw.style('bg-gray-200', {
+            marginTop: 8,
+            width: '100%',
+            aspectRatio: 1,
+          })}
+        />
+      ) : null,
+    [image],
+  );
+
+  const optionList = useMemo(() => {
+    return options.map((value, index) => (
+      <TouchableOpacity
+        onPress={() => onSelect(index)}
+        key={`${index}-OPTION`}
+        style={tw`flex-row p-4 bg-${
+          selectedIndex === index ? 'green-400' : 'yellow-50'
+        } my-1 shadow-sm rounded-lg ios:border ios:border-gray-200`}>
+        <Text style={tw`font-avReg text-black text-sm`}>{index + 1}.</Text>
+        <Text style={tw`font-avReg text-black text-sm pl-2`}>{value}</Text>
+      </TouchableOpacity>
+    ));
+  }, [selectedIndex, options, onSelect]);
+
+  const marks = useMemo(
+    () => (
+      <View style={tw`flex-row justify-between`}>
         <View
           style={tw`items-center px-4 py-2 rounded bg-amber-200 shadow-sm border border-gray-400`}>
           <Text style={tw`font-avSemi text-xs text-gray-900`}>
@@ -545,8 +517,51 @@ const Item = memo(props => {
           </View>
         ) : null}
       </View>
+    ),
+    [mark, negativeMark],
+  );
+
+  return (
+    <View style={tw.style('pr-2', {width: (width * 85) / 100})}>
+      <Passage content={passage} />
+      <ScrollView
+        contentContainerStyle={tw`p-3`}
+        style={tw`flex-1 bg-white mt-2 rounded-lg border border-gray-200`}>
+        <Text style={tw`text-base font-avReg text-gray-600 leading-5`}>
+          {question}
+        </Text>
+        {imageViewer}
+      </ScrollView>
+      <View style={tw`my-1`}>{optionList}</View>
+      <View style={tw`mb-2`}>{marks}</View>
     </View>
   );
 });
 
-export default ExamAttemptScreen;
+const Passage = memo(({content}) => {
+  const [passageVisible, setPassageVisible] = useState(false);
+
+  const togglePassageVisibility = useCallback(() => {
+    setPassageVisible(!passageVisible);
+  }, [passageVisible]);
+
+  return content ? (
+    <View style={tw`mt-2 bg-white shadow-sm rounded-lg`}>
+      <TouchableOpacity
+        onPress={togglePassageVisibility}
+        style={tw`flex-row justify-between px-4 py-2 `}>
+        <Text style={tw`text-base font-avSemi text-gray-600`}>Passage</Text>
+        <Text style={tw`text-base font-avSemi text-gray-600`}>{'>'}</Text>
+      </TouchableOpacity>
+      {passageVisible && (
+        <ScrollView
+          contentContainerStyle={tw`p-3`}
+          style={tw`max-h-48 border-t border-yellow-100`}>
+          <Text style={tw`text-sm font-avReg text-gray-600 leading-5`}>
+            {content}
+          </Text>
+        </ScrollView>
+      )}
+    </View>
+  ) : null;
+});
