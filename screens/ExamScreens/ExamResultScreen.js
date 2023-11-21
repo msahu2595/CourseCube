@@ -216,12 +216,40 @@ const Item = memo(props => {
         </Text>
       </View>
       <View style={tw`my-1`}>
+        <View style={tw`flex-row justify-end`}>
+          <View
+            style={tw`flex-row items-center px-2 py-1 rounded bg-green-100 ml-1`}>
+            <MaterialCommunityIcons
+              size={12}
+              name="check-circle-outline"
+              color={tw.color('gray-900')}
+            />
+            <Text style={tw`pl-1 font-avSemi text-[10px] text-gray-900`}>
+              {props.mark} Marks
+            </Text>
+          </View>
+          {props.negativeMark > 0 && (
+            <View
+              style={tw`flex-row items-center px-2 py-1 rounded bg-red-100 ml-1`}>
+              <MaterialCommunityIcons
+                size={12}
+                name="close-circle-outline"
+                color={tw.color('gray-900')}
+              />
+              <Text style={tw`pl-1 font-avSemi text-[10px] text-gray-900`}>
+                - {props.negativeMark} Marks
+              </Text>
+            </View>
+          )}
+        </View>
         {props?.options?.map((option, index) => {
           return (
             <View
               key={`${index}-OPTION`}
               style={tw`flex-row justify-between p-4 bg-${
-                props?.testQuestion?.answerIndex === index
+                props?.answeredIndex < 0
+                  ? 'yellow-50'
+                  : props?.testQuestion?.answerIndex === index
                   ? 'green-400'
                   : props?.answeredIndex === index
                   ? 'red-400'
@@ -235,56 +263,49 @@ const Item = memo(props => {
                   {option}
                 </Text>
               </View>
-              {props?.answeredIndex > -1 && (
-                <View style={tw`justify-center`}>
-                  {props?.testQuestion?.answerIndex === index ? (
-                    <MaterialCommunityIcons
-                      size={20}
-                      name="check"
-                      color={tw.color('gray-900')}
-                    />
-                  ) : props?.answeredIndex === index ? (
-                    <MaterialCommunityIcons
-                      size={20}
-                      name="close"
-                      color={tw.color('gray-900')}
-                    />
-                  ) : null}
-                </View>
-              )}
+              <View style={tw`justify-center`}>
+                {props?.testQuestion?.answerIndex === index ? (
+                  <MaterialCommunityIcons
+                    size={20}
+                    name="check"
+                    color={tw.color('gray-900')}
+                  />
+                ) : props?.answeredIndex === index ? (
+                  <MaterialCommunityIcons
+                    size={20}
+                    name="close"
+                    color={tw.color('gray-900')}
+                  />
+                ) : null}
+              </View>
             </View>
           );
         })}
       </View>
-      <View style={tw`flex-row`}>
-        <View
-          style={tw`mr-2 items-center px-4 py-2 rounded bg-gray-50 shadow-sm border border-gray-400`}>
-          <Text style={tw`font-avSemi text-xs text-gray-900`}>
-            {props?.answeredIndex < 0
-              ? 'Not attempted'
-              : props?.testQuestion?.answerIndex === props?.answeredIndex
-              ? 'Right answer'
+      <View style={tw`flex-row px-2`}>
+        {props?.testQuestion?.invalid ? (
+          <Text style={tw`font-avSemi text-xs text-blue-600`}>
+            {`Question was wrong/invalid. ${
+              props?.answeredIndex > -1
+                ? `Got ${props.mark} marks for attempting this question.`
+                : ''
+            }`}
+          </Text>
+        ) : props?.answeredIndex < 0 ? (
+          <Text style={tw`font-avSemi text-xs text-amber-600`}>
+            Not attempted
+          </Text>
+        ) : props?.testQuestion?.answerIndex === props?.answeredIndex ? (
+          <Text style={tw`font-avSemi text-xs text-green-600`}>
+            Got {props.mark} marks for right answer.
+          </Text>
+        ) : (
+          <Text style={tw`font-avSemi text-xs text-red-600`}>
+            {props.negativeMark > 0
+              ? `Got ${props.negativeMark} negative marks for wrong answer.`
               : 'Wrong answer'}
           </Text>
-        </View>
-        {props?.answeredIndex > -1 &&
-          (props?.testQuestion?.answerIndex === props?.answeredIndex ? (
-            <View
-              style={tw`mr-2 items-center px-4 py-2 rounded bg-gray-50 shadow-sm border border-gray-400`}>
-              <Text style={tw`font-avSemi text-xs text-gray-900`}>
-                Got Marks: {props.mark}
-              </Text>
-            </View>
-          ) : (
-            props.negativeMark > 0 && (
-              <View
-                style={tw`mr-2 items-center px-4 py-2 rounded bg-gray-50 shadow-sm border border-gray-400`}>
-                <Text style={tw`font-avSemi text-xs text-gray-900`}>
-                  Negative Marks: - {props.negativeMark}
-                </Text>
-              </View>
-            )
-          ))}
+        )}
       </View>
     </View>
   );
