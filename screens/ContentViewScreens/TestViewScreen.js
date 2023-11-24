@@ -19,10 +19,10 @@ import dayjs from 'dayjs';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import formatNumber from 'utils/formatNumber';
-import React, {useCallback, useState} from 'react';
 import {showMessage} from 'react-native-flash-message';
 import {useFocusEffect} from '@react-navigation/native';
 import {InfoItem, SafeAreaContainer} from '@components';
+import React, {memo, useCallback, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -88,7 +88,14 @@ const TestViewScreen = ({route, navigation}) => {
   const {width} = useWindowDimensions();
 
   const [visible, setVisible] = useState(false);
-  const [checked, setChecked] = useState(false);
+
+  const openModal = useCallback(() => {
+    setVisible(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setVisible(false);
+  }, []);
 
   const {loading: queryLoading, data: queryData} = useQuery(CONTENT, {
     variables: {contentId: route.params.contentId},
@@ -110,6 +117,7 @@ const TestViewScreen = ({route, navigation}) => {
   const [attemptExam, {loading: submitting}] = useMutation(ATTEMPT_EXAM, {
     variables: {contentId: route.params.contentId},
     onCompleted: data => {
+      closeModal();
       addView();
       navigation.navigate('ExamAttemptScreen', data?.attemptExam?.payload);
     },
@@ -121,10 +129,6 @@ const TestViewScreen = ({route, navigation}) => {
       });
     },
   });
-
-  const toggleModal = useCallback(() => {
-    setVisible(prev => !prev);
-  }, []);
 
   const handleResult = useCallback(
     ({contentId, testId}) => {
@@ -266,11 +270,32 @@ const TestViewScreen = ({route, navigation}) => {
           )}
         </ScrollView>
       </LinearGradient>
+      <ExamInstructionModal
+        data={data}
+        visible={visible}
+        submitting={submitting}
+        onPress={attemptExam}
+        onClose={closeModal}
+      />
+      <ExamStatusButton
+        contentId={data?._id}
+        testId={data?.media?._id}
+        seeResult={handleResult}
+        attemptExam={openModal}
+      />
+    </SafeAreaContainer>
+  );
+};
+
+const ExamInstructionModal = memo(
+  ({visible, data, submitting, onPress, onClose}) => {
+    const [checked, setChecked] = useState(false);
+    return (
       <CCModal
         title="Instructions"
         visible={visible}
         submitting={submitting}
-        onClose={toggleModal}>
+        onClose={onClose}>
         <View style={tw`p-2 my-2 border border-gray-600 rounded-md`}>
           <Text style={tw`text-gray-900 font-avReg leading-7`}>
             {`* Total number of questions is ${
@@ -298,30 +323,23 @@ const TestViewScreen = ({route, navigation}) => {
           label="Attempt"
           loading={submitting}
           disabled={!checked || submitting}
-          onPress={attemptExam}
+          onPress={onPress}
         />
       </CCModal>
-      <ExamStatusButton
-        contentId={data?._id}
-        testId={data?.media?._id}
-        seeResult={handleResult}
-        attemptExam={toggleModal}
-      />
-    </SafeAreaContainer>
-  );
-};
+    );
+  },
+);
 
-const ExamStatusButton = ({contentId, testId, seeResult, attemptExam}) => {
+const ExamStatusButton = memo(({contentId, testId, seeResult, attemptExam}) => {
   const [fetchExamStatus, {loading: queryLoading, data: queryData}] =
-    useLazyQuery(EXAM_ATTEMPTED, {
-      variables: {contentId, testId},
-      fetchPolicy: 'no-cache',
-    });
+    useLazyQuery(EXAM_ATTEMPTED, {fetchPolicy: 'no-cache'});
 
   useFocusEffect(
     useCallback(() => {
-      fetchExamStatus();
-    }, [fetchExamStatus]),
+      if (contentId && testId) {
+        fetchExamStatus({variables: {contentId, testId}});
+      }
+    }, [contentId, testId, fetchExamStatus]),
   );
 
   const handleResult = useCallback(() => {
@@ -364,6 +382,6 @@ const ExamStatusButton = ({contentId, testId, seeResult, attemptExam}) => {
       </LinearGradient>
     </>
   );
-};
+});
 
 export default TestViewScreen;

@@ -11,7 +11,7 @@ const Passage = memo(({content}) => {
   }, [passageVisible]);
 
   return content ? (
-    <View style={tw`mt-2 bg-white shadow-sm rounded-lg`}>
+    <View style={tw`mb-1 bg-white shadow-sm rounded-lg`}>
       <TouchableOpacity
         onPress={togglePassageVisibility}
         style={tw`flex-row items-center justify-between px-4 py-2`}>
@@ -23,7 +23,9 @@ const Passage = memo(({content}) => {
         />
       </TouchableOpacity>
       {passageVisible && (
-        <ScrollView contentContainerStyle={tw`px-3 pb-2`} style={tw`max-h-48`}>
+        <ScrollView
+          contentContainerStyle={tw`px-3 pb-2`}
+          style={tw`max-h-48 border-t border-amber-400`}>
           <Text style={tw`text-sm font-avReg text-gray-600 leading-5`}>
             {content}
           </Text>

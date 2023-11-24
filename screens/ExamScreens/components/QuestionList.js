@@ -202,11 +202,11 @@ const Item = memo(props => {
   );
 
   return (
-    <View style={tw.style('pr-2', {width: (width * 85) / 100})}>
+    <View style={tw.style('pt-2 pr-2', {width: (width * 85) / 100})}>
       <Passage content={passage} />
       <ScrollView
         contentContainerStyle={tw`p-3`}
-        style={tw`flex-1 bg-white mt-2 rounded-lg border border-gray-200`}>
+        style={tw`flex-1 bg-white rounded-lg border border-gray-200`}>
         <Text style={tw`text-base font-avReg text-gray-600 leading-5`}>
           {question}
         </Text>
