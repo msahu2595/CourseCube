@@ -68,14 +68,14 @@ const QuestionIndexList = memo(({data, onPress}) => {
                 width: 40,
                 height: 40,
                 'bg-white': activeIndex !== index,
-                'bg-amber-100': activeIndex === index,
-                'bg-green-200': status > -1,
-                'bg-red-200': status < 0,
+                'bg-green-400': status > -1,
+                'bg-red-400': status < 0,
+                'bg-black': activeIndex === index,
               },
             )}>
             <Text
               style={tw`text-base font-avSemi text-${
-                activeIndex === index ? 'amber-600' : 'gray-600'
+                activeIndex === index ? 'white' : 'black'
               }`}>
               {index + 1}
             </Text>
@@ -100,7 +100,7 @@ const QuestionIndexList = memo(({data, onPress}) => {
           <AntDesign size={36} name="upcircle" color={tw.color('amber-600')} />
         </TouchableOpacity>
         {Array.isArray(data) && data?.length ? (
-          <Text style={tw`text-sm font-avReg text-gray-600`}>
+          <Text style={tw`text-sm font-avReg text-black`}>
             {activeIndex + 1}/{data?.length}
           </Text>
         ) : null}
