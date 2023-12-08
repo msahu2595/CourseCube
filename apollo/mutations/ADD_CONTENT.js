@@ -42,7 +42,7 @@ export const ADD_CONTENT = gql`
         createdAt
         updatedAt
         likes
-        purchases
+        views
         purchased
       }
     }
