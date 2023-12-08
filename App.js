@@ -8,6 +8,7 @@ import {ModalPortal} from 'react-native-modals';
 import {MenuProvider} from 'react-native-popup-menu';
 import FlashMessage from 'react-native-flash-message';
 import {NavigationContainer} from '@react-navigation/native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import MainNativeStackNavigator from '@navigators';
 import {NetworkStatusProvider} from '@components';
 import navigatorRef from 'navigatorRef';
@@ -16,18 +17,21 @@ import {linking} from '@lib';
 
 const App = () => {
   return (
-    <MenuProvider>
-      <SafeAreaProvider>
-        <NavigationContainer ref={navigatorRef} linking={linking}>
-          <ApolloProvider client={client}>
-            <MainNativeStackNavigator />
-            <NetworkStatusProvider />
-          </ApolloProvider>
-        </NavigationContainer>
-        <SafeAreaFlashMessage position="top" />
-        <ModalPortal />
-      </SafeAreaProvider>
-    </MenuProvider>
+    // eslint-disable-next-line react-native/no-inline-styles
+    <GestureHandlerRootView style={{flex: 1}}>
+      <MenuProvider>
+        <SafeAreaProvider>
+          <NavigationContainer ref={navigatorRef} linking={linking}>
+            <ApolloProvider client={client}>
+              <MainNativeStackNavigator />
+              <NetworkStatusProvider />
+            </ApolloProvider>
+          </NavigationContainer>
+          <SafeAreaFlashMessage position="top" />
+          <ModalPortal />
+        </SafeAreaProvider>
+      </MenuProvider>
+    </GestureHandlerRootView>
   );
 };
 

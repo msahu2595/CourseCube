@@ -60,6 +60,7 @@
     "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-dotenv": "^3.4.8",
     "react-native-flash-message": "^0.3.1",
+    "react-native-gesture-handler": "^2.14.0",
     "react-native-image-crop-picker": "0.38.1",
     "react-native-inappbrowser-reborn": "^3.7.0",
     "react-native-linear-gradient": "^2.6.2",
@@ -70,6 +71,7 @@
     "react-native-pager-view": "^6.1.0",
     "react-native-pdf": "^6.6.2",
     "react-native-popup-menu": "^0.16.1",
+    "react-native-reanimated": "^3.6.1",
     "react-native-safe-area-context": "^4.4.1",
     "react-native-screens": "^3.18.2",
     "react-native-simple-radio-button": "^2.7.4",
@@ -81,6 +83,7 @@
     "react-native-vector-icons": "^9.2.0",
     "react-native-webview": "^11.25.0",
     "react-native-youtube-iframe": "^2.2.2",
+    "react-native-zoom-reanimated": "^1.4.0",
     "twrnc": "^3.4.1",
     "yup": "^1.0.2"
   },

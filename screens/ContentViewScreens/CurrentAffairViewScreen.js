@@ -13,6 +13,7 @@ import tw from '@lib/tailwind';
 import {ARTICLE} from '@queries';
 import {useQuery} from '@apollo/client';
 import openWebURL from 'utils/openWebURL';
+import Zoom from 'react-native-zoom-reanimated';
 import React, {useCallback, useState} from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
@@ -81,21 +82,23 @@ const CurrentAffairViewScreen = ({route}) => {
         <ScrollView contentContainerStyle={tw`px-4 pt-4 pb-8`}>
           {!!data && (
             <>
-              <Image
-                source={{uri: data?.image}}
-                resizeMode="cover"
-                style={tw.style(
-                  'shadow',
-                  'rounded-lg',
-                  'bg-black',
-                  'justify-between',
-                  {
-                    width: width - 32,
-                    height: undefined,
-                    aspectRatio: 16 / 9,
-                  },
-                )}
-              />
+              <Zoom>
+                <Image
+                  source={{uri: data?.image}}
+                  resizeMode="cover"
+                  style={tw.style(
+                    'shadow',
+                    'rounded-lg',
+                    'bg-black',
+                    'justify-between',
+                    {
+                      width: width - 32,
+                      height: undefined,
+                      aspectRatio: 16 / 9,
+                    },
+                  )}
+                />
+              </Zoom>
               <View style={tw`py-2 border-b border-gray-400`}>
                 <Text
                   style={tw`py-1 font-avSemi text-gray-600 text-[${

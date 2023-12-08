@@ -10,6 +10,7 @@ import {
 import {tw} from '@lib';
 import Passage from './Passage';
 import {quesIndexVar} from 'apollo/client';
+import Zoom from 'react-native-zoom-reanimated';
 import {gql, useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import React, {forwardRef, memo, useCallback, useMemo, useState} from 'react';
@@ -140,15 +141,13 @@ const Item = memo(props => {
   const imageViewer = useMemo(
     () =>
       image ? (
-        <Image
-          source={{uri: image}}
-          resizeMode="contain"
-          style={tw.style('bg-gray-200', {
-            marginTop: 8,
-            width: '100%',
-            aspectRatio: 1,
-          })}
-        />
+        <Zoom style={tw.style('mt-2 bg-gray-200')}>
+          <Image
+            resizeMode="contain"
+            source={{uri: image}}
+            style={{width: '100%', aspectRatio: 1}}
+          />
+        </Zoom>
       ) : null,
     [image],
   );
