@@ -324,7 +324,7 @@ const ExamInstructionModal = memo(
 
 1. Question Number Box displayed on the left side of the screen will show the status of each question using one of the following background colors:
   White - Question has not visited yet.
-  Amber - Question is currently selected.
+  Black - Question is currently selected.
   Green - Question successfully answered.
   Red - Question has been seen but not answered.
 2. You can scroll to navigate to the bottom and to navigate to the top of the question, then press Question number box to select the question.
