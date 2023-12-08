@@ -4,13 +4,13 @@ import {View} from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 export const CCCheckBox = memo(
-  ({label, checked = false, onPress, style, ...rest}) => {
+  ({label, color = 'blue-600', checked = false, onPress, style, ...rest}) => {
     return (
       <View style={tw.style('mt-2 mb-1', style)}>
         <BouncyCheckbox
           size={25}
           unfillColor={tw.color('white')}
-          fillColor={tw.color('blue-600')}
+          fillColor={tw.color(color)}
           text={label}
           isChecked={checked}
           onPress={onPress}

@@ -205,9 +205,9 @@ const Item = memo(props => {
     <View style={tw.style('pt-2 pr-2', {width: (width * 85) / 100})}>
       <Passage content={passage} />
       <ScrollView
-        contentContainerStyle={tw`p-3`}
+        contentContainerStyle={tw`py-2`}
         style={tw`flex-1 bg-white rounded-lg border border-gray-200`}>
-        <Text style={tw`text-base font-avReg text-gray-600 leading-5`}>
+        <Text style={tw`px-2 text-base font-avReg text-gray-600 leading-5`}>
           {question}
         </Text>
         {imageViewer}

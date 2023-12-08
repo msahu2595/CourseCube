@@ -296,31 +296,72 @@ const ExamInstructionModal = memo(
         visible={visible}
         submitting={submitting}
         onClose={onClose}>
-        <View style={tw`p-2 my-2 border border-gray-600 rounded-md`}>
-          <Text style={tw`text-gray-900 font-avReg leading-7`}>
-            {`* Total number of questions is ${
-              data?.media?.questions
-            }.\n* Total marks is ${
-              data?.media?.totalMarks
-            }.\n* Total duration of exam is ${
+        <View style={tw`p-2 my-2 border border-gray-300 rounded-md`}>
+          <Text style={tw`text-gray-500 font-popReg text-xs`}>
+            {`Please read the instructions carefully
+
+(A). General Instructions:
+
+1. Total duration of examination: ${
               dayjs.duration(data?.media?.duration).hours() > 0
                 ? dayjs.duration(data?.media?.duration).hours() + ' Hour'
                 : ''
             } ${
               dayjs.duration(data?.media?.duration).minutes() > 0
-                ? dayjs.duration(data?.media?.duration).minutes() + ' Minute'
+                ? dayjs.duration(data?.media?.duration).minutes() + ' Minutes'
                 : ''
-            }.\n${data?.media?.instructions}`}
+            }
+2. Number of questions: ${data?.media?.questions}
+3. Total marks of examination: ${data?.media?.totalMarks}
+3. All questions are of objective type. Two to Six options are given to each question out of which only one will be the correct answer.
+4. There can be negative marking for wrong answers on particular question. How much mark will be deducted for wrong answer mention on the bottom of every question.
+5. Click on Next (v) or Prev (^) buttons to go another questions.
+6. In case of any variation in the content of the question between the English and any other language, the content in English language shall be treated as valid. Further queries with regard to this will not be entertained.
+7. One question will be displayed on the screen at a time.
+8. Time available for you to complete the examination will be displayed through a countdown timer in the top left-hand corner of the screen. It will display the remaining time as Time Left. At the beginning of exam, timer will show the duration which will reduce gradually with passage of time. When the timer reaches zero, the examination will end by itself and your examination will be submitted by the system automatically.
+
+(B). Question Number Box:
+
+1. Question Number Box displayed on the left side of the screen will show the status of each question using one of the following background colors:
+  White - Question has not visited yet.
+  Amber - Question is currently selected.
+  Green - Question successfully answered.
+  Red - Question has been seen but not answered.
+2. You can scroll to navigate to the bottom and to navigate to the top of the question, then press Question number box to select the question.
+3. The summary of number of questions answered, not answered and not visited will be displayed above the question number box.
+4. You can click on the ">" arrow which appears to the left of question number box to minimise the question number box. This will enable you to view the question on a bigger area of the screen. To view the question number box again, you can click on "<" arrow which appears on the right side of the screen.
+
+(C). Answering a Question
+
+1. The questions will appear on the screen in serial order from question number 1 to 100, which can be answered one by one as given below:
+  [a]. To select your answer, click on the button of one of the options
+  [b]. To deselect your chosen answer, click on the button of the chosen option again.
+  [c]. To change your chosen answer, click on the button of option you want to choose.
+2. To change your answer to a question that has already been answered, first click on that question number from the question number box and follow the procedure for answering as mentioned at 1 above.
+
+(D). Instruction for enlarging images
+
+To view the image provided in the question in a bigger size, click on the image and pinch the image with two fingers.
+
+${
+  data?.media?.instructions
+    ? `(E). Other important instructions 
+
+${data?.media?.instructions}`
+    : ''
+}`}
           </Text>
         </View>
         <CCCheckBox
-          label="Tick this, if you agree."
+          color="amber-600"
+          label="Tick this, if you have read and understood the instructions."
           checked={checked}
           onPress={setChecked}
           style={tw`mb-3`}
         />
         <CCButton
-          label="Attempt"
+          color="amber-600"
+          label="I am ready to begin"
           loading={submitting}
           disabled={!checked || submitting}
           onPress={onPress}
