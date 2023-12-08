@@ -7,6 +7,7 @@ import UserInfo from './UserInfo';
 import UserMenu from './UserMenu';
 import UserStatistics from './UserStatistics';
 import UserLeaderboard from './UserLeaderboard';
+import UserProfileImage from './UserProfileImage';
 // Item Component Imports
 import TagItem from './TagItem';
 import FollowItem from './FollowItem';
@@ -50,6 +51,7 @@ export {
   UserMenu,
   UserStatistics,
   UserLeaderboard,
+  UserProfileImage,
   // Item Component Exports
   TagItem,
   FollowItem,

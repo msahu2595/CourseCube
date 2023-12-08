@@ -1,18 +1,17 @@
+import {
+  ExampleListItem,
+  UserProfileImage,
+  SafeAreaContainer,
+} from '@components';
 import {tw} from '@lib';
 import React from 'react';
-import {
-  CCRadio,
-  CCButton,
-  CCTextInput,
-  CCImageUploader,
-} from 'components/Common';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import {View, ScrollView} from 'react-native';
 import {loggedUserVar, storage} from 'apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {ExampleListItem, SafeAreaContainer} from '@components';
 import {gql, useMutation, useReactiveVar} from '@apollo/client';
+import {CCRadio, CCButton, CCTextInput} from 'components/Common';
 
 const EDIT_PROFILE = gql`
   mutation editProfile($userInput: EditProfileInput!) {
@@ -188,7 +187,7 @@ const EditProfileScreen = () => {
             <>
               <View style={tw`pt-2 pb-4`}>
                 <View style={tw`items-center justify-center py-2`}>
-                  <CCImageUploader editable={!submitting} />
+                  <UserProfileImage editable={!submitting} />
                 </View>
                 <CCTextInput
                   label="Full Name"
