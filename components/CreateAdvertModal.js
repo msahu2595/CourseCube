@@ -1,3 +1,10 @@
+import {
+  CCModal,
+  CCButton,
+  CCRadio,
+  CCTextInput,
+  CCImageUploader,
+} from './Common';
 import React from 'react';
 import * as Yup from 'yup';
 import {Formik} from 'formik';
@@ -6,13 +13,21 @@ import {View} from 'react-native';
 import {CREATE_ADVERT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCModal, CCButton, CCRadio, CCTextInput} from './Common';
+
+const sizes = {
+  TINY: {width: 400, height: 100, cropping: true},
+  SMALL: {width: 400, height: 160, cropping: true},
+  MEDIUM: {width: 400, height: 225, cropping: true},
+  LARGE: {width: 400, height: 400, cropping: true},
+};
 
 const CreateAdvertValidationSchema = Yup.object().shape({
   type: Yup.string().required('Please select type'),
   image: Yup.string()
-    .url('Image should be a URL.')
-    .required('Please enter image URL.'),
+    .required('Please upload image.')
+    .test('Check prefix', 'Image path is not correct.', value =>
+      value.startsWith('assets/tmp/'),
+    ),
   link: Yup.string().url('Link is not in the correct format.').nullable(),
 });
 
@@ -83,18 +98,17 @@ const CreateAdvertModal = ({visible, onClose}) => {
                   setFieldValue('type', value);
                 }}
               />
-              <CCTextInput
+              <CCImageUploader
                 required
                 label="Image"
                 error={errors.image}
                 touched={touched.image}
-                info="Example: https://picsum.photos/195/110"
-                onChangeText={handleChange('image')}
-                onBlur={handleBlur('image')}
+                onChangeImage={value => {
+                  setFieldValue('image', value);
+                }}
                 value={values.image}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                imageProps={sizes[values.type]}
               />
               <CCTextInput
                 label="Link"
