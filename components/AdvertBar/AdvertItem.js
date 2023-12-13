@@ -6,8 +6,8 @@ import {
 } from 'react-native';
 import React from 'react';
 import tw from '@lib/tailwind';
+import config from 'react-native-ultimate-config';
 import {useNavigation} from '@react-navigation/core';
-import {REACT_APP_DEV_URI, REACT_APP_PROD_URI} from '@env';
 
 const AdvertItem = props => {
   const navigation = useNavigation();
@@ -17,9 +17,9 @@ const AdvertItem = props => {
       <Pressable onPress={() => navigation.navigate('AdvertListScreen')}>
         <ImageBackground
           source={{
-            uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/${
-              props?.image
-            }`,
+            uri: `${
+              __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+            }/${props?.image}`,
           }}
           resizeMode="cover"
           imageStyle={tw`rounded-lg`}

@@ -1,8 +1,8 @@
 import React from 'react';
 import tw from '@lib/tailwind';
 import {loggedUserVar} from 'apollo/client';
+import config from 'react-native-ultimate-config';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {REACT_APP_DEV_URI, REACT_APP_PROD_URI} from '@env';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {HomeScreen, MyProfileScreen, CommunityScreen} from '@screens';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -143,9 +143,9 @@ const myProfileScreenOptions = ({navigation}) => ({
         source={
           loggedUser?.picture
             ? {
-                uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/${
-                  loggedUser?.picture
-                }`,
+                uri: `${
+                  __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+                }/${loggedUser?.picture}`,
               }
             : loggedUser?.gender === 'MALE'
             ? require('@images/person-male.png')

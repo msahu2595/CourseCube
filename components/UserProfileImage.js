@@ -9,9 +9,9 @@ import {
 import {tw} from '@lib';
 import {useGenderImage} from 'hooks';
 import {imageUploader} from 'lib/fileHandler';
+import config from 'react-native-ultimate-config';
 import {loggedUserVar, storage} from 'apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {REACT_APP_DEV_URI, REACT_APP_PROD_URI} from '@env';
 import {gql, useMutation, useReactiveVar} from '@apollo/client';
 import React, {memo, useCallback, useRef, useState} from 'react';
 import {BottomModal, ModalContent, ModalPortal} from 'react-native-modals';
@@ -161,9 +161,9 @@ const UserProfileImage = memo(({editable = true, size = 108}) => {
       <View>
         <Image
           source={{
-            uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/${
-              loggedUser?.picture
-            }`,
+            uri: `${
+              __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+            }/${loggedUser?.picture}`,
           }}
           style={tw`w-[256px] h-[256px]`}
         />
@@ -195,9 +195,11 @@ const UserProfileImage = memo(({editable = true, size = 108}) => {
           source={
             loggedUser?.picture
               ? {
-                  uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/${
-                    loggedUser?.picture
-                  }`,
+                  uri: `${
+                    __DEV__
+                      ? config.REACT_APP_DEV_URI
+                      : config.REACT_APP_PROD_URI
+                  }/${loggedUser?.picture}`,
                 }
               : imageByGender
           }

@@ -16,6 +16,9 @@ import java.util.List;
 // react-native-orientation-locker
 import org.wonday.orientation.OrientationActivityLifecycle;
 
+// react-native-ultimate-config
+import com.reactnativeultimateconfig.UltimateConfigModule;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -56,6 +59,7 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     registerActivityLifecycleCallbacks(OrientationActivityLifecycle.getInstance()); // react-native-orientation-locker
+    UltimateConfigModule.setBuildConfig(BuildConfig.class); // react-native-ultimate-config
     // If you opted-in for the New Architecture, we enable the TurboModule system
     ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
     SoLoader.init(this, /* native exopackage */ false);

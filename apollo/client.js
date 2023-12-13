@@ -1,8 +1,8 @@
 import {from, ApolloClient, createHttpLink, ApolloLink} from '@apollo/client';
-import {REACT_APP_DEV_URI, REACT_APP_PROD_URI} from '@env';
 import {InMemoryCache, makeVar, gql} from '@apollo/client';
 import {setContext} from '@apollo/client/link/context';
 import {onError} from '@apollo/client/link/error';
+import config from 'react-native-ultimate-config';
 import {MMKV} from 'react-native-mmkv';
 
 export const storage = new MMKV();
@@ -157,17 +157,21 @@ export const errorLink = onError(error => {
   }
 });
 
-console.log({__DEV__});
-console.log({REACT_APP_DEV_URI});
-console.log({REACT_APP_PROD_URI});
+console.log('__DEV__', __DEV__);
+console.log('REACT_APP_DEV_URI', config.REACT_APP_DEV_URI);
+console.log('REACT_APP_PROD_URI', config.REACT_APP_PROD_URI);
 console.log({Authorization: `Bearer ${storage.getString('token')}`});
 console.log({'refresh-token': storage.getString('refresh')});
 console.log({
-  uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/graphql`,
+  uri: `${
+    __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+  }/graphql`,
 });
 
 const httpLink = createHttpLink({
-  uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/graphql`,
+  uri: `${
+    __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+  }/graphql`,
 });
 
 const setTokenLink = new ApolloLink((operation, forward) => {

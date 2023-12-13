@@ -6,11 +6,11 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {tw} from '@lib';
+import config from 'react-native-ultimate-config';
 import {showMessage} from 'react-native-flash-message';
 import Feather from 'react-native-vector-icons/Feather';
 import React, {useState, memo, useCallback} from 'react';
 import {imageUploader, fileRemover} from 'lib/fileHandler';
-import {REACT_APP_DEV_URI, REACT_APP_PROD_URI} from '@env';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const CCImageUploader = memo(
@@ -85,7 +85,9 @@ export const CCImageUploader = memo(
                   <Image
                     source={{
                       uri: `${
-                        __DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI
+                        __DEV__
+                          ? config.REACT_APP_DEV_URI
+                          : config.REACT_APP_PROD_URI
                       }/${value}`,
                     }}
                     resizeMode="contain"

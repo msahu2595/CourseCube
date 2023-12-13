@@ -8,11 +8,11 @@ import {
 import tw from '@lib/tailwind';
 import {useGenderImage} from 'hooks';
 import {loggedUserVar} from 'apollo/client';
+import config from 'react-native-ultimate-config';
 import {useNavigation} from '@react-navigation/core';
 import {CCFollowButton, CCTextExpand} from './Common';
 import {showMessage} from 'react-native-flash-message';
 import Feather from 'react-native-vector-icons/Feather';
-import {REACT_APP_DEV_URI, REACT_APP_PROD_URI} from '@env';
 import React, {useCallback, useEffect, useState} from 'react';
 import {gql, useLazyQuery, useReactiveVar} from '@apollo/client';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -77,9 +77,11 @@ const UserInfo = ({userId}) => {
           source={
             user?.picture
               ? {
-                  uri: `${__DEV__ ? REACT_APP_DEV_URI : REACT_APP_PROD_URI}/${
-                    user?.picture
-                  }`,
+                  uri: `${
+                    __DEV__
+                      ? config.REACT_APP_DEV_URI
+                      : config.REACT_APP_PROD_URI
+                  }/${user?.picture}`,
                 }
               : imageByGender
           }
