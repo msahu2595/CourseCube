@@ -74,7 +74,6 @@ const EditVideoModal = ({video, onClose}) => {
                 editable={!submitting}
               />
               <CCImageUploader
-                required
                 label="Thumbnail"
                 error={errors.thumbnail}
                 touched={touched.thumbnail}

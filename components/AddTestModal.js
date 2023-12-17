@@ -1,3 +1,10 @@
+import {
+  CCModal,
+  CCButton,
+  CCDuration,
+  CCTextInput,
+  CCImageUploader,
+} from './Common';
 import {tw} from '@lib';
 import React from 'react';
 import * as yup from 'yup';
@@ -6,11 +13,12 @@ import {View} from 'react-native';
 import {ADD_TEST} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCButton, CCModal, CCTextInput, CCDuration} from './Common';
 
 const AddTestValidationSchema = yup.object({
   title: yup.string().trim().required('Please enter test title.'),
-  thumbnail: yup.string().url('Thumbnail should be a link.').nullable(),
+  thumbnail: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: true,
+  }),
   instructions: yup.string().required('Please enter test instructions.'),
   duration: yup.object().shape({
     hours: yup
@@ -99,17 +107,16 @@ const AddTestModal = ({visible, onClose}) => {
                 value={values.title}
                 editable={!submitting}
               />
-              <CCTextInput
+              <CCImageUploader
                 label="Thumbnail"
                 error={errors.thumbnail}
                 touched={touched.thumbnail}
-                info="Example: https://picsum.photos/195/110"
-                onChangeText={handleChange('thumbnail')}
-                onBlur={handleBlur('thumbnail')}
+                onChangeImage={value => {
+                  setFieldValue('thumbnail', value);
+                }}
                 value={values.thumbnail}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                imageProps={{width: 400, height: 400, cropping: true}}
               />
               <CCTextInput
                 required
