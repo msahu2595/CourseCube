@@ -1,16 +1,22 @@
 import {tw} from '@lib';
 import React, {memo} from 'react';
 import MenuOptionItem from './MenuOptionItem';
+import config from 'react-native-ultimate-config';
 import {Dimensions, ImageBackground, Text, View} from 'react-native';
 import {Menu, MenuOptions, MenuTrigger} from 'react-native-popup-menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+const urlRegex = /^http(s)?:\/\/.*/g;
 const width = Dimensions.get('window').width;
 
 const MediaItem = memo(({image, label, title, options}) => (
   <ImageBackground
     source={{
-      uri: image,
+      uri: urlRegex.test(image)
+        ? image
+        : `${
+            __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+          }/${image}`,
     }}
     resizeMode="cover"
     style={tw.style('justify-between bg-gray-600', {

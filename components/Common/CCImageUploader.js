@@ -13,6 +13,8 @@ import React, {useState, memo, useCallback} from 'react';
 import {imageUploader, fileRemover} from 'lib/fileHandler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+const urlRegex = /^http(s)?:\/\/.*/g;
+
 export const CCImageUploader = memo(
   ({
     label,
@@ -77,11 +79,13 @@ export const CCImageUploader = memo(
               <View style={tw`h-[96px] w-[96px] bg-gray-600 m-1`}>
                 <Image
                   source={{
-                    uri: `${
-                      __DEV__
-                        ? config.REACT_APP_DEV_URI
-                        : config.REACT_APP_PROD_URI
-                    }/${prevImage}`,
+                    uri: urlRegex.test(prevImage)
+                      ? prevImage
+                      : `${
+                          __DEV__
+                            ? config.REACT_APP_DEV_URI
+                            : config.REACT_APP_PROD_URI
+                        }/${prevImage}`,
                   }}
                   resizeMode="contain"
                   style={tw`h-[96px] w-[96px]`}

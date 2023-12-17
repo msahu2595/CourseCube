@@ -6,11 +6,13 @@ import {View} from 'react-native';
 import {EDIT_VIDEO} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCModal, CCButton, CCTextInput} from './Common';
+import {CCModal, CCButton, CCTextInput, CCImageUploader} from './Common';
 
 const EditVideoValidationSchema = yup.object({
   title: yup.string().trim().required('Please enter video title.'),
-  thumbnail: yup.string().url('Thumbnail should be a link.').nullable(),
+  thumbnail: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: true,
+  }),
 });
 
 const EditVideoModal = ({video, onClose}) => {
@@ -40,7 +42,7 @@ const EditVideoModal = ({video, onClose}) => {
       <Formik
         initialValues={{
           title: video?.title,
-          thumbnail: video?.thumbnail,
+          thumbnail: '',
         }}
         validationSchema={EditVideoValidationSchema}
         onSubmit={values => {
@@ -52,6 +54,7 @@ const EditVideoModal = ({video, onClose}) => {
         }}>
         {({
           handleChange,
+          setFieldValue,
           handleBlur,
           handleSubmit,
           values,
@@ -70,17 +73,18 @@ const EditVideoModal = ({video, onClose}) => {
                 value={values.title}
                 editable={!submitting}
               />
-              <CCTextInput
+              <CCImageUploader
+                required
                 label="Thumbnail"
                 error={errors.thumbnail}
                 touched={touched.thumbnail}
-                info="Example: https://picsum.photos/195/110"
-                onChangeText={handleChange('thumbnail')}
-                onBlur={handleBlur('thumbnail')}
+                onChangeImage={value => {
+                  setFieldValue('thumbnail', value);
+                }}
                 value={values.thumbnail}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                prevImage={video?.thumbnail}
+                imageProps={{width: 400, height: 225, cropping: true}}
               />
             </View>
             <CCButton
