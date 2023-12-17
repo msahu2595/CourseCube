@@ -1,7 +1,7 @@
 import {
+  CCRadio,
   CCModal,
   CCButton,
-  CCRadio,
   CCTextInput,
   CCImageUploader,
 } from './Common';

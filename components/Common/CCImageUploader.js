@@ -23,6 +23,7 @@ export const CCImageUploader = memo(
     disabled = false,
     onChangeImage,
     value,
+    prevImage,
     imageProps,
   }) => {
     const [loading, setLoading] = useState(false);
@@ -67,6 +68,31 @@ export const CCImageUploader = memo(
           {label}
           {required && <Text style={tw`text-red-600`}>*</Text>}
         </Text>
+        {prevImage ? (
+          <View style={tw`mb-1 border border-gray-300 rounded-lg`}>
+            <Text style={tw`flex-1 text-gray-900 font-avReg text-[12px] pl-1`}>
+              Current image:
+            </Text>
+            <View style={tw`flex-1 flex-row items-center`}>
+              <View style={tw`h-[96px] w-[96px] bg-gray-600 m-1`}>
+                <Image
+                  source={{
+                    uri: `${
+                      __DEV__
+                        ? config.REACT_APP_DEV_URI
+                        : config.REACT_APP_PROD_URI
+                    }/${prevImage}`,
+                  }}
+                  resizeMode="contain"
+                  style={tw`h-[96px] w-[96px]`}
+                />
+              </View>
+              <Text style={tw`flex-1 text-gray-900 font-avReg`}>
+                {prevImage?.split('/')?.[2]}
+              </Text>
+            </View>
+          </View>
+        ) : null}
         {!loading && !value ? (
           <TouchableOpacity
             onPress={handleUpload}
@@ -76,42 +102,48 @@ export const CCImageUploader = memo(
             <Text style={tw`pl-2 text-xs text-white font-avReg`}>Upload</Text>
           </TouchableOpacity>
         ) : (
-          <View
-            style={tw`flex-row items-center justify-between border border-gray-300 rounded-lg`}>
-            <View style={tw`flex-1 flex-row items-center`}>
-              <View
-                style={tw`h-[96px] w-[96px] bg-gray-600 justify-center m-1`}>
-                {value ? (
-                  <Image
-                    source={{
-                      uri: `${
-                        __DEV__
-                          ? config.REACT_APP_DEV_URI
-                          : config.REACT_APP_PROD_URI
-                      }/${value}`,
-                    }}
-                    resizeMode="contain"
-                    style={tw`h-[96px] w-[96px]`}
-                  />
-                ) : loading ? (
-                  <ActivityIndicator
-                    size="large"
-                    color={tw.color('blue-600')}
-                  />
-                ) : null}
+          <View style={tw`border border-gray-300 rounded-lg`}>
+            <Text style={tw`flex-1 text-gray-900 font-avReg text-[12px] pl-1`}>
+              Uploaded image:
+            </Text>
+            <View style={tw`flex-row items-center justify-between`}>
+              <View style={tw`flex-1 flex-row items-center`}>
+                <View
+                  style={tw`h-[96px] w-[96px] bg-gray-600 justify-center m-1`}>
+                  {value ? (
+                    <Image
+                      source={{
+                        uri: `${
+                          __DEV__
+                            ? config.REACT_APP_DEV_URI
+                            : config.REACT_APP_PROD_URI
+                        }/${value}`,
+                      }}
+                      resizeMode="contain"
+                      style={tw`h-[96px] w-[96px]`}
+                    />
+                  ) : loading ? (
+                    <ActivityIndicator
+                      size="large"
+                      color={tw.color('blue-600')}
+                    />
+                  ) : null}
+                </View>
+                <Text style={tw`flex-1 text-gray-900 font-avReg`}>
+                  {value?.split('/')?.[2]}
+                </Text>
               </View>
-              <Text style={tw`flex-1 text-gray-900 font-avReg`}>Hello.png</Text>
+              <TouchableOpacity
+                onPress={handleDelete}
+                disabled={loading || disabled}
+                style={tw`bg-blue-600 justify-center py-2 px-2 mx-1 rounded-lg`}>
+                <MaterialCommunityIcons
+                  name="delete-outline"
+                  size={24}
+                  color={tw.color('white')}
+                />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              onPress={handleDelete}
-              disabled={loading || disabled}
-              style={tw`bg-blue-600 justify-center py-2 px-2 mx-1 rounded-lg`}>
-              <MaterialCommunityIcons
-                name="delete-outline"
-                size={24}
-                color={tw.color('white')}
-              />
-            </TouchableOpacity>
           </View>
         )}
         {info ? (
