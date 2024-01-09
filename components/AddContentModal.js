@@ -177,6 +177,7 @@ const AddContentModal = ({media, onClose}) => {
                 }}
                 value={values.image}
                 disabled={submitting}
+                copyImage={media?.thumbnail}
                 imageProps={{width: 400, height: 225, cropping: true}}
               />
               <CCRadio
