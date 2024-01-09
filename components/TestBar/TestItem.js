@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import tw from '@lib/tailwind';
+import config from 'react-native-ultimate-config';
 import {useNavigation} from '@react-navigation/native';
 import React, {memo, useCallback, useMemo} from 'react';
 import {View, Text, Image, Pressable, ImageBackground} from 'react-native';
@@ -51,11 +52,19 @@ const TestItem = memo(({width = 184, ...rest}) => {
         }`}>
         <ImageBackground
           resizeMode="cover"
-          source={{uri: rest?.image}}
+          source={{
+            uri: `${
+              __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+            }/${rest?.image}`,
+          }}
           imageStyle={tw`rounded-lg opacity-50`}
           style={tw`rounded-lg items-center shadow-sm bg-white w-[${width}px]`}>
           <Image
-            source={{uri: rest?.image}}
+            source={{
+              uri: `${
+                __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+              }/${rest?.image}`,
+            }}
             resizeMode="cover"
             style={tw.style({
               width,

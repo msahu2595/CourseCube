@@ -1,3 +1,11 @@
+import {
+  CCRadio,
+  CCModal,
+  CCButton,
+  CCCheckBox,
+  CCTextInput,
+  CCImageUploader,
+} from './Common';
 import React from 'react';
 import * as yup from 'yup';
 import {Formik} from 'formik';
@@ -7,14 +15,12 @@ import {CONTENTS} from '@queries';
 import {EDIT_CONTENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCButton, CCCheckBox, CCModal, CCRadio, CCTextInput} from './Common';
 
 const EditContentValidationSchema = yup.object({
   subject: yup.string().required('Please enter subject.'),
-  image: yup
-    .string()
-    .url('Image should be a link.')
-    .required('Please enter image link.'),
+  image: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: true,
+  }),
   title: yup.string().required('Please enter title.'),
   media: yup.string().required('Please enter media id.'),
   type: yup
@@ -66,7 +72,7 @@ const EditContentModal = ({content, onClose}) => {
       <Formik
         initialValues={{
           subject: content?.subject,
-          image: content?.image,
+          image: '',
           title: content?.title,
           media: content?.media?._id,
           type: content?.type,
@@ -83,16 +89,30 @@ const EditContentModal = ({content, onClose}) => {
         validationSchema={EditContentValidationSchema}
         onSubmit={(values, {setFieldError}) => {
           const contentInput = {
-            subject: values.subject,
-            image: values.image,
-            title: values.title,
             media: values.media,
             type: values.type,
-            paid: false,
-            language: values.language,
-            description: values.description,
-            visible: values.visible,
           };
+          if (values.subject && values.subject !== content?.subject) {
+            contentInput.subject = values.subject;
+          }
+          if (values.image) {
+            contentInput.image = values.image;
+          }
+          if (values.title && values.title !== content?.title) {
+            contentInput.title = values.title;
+          }
+          if (values.language && values.language !== content?.language) {
+            contentInput.language = values.language;
+          }
+          if (
+            values.description &&
+            values.description !== content?.description
+          ) {
+            contentInput.description = values.description;
+          }
+          if (values.visible && values.visible !== content?.visible) {
+            contentInput.visible = values.visible;
+          }
           if (values.paid && values.price && parseInt(values.price, 10)) {
             contentInput.paid = true;
             contentInput.price = parseInt(values.price, 10);
@@ -123,10 +143,10 @@ const EditContentModal = ({content, onClose}) => {
               contentInput.offerType = values.offerType;
             }
           }
-          if (values.highlight) {
+          if (values.highlight && values.highlight !== content?.highlight) {
             contentInput.highlight = values.highlight;
           }
-          if (values.index) {
+          if (values.index && values.index !== content?.index) {
             contentInput.index = values.index;
           }
           editContent({variables: {contentId: content?._id, contentInput}});
@@ -162,18 +182,18 @@ const EditContentModal = ({content, onClose}) => {
                 value={values.subject}
                 editable={!submitting}
               />
-              <CCTextInput
+              <CCImageUploader
                 required
                 label="Image"
                 error={errors.image}
                 touched={touched.image}
-                info="Example: https://picsum.photos/195/110"
-                onChangeText={handleChange('image')}
-                onBlur={handleBlur('image')}
+                onChangeImage={value => {
+                  setFieldValue('image', value);
+                }}
                 value={values.image}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                prevImage={content?.image}
+                imageProps={{width: 400, height: 225, cropping: true}}
               />
               <CCRadio
                 required

@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import tw from '@lib/tailwind';
 import React, {memo} from 'react';
+import config from 'react-native-ultimate-config';
 import {View, ImageBackground, Image, Text, Pressable} from 'react-native';
 
 const ContentItem = memo(props => (
@@ -19,11 +20,19 @@ const ContentItem = memo(props => (
       }`}>
       <ImageBackground
         resizeMode="cover"
-        source={{uri: props?.image}}
+        source={{
+          uri: `${
+            __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+          }/${props?.image}`,
+        }}
         imageStyle={tw`rounded-lg opacity-50`}
         style={tw`rounded-lg items-center shadow-sm bg-black h-[96px]`}>
         <Image
-          source={{uri: props?.image}}
+          source={{
+            uri: `${
+              __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+            }/${props?.image}`,
+          }}
           resizeMode="contain"
           style={tw.style({
             height: 96,

@@ -1,3 +1,11 @@
+import {
+  CCRadio,
+  CCModal,
+  CCButton,
+  CCCheckBox,
+  CCTextInput,
+  CCImageUploader,
+} from './Common';
 import React from 'react';
 import * as yup from 'yup';
 import {Formik} from 'formik';
@@ -7,14 +15,13 @@ import {CONTENTS} from '@queries';
 import {ADD_CONTENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCButton, CCCheckBox, CCModal, CCRadio, CCTextInput} from './Common';
 
 const AddContentValidationSchema = yup.object({
   subject: yup.string().required('Please enter subject.'),
   image: yup
     .string()
-    .url('Image should be a link.')
-    .required('Please enter image link.'),
+    .required('Please upload image.')
+    .matches(/^assets\/tmp\/.*$/gm, 'Image path is not correct.'),
   title: yup.string().required('Please enter title.'),
   media: yup.string().required('Please enter media id.'),
   type: yup
@@ -64,7 +71,7 @@ const AddContentModal = ({media, onClose}) => {
       <Formik
         initialValues={{
           subject: '',
-          image: media?.thumbnail,
+          image: '',
           title: media?.title,
           media: media?._id,
           type: media?.__typename,
@@ -160,18 +167,17 @@ const AddContentModal = ({media, onClose}) => {
                 value={values.subject}
                 editable={!submitting}
               />
-              <CCTextInput
+              <CCImageUploader
                 required
                 label="Image"
                 error={errors.image}
                 touched={touched.image}
-                info="Example: https://picsum.photos/195/110"
-                onChangeText={handleChange('image')}
-                onBlur={handleBlur('image')}
+                onChangeImage={value => {
+                  setFieldValue('image', value);
+                }}
                 value={values.image}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                imageProps={{width: 400, height: 225, cropping: true}}
               />
               <CCRadio
                 required

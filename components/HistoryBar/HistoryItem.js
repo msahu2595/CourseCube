@@ -1,7 +1,8 @@
 import React from 'react';
 import tw from '@lib/tailwind';
-import {View, Image, Text, Pressable} from 'react-native';
+import config from 'react-native-ultimate-config';
 import {useNavigation} from '@react-navigation/core';
+import {View, Image, Text, Pressable} from 'react-native';
 
 const HistoryItem = ({image}) => {
   const navigation = useNavigation();
@@ -23,7 +24,11 @@ const HistoryItem = ({image}) => {
             height: 96,
           })}>
           <Image
-            source={{uri: image}}
+            source={{
+              uri: `${
+                __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+              }/${image}`,
+            }}
             resizeMode="cover"
             style={tw.style('rounded-lg', {height: 96, aspectRatio: 16 / 9})}
           />

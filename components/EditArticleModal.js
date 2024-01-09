@@ -1,8 +1,8 @@
 import {
   CCModal,
   CCButton,
-  CCTextInput,
   CCCheckBox,
+  CCTextInput,
   CCImageUploader,
 } from './Common';
 import React from 'react';
