@@ -15,13 +15,13 @@ import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 
 const AddArticleValidationSchema = yup.object({
-  subject: yup.string().required('Please enter subject.'),
-  image: yup.string().matches(/^assets\/tmp\/.*$/gm, {
-    excludeEmptyString: false,
-    message: 'Image path is not correct.',
-  }),
-  title: yup.string().required('Please enter article title.'),
-  description: yup.string().required('Please enter article description.'),
+  subject: yup.string().required("Please enter article's subject."),
+  image: yup
+    .string()
+    .required("Please upload article's image.")
+    .matches(/^assets\/tmp\/.*$/gm, 'Image path is not correct.'),
+  title: yup.string().required("Please enter article's title."),
+  description: yup.string().required("Please enter article's description."),
   author: yup.string().required("Please enter article's author name."),
   visible: yup.boolean(),
 });
