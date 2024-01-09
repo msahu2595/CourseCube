@@ -2,7 +2,7 @@ import {useMutation} from '@apollo/client';
 import tw from '@lib/tailwind';
 import {Formik} from 'formik';
 import React from 'react';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import {ADD_BUNDLE} from '@mutations';
 import {Button, Text, TextInput, View} from 'react-native';
 import {SafeAreaContainer} from '@components';
@@ -10,16 +10,17 @@ import {showMessage} from 'react-native-flash-message';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {CCModal, CCRadio, CCTextInput} from './Common';
 
-const ValidationSchema = Yup.object().shape({
-  description: Yup.string().min(2, 'Too Short!').required('Required title'),
-  image: Yup.string().url('Invalid').required('Required image'),
-  paid: Yup.string().required('Required Status'),
-  title: Yup.string()
+const ValidationSchema = yup.object().shape({
+  description: yup.string().min(2, 'Too Short!').required('Required title'),
+  image: yup.string().url('Invalid').required('Required image'),
+  paid: yup.string().required('Required Status'),
+  title: yup
+    .string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
     .required('Required title'),
-  type: Yup.string().required('Required type'),
-  language: Yup.string().required('Required language'),
+  type: yup.string().required('Required type'),
+  language: yup.string().required('Required language'),
 });
 
 const AddBundleModal = ({bundle, onClose}) => {

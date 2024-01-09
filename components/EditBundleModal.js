@@ -2,7 +2,7 @@ import {useMutation} from '@apollo/client';
 import {SafeAreaContainer} from '@components';
 import React from 'react';
 import {showMessage} from 'react-native-flash-message';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import {Formik} from 'formik';
 import {CCButton, CCCheckBox, CCModal, CCRadio, CCTextInput} from './Common';
 import {EDIT_BUNDLE} from 'apollo/mutations/EDIT_BUNDLE';
@@ -17,18 +17,18 @@ const TextComp = () => (
   </View>
 );
 
-const ValidationSchema = Yup.object().shape({
-  description: Yup.string(),
-  subject: Yup.string().nullable(),
-  image: Yup.string().url(),
-  paid: Yup.string(),
-  price: Yup.number().nullable(),
-  offer: Yup.string().nullable(),
-  offerType: Yup.string().nullable(),
-  validity: Yup.string(),
-  language: Yup.string(),
-  type: Yup.string(),
-  title: Yup.string().required('Required title'),
+const ValidationSchema = yup.object().shape({
+  description: yup.string(),
+  subject: yup.string().nullable(),
+  image: yup.string().url(),
+  paid: yup.string(),
+  price: yup.number().nullable(),
+  offer: yup.string().nullable(),
+  offerType: yup.string().nullable(),
+  validity: yup.string(),
+  language: yup.string(),
+  type: yup.string(),
+  title: yup.string().required('Required title'),
 });
 
 const EditBundleModal = ({bundle, onClose}) => {

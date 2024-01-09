@@ -6,7 +6,7 @@ import {
   CCImageUploader,
 } from './Common';
 import React from 'react';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import {Formik} from 'formik';
 import tw from '@lib/tailwind';
 import {View} from 'react-native';
@@ -21,14 +21,15 @@ const sizes = {
   LARGE: {width: 400, height: 400, cropping: true},
 };
 
-const CreateAdvertValidationSchema = Yup.object().shape({
-  type: Yup.string().required('Please select type'),
-  image: Yup.string()
+const CreateAdvertValidationSchema = yup.object().shape({
+  type: yup.string().required('Please select type'),
+  image: yup
+    .string()
     .required('Please upload image.')
     .test('Check prefix', 'Image path is not correct.', value =>
       value.startsWith('assets/tmp/'),
     ),
-  link: Yup.string().url('Link is not in the correct format.').nullable(),
+  link: yup.string().url('Link is not in the correct format.').nullable(),
 });
 
 const CreateAdvertModal = ({visible, onClose}) => {

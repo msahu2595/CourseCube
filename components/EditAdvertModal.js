@@ -6,7 +6,7 @@ import {
   CCImageUploader,
 } from './Common';
 import React from 'react';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import {Formik} from 'formik';
 import tw from '@lib/tailwind';
 import {View} from 'react-native';
@@ -21,11 +21,11 @@ const sizes = {
   LARGE: {width: 400, height: 400, cropping: true},
 };
 
-const EditAdvertValidationSchema = Yup.object().shape({
-  image: Yup.string().matches(/^assets\/tmp\/.*$/gm, {
+const EditAdvertValidationSchema = yup.object().shape({
+  image: yup.string().matches(/^assets\/tmp\/.*$/gm, {
     excludeEmptyString: true,
   }),
-  link: Yup.string().url('Link is not in the correct format.').nullable(),
+  link: yup.string().url('Link is not in the correct format.').nullable(),
 });
 
 const EditAdvertModal = ({advert, onClose}) => {
