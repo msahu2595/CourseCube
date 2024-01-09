@@ -8,6 +8,7 @@ import {
 import dayjs from 'dayjs';
 import tw from '@lib/tailwind';
 import React, {memo, useCallback} from 'react';
+import config from 'react-native-ultimate-config';
 import {useNavigation} from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -28,7 +29,11 @@ const CurrentAffairItem = memo(
       <View style={tw.style('items-center', {width})}>
         <Pressable onPress={handlePress}>
           <ImageBackground
-            source={{uri: image}}
+            source={{
+              uri: `${
+                __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+              }/${image}`,
+            }}
             resizeMode="cover"
             imageStyle={tw`rounded-lg`}
             style={tw.style(

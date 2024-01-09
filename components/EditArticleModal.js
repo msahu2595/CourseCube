@@ -1,3 +1,10 @@
+import {
+  CCModal,
+  CCButton,
+  CCTextInput,
+  CCCheckBox,
+  CCImageUploader,
+} from './Common';
 import React from 'react';
 import * as yup from 'yup';
 import {Formik} from 'formik';
@@ -6,11 +13,12 @@ import {View} from 'react-native';
 import {EDIT_ARTICLE} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCModal, CCButton, CCTextInput, CCCheckBox} from './Common';
 
 const EditArticleValidationSchema = yup.object({
   title: yup.string().required('Please enter article title.'),
-  image: yup.string().url('Image should be a link.').nullable(),
+  image: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: true,
+  }),
   description: yup.string().required('Please enter article description.'),
   author: yup.string().required("Please enter article's author name."),
   visible: yup.boolean(),
@@ -43,7 +51,7 @@ const EditArticleModal = ({article, onClose}) => {
       <Formik
         initialValues={{
           subject: article?.subject,
-          image: article?.image,
+          image: '',
           title: article?.title,
           description: article?.description,
           author: article?.author,
@@ -51,15 +59,24 @@ const EditArticleModal = ({article, onClose}) => {
         }}
         validationSchema={EditArticleValidationSchema}
         onSubmit={values => {
-          const articleInput = {
-            subject: values.subject,
-            title: values.title,
-            description: values.description,
-            author: values.author,
-            visible: values.visible,
-          };
+          const articleInput = {};
+          if (values.subject) {
+            articleInput.subject = values.subject;
+          }
           if (values.image) {
             articleInput.image = values.image;
+          }
+          if (values.title) {
+            articleInput.title = values.title;
+          }
+          if (values.description) {
+            articleInput.description = values.description;
+          }
+          if (values.author) {
+            articleInput.author = values.author;
+          }
+          if (values.visible) {
+            articleInput.visible = values.visible;
           }
           editArticle({
             variables: {
@@ -99,17 +116,18 @@ const EditArticleModal = ({article, onClose}) => {
                 value={values.subject}
                 editable={!submitting}
               />
-              <CCTextInput
+              <CCImageUploader
+                required
                 label="Image"
                 error={errors.image}
                 touched={touched.image}
-                info="Example: https://picsum.photos/195/110"
-                onChangeText={handleChange('image')}
-                onBlur={handleBlur('image')}
+                onChangeImage={value => {
+                  setFieldValue('image', value);
+                }}
                 value={values.image}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                prevImage={article?.image}
+                imageProps={{width: 400, height: 225, cropping: true}}
               />
               <CCTextInput
                 required

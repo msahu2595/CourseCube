@@ -14,6 +14,7 @@ import {ARTICLE} from '@queries';
 import {useQuery} from '@apollo/client';
 import openWebURL from 'utils/openWebURL';
 import Zoom from 'react-native-zoom-reanimated';
+import config from 'react-native-ultimate-config';
 import React, {useCallback, useState} from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import LinearGradient from 'react-native-linear-gradient';
@@ -84,7 +85,13 @@ const CurrentAffairViewScreen = ({route}) => {
             <>
               <Zoom>
                 <Image
-                  source={{uri: data?.image}}
+                  source={{
+                    uri: `${
+                      __DEV__
+                        ? config.REACT_APP_DEV_URI
+                        : config.REACT_APP_PROD_URI
+                    }/${data?.image}`,
+                  }}
                   resizeMode="cover"
                   style={tw.style(
                     'shadow',

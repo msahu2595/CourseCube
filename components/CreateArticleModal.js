@@ -1,3 +1,10 @@
+import {
+  CCModal,
+  CCButton,
+  CCTextInput,
+  CCCheckBox,
+  CCImageUploader,
+} from './Common';
 import React from 'react';
 import * as yup from 'yup';
 import {Formik} from 'formik';
@@ -6,14 +13,13 @@ import {View} from 'react-native';
 import {CREATE_ARTICLE} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCModal, CCButton, CCTextInput, CCCheckBox} from './Common';
 
 const AddArticleValidationSchema = yup.object({
   subject: yup.string().required('Please enter subject.'),
-  image: yup
-    .string()
-    .url('Image should be a link.')
-    .required('Please enter image link.'),
+  image: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: false,
+    message: 'Image path is not correct.',
+  }),
   title: yup.string().required('Please enter article title.'),
   description: yup.string().required('Please enter article description.'),
   author: yup.string().required("Please enter article's author name."),
@@ -96,18 +102,17 @@ const CreateArticleModal = ({visible, onClose}) => {
                 value={values.subject}
                 editable={!submitting}
               />
-              <CCTextInput
+              <CCImageUploader
                 required
                 label="Image"
                 error={errors.image}
                 touched={touched.image}
-                info="Example: https://picsum.photos/195/110"
-                onChangeText={handleChange('image')}
-                onBlur={handleBlur('image')}
+                onChangeImage={value => {
+                  setFieldValue('image', value);
+                }}
                 value={values.image}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                imageProps={{width: 400, height: 225, cropping: true}}
               />
               <CCTextInput
                 required
