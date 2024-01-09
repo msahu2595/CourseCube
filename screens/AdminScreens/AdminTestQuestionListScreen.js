@@ -1,13 +1,16 @@
 import {tw} from '@lib';
 import {gql, useQuery} from '@apollo/client';
 import {CCSearchInput} from 'components/Common';
+import Zoom from 'react-native-zoom-reanimated';
+import config from 'react-native-ultimate-config';
 import {showMessage} from 'react-native-flash-message';
-import React, {memo, useCallback, useState} from 'react';
-import {FlatList, RefreshControl, Text, View} from 'react-native';
+import Passage from 'screens/ExamScreens/components/Passage';
+import React, {memo, useCallback, useMemo, useState} from 'react';
 import AddTestQuestionModal from 'components/AddTestQuestionModal';
 import {Fab, MenuOptionItem, SafeAreaContainer} from '@components';
 import EditTestQuestionModal from 'components/EditTestQuestionModal';
 import {Menu, MenuOptions, MenuTrigger} from 'react-native-popup-menu';
+import {FlatList, Image, RefreshControl, Text, View} from 'react-native';
 import DeleteTestQuestionModal from 'components/DeleteTestQuestionModal';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -149,6 +152,24 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
 export default AdminTestQuestionListScreen;
 
 const Item = memo(({onCreate, onEdit, onDelete, ...item}) => {
+  const imageViewer = useMemo(
+    () =>
+      item?.enable && item?.image ? (
+        <Zoom style={tw.style('mt-1 bg-gray-200')}>
+          <Image
+            resizeMode="contain"
+            source={{
+              uri: `${
+                __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+              }/${item?.image}`,
+            }}
+            style={{width: '100%', aspectRatio: 1}}
+          />
+        </Zoom>
+      ) : null,
+    [item?.enable, item?.image],
+  );
+
   return (
     <View key={item?._id} style={tw`bg-white p-2 mx-2 mb-4 rounded-lg`}>
       {!item?.enable && (
@@ -164,6 +185,10 @@ const Item = memo(({onCreate, onEdit, onDelete, ...item}) => {
             } leading-5`}>
             {`Q.${item?.index + 1}. ${item?.question}`}
           </Text>
+        </View>
+        <View style={tw`pt-2`}>
+          <Passage content={item?.passage} />
+          {imageViewer}
         </View>
         <View style={tw`my-1`}>
           {item?.options?.map((option, index) => {
