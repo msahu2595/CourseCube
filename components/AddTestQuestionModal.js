@@ -1,3 +1,10 @@
+import {
+  CCModal,
+  CCButton,
+  CCTextInput,
+  CCOptionInput,
+  CCImageUploader,
+} from './Common';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import {tw, uuid} from '@lib';
@@ -5,7 +12,6 @@ import {View} from 'react-native';
 import React, {memo} from 'react';
 import {gql, useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCButton, CCModal, CCTextInput, CCOptionInput} from './Common';
 
 const ADD_TEST_QUESTION = gql`
   mutation addTestQuestion(
@@ -40,7 +46,9 @@ const ADD_TEST_QUESTION = gql`
 
 const AddTestQuestionValidationSchema = yup.object({
   question: yup.string().trim().required('Please enter question.'),
-  image: yup.string().nullable(),
+  image: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: true,
+  }),
   passage: yup.string().nullable(),
   options: yup
     .array()
@@ -148,17 +156,16 @@ const AddTestQuestionModal = memo(({testId, data, onClose}) => {
                 value={values.question}
                 editable={!submitting}
               />
-              <CCTextInput
+              <CCImageUploader
                 label="Image"
                 error={errors.image}
                 touched={touched.image}
-                info="Example: https://picsum.photos/195/110"
-                onChangeText={handleChange('image')}
-                onBlur={handleBlur('image')}
+                onChangeImage={value => {
+                  setFieldValue('image', value);
+                }}
                 value={values.image}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                imageProps={{freeStyleCropEnabled: true, cropping: true}}
               />
               <CCTextInput
                 label="Passage"

@@ -1,3 +1,10 @@
+import {
+  CCModal,
+  CCButton,
+  CCTextInput,
+  CCOptionInput,
+  CCImageUploader,
+} from './Common';
 import * as yup from 'yup';
 import {Formik} from 'formik';
 import {tw, uuid} from '@lib';
@@ -5,7 +12,6 @@ import {View} from 'react-native';
 import React, {memo} from 'react';
 import {gql, useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCButton, CCModal, CCTextInput, CCOptionInput} from './Common';
 
 const EDIT_TEST_QUESTION = gql`
   mutation editTestQuestion(
@@ -34,7 +40,9 @@ const EDIT_TEST_QUESTION = gql`
 `;
 
 const EditTestQuestionValidationSchema = yup.object({
-  image: yup.string().nullable(),
+  image: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: true,
+  }),
   passage: yup.string().nullable(),
   answerIndex: yup
     .number()
@@ -78,7 +86,7 @@ const EditTestQuestionModal = memo(({question, onClose}) => {
       <Formik
         initialValues={{
           question: question?.question,
-          image: question?.image,
+          image: '',
           passage: question?.passage,
           options: question?.options?.map(option => ({id: uuid(), option})),
           answerIndex: question?.answerIndex,
@@ -124,17 +132,17 @@ const EditTestQuestionModal = memo(({question, onClose}) => {
                 info="You cannot change question."
                 editable={false}
               />
-              <CCTextInput
+              <CCImageUploader
                 label="Image"
                 error={errors.image}
                 touched={touched.image}
-                info="Example: https://picsum.photos/195/110"
-                onChangeText={handleChange('image')}
-                onBlur={handleBlur('image')}
+                onChangeImage={value => {
+                  setFieldValue('image', value);
+                }}
                 value={values.image}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                prevImage={question?.image}
+                imageProps={{freeStyleCropEnabled: true, cropping: true}}
               />
               <CCTextInput
                 label="Passage"
