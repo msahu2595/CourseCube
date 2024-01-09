@@ -8,6 +8,7 @@ import {
 import tw from '@lib/tailwind';
 import React, {memo} from 'react';
 import openWebURL from 'utils/openWebURL';
+import config from 'react-native-ultimate-config';
 
 const NotificationItem = memo(({image, description, link}) => {
   const width = useWindowDimensions().width;
@@ -20,7 +21,11 @@ const NotificationItem = memo(({image, description, link}) => {
         })}>
         <ImageBackground
           resizeMode="cover"
-          source={{uri: image}}
+          source={{
+            uri: `${
+              __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+            }/${image}`,
+          }}
           style={tw.style('rounded-lg shadow-sm bg-gray-200', {
             width: 92,
             height: 92,

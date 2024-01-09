@@ -6,10 +6,12 @@ import {View} from 'react-native';
 import {useMutation} from '@apollo/client';
 import {CREATE_HEADLINE} from '@mutations';
 import {showMessage} from 'react-native-flash-message';
-import {CCButton, CCModal, CCTextInput} from './Common';
+import {CCButton, CCModal, CCTextInput, CCImageUploader} from './Common';
 
 const CreateHeadlineValidationSchema = yup.object().shape({
-  image: yup.string().url('Image should be a link.').nullable(),
+  image: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: true,
+  }),
   description: yup.string().required('Please enter headline description.'),
   link: yup.string().url('Link is not in the correct format.').nullable(),
 });
@@ -59,23 +61,23 @@ const CreateHeadlineModal = ({visible, onClose}) => {
           handleChange,
           handleBlur,
           handleSubmit,
+          setFieldValue,
           values,
           errors,
           touched,
         }) => (
           <>
             <View style={tw`py-2`}>
-              <CCTextInput
+              <CCImageUploader
                 label="Image"
                 error={errors.image}
                 touched={touched.image}
-                info="Example: https://picsum.photos/64/64"
-                onChangeText={handleChange('image')}
-                onBlur={handleBlur('image')}
+                onChangeImage={value => {
+                  setFieldValue('image', value);
+                }}
                 value={values.image}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                imageProps={{width: 200, height: 200, cropping: true}}
               />
               <CCTextInput
                 required
