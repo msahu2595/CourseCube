@@ -6,11 +6,13 @@ import {View} from 'react-native';
 import {ADD_DOCUMENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCModal, CCButton, CCTextInput} from './Common';
+import {CCModal, CCButton, CCTextInput, CCImageUploader} from './Common';
 
 const AddDocumentsValidationSchema = yup.object({
   title: yup.string().required('Please enter document title.'),
-  thumbnail: yup.string().url('Thumbnail should be a link.').nullable(),
+  thumbnail: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: true,
+  }),
   url: yup
     .string()
     .url('URL is not in the correct format.')
@@ -69,6 +71,7 @@ const AddDocumentModal = ({visible, onClose}) => {
           handleChange,
           handleBlur,
           handleSubmit,
+          setFieldValue,
           values,
           errors,
           touched,
@@ -85,17 +88,16 @@ const AddDocumentModal = ({visible, onClose}) => {
                 value={values.title}
                 editable={!submitting}
               />
-              <CCTextInput
+              <CCImageUploader
                 label="Thumbnail"
                 error={errors.thumbnail}
                 touched={touched.thumbnail}
-                info="Example: https://picsum.photos/195/110"
-                onChangeText={handleChange('thumbnail')}
-                onBlur={handleBlur('thumbnail')}
+                onChangeImage={value => {
+                  setFieldValue('thumbnail', value);
+                }}
                 value={values.thumbnail}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                imageProps={{width: 300, height: 400, cropping: true}}
               />
               <CCTextInput
                 required
