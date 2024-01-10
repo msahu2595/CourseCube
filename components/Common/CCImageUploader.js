@@ -10,12 +10,9 @@ import {gql, useMutation} from '@apollo/client';
 import config from 'react-native-ultimate-config';
 import {showMessage} from 'react-native-flash-message';
 import Feather from 'react-native-vector-icons/Feather';
+import React, {useState, memo, useCallback} from 'react';
 import {imageUploader, fileRemover} from 'lib/fileHandler';
-import React, {useState, memo, useCallback, useMemo} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-const urlRegex = /^http(s)?:\/\/.*/g;
-const imageRegex = /^assets\/.*$/gm;
 
 const COPY_IMAGE = gql`
   mutation copyImage($imagePath: String!) {
@@ -86,10 +83,6 @@ export const CCImageUploader = memo(
       }
     }, [value, onChangeImage]);
 
-    const isLocalImage = useMemo(() => {
-      return imageRegex.test(copyImage);
-    }, [copyImage]);
-
     return (
       <View style={tw`mb-1`}>
         <Text style={tw`text-sm text-gray-600 font-avReg p-1`}>
@@ -105,13 +98,11 @@ export const CCImageUploader = memo(
               <View style={tw`h-[96px] w-[96px] bg-gray-600 m-1`}>
                 <Image
                   source={{
-                    uri: urlRegex.test(prevImage)
-                      ? prevImage
-                      : `${
-                          __DEV__
-                            ? config.REACT_APP_DEV_URI
-                            : config.REACT_APP_PROD_URI
-                        }/${prevImage}`,
+                    uri: `${
+                      __DEV__
+                        ? config.REACT_APP_DEV_URI
+                        : config.REACT_APP_PROD_URI
+                    }/${prevImage}`,
                   }}
                   resizeMode="contain"
                   style={tw`h-[96px] w-[96px]`}
@@ -125,7 +116,7 @@ export const CCImageUploader = memo(
         ) : null}
         {!loading && !value ? (
           <>
-            {copyImage && isLocalImage ? (
+            {copyImage ? (
               <View style={tw`mb-1 border border-gray-300 rounded-lg`}>
                 <Text
                   style={tw`flex-1 text-gray-900 font-avReg text-[12px] pl-1`}>
