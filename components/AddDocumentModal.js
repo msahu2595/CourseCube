@@ -1,3 +1,10 @@
+import {
+  CCModal,
+  CCButton,
+  CCTextInput,
+  CCFileUploader,
+  CCImageUploader,
+} from './Common';
 import React from 'react';
 import * as yup from 'yup';
 import {Formik} from 'formik';
@@ -6,7 +13,6 @@ import {View} from 'react-native';
 import {ADD_DOCUMENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCModal, CCButton, CCTextInput, CCImageUploader} from './Common';
 
 const AddDocumentsValidationSchema = yup.object({
   title: yup.string().required('Please enter document title.'),
@@ -15,13 +21,13 @@ const AddDocumentsValidationSchema = yup.object({
   }),
   url: yup
     .string()
-    .url('URL is not in the correct format.')
-    .required('Please enter document URL.'),
+    .required('Please upload document file.')
+    .matches(/^assets\/tmp\/.*$/gm, 'Document file path is not correct.'),
   pages: yup
     .number()
+    .required('Please enter document pages.')
     .min(1, 'Document pages is too short.')
-    .max(999, 'Document pages is too long.')
-    .required('Please enter document pages.'),
+    .max(999, 'Document pages is too long.'),
 });
 
 const AddDocumentModal = ({visible, onClose}) => {
@@ -99,18 +105,16 @@ const AddDocumentModal = ({visible, onClose}) => {
                 disabled={submitting}
                 imageProps={{width: 300, height: 400, cropping: true}}
               />
-              <CCTextInput
+              <CCFileUploader
                 required
-                label="URL"
+                label="File"
                 error={errors.url}
                 touched={touched.url}
-                info="Example: https://www.africau.edu/images/default/sample.pdf"
-                onChangeText={handleChange('url')}
-                onBlur={handleBlur('url')}
+                onChangeFile={value => {
+                  setFieldValue('url', value);
+                }}
                 value={values.url}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
               />
               <CCTextInput
                 required

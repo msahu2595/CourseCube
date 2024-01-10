@@ -3,6 +3,7 @@ import {CONTENT} from '@queries';
 import Pdf from 'react-native-pdf';
 import openWebURL from 'utils/openWebURL';
 import {SafeAreaContainer} from '@components';
+import config from 'react-native-ultimate-config';
 import React, {useCallback, useEffect} from 'react';
 import {showMessage} from 'react-native-flash-message';
 import {gql, useMutation, useQuery} from '@apollo/client';
@@ -134,7 +135,9 @@ const DocumentViewScreen = ({navigation, route}) => {
           trustAllCerts={false}
           style={tw`flex-1 bg-black`}
           source={{
-            uri: data?.media?.url,
+            uri: `${
+              __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+            }/${data?.media?.url}`,
             cache: true,
           }}
           onLoadComplete={handledLoadComplete}

@@ -11,6 +11,7 @@ import {CCLikeButton} from './CCLikeButton';
 import {CCOptionInput} from './CCOptionInput';
 import {CCSearchInput} from './CCSearchInput';
 import {CCFollowButton} from './CCFollowButton';
+import {CCFileUploader} from './CCFileUploader';
 import {CCImageUploader} from './CCImageUploader';
 import {CCBookmarkButton} from './CCBookmarkButton';
 import {CCNavigationButton} from './CCNavigationButton';
@@ -29,6 +30,7 @@ export {
   CCOptionInput,
   CCSearchInput,
   CCFollowButton,
+  CCFileUploader,
   CCImageUploader,
   CCBookmarkButton,
   CCNavigationButton,

@@ -1,3 +1,10 @@
+import {
+  CCModal,
+  CCButton,
+  CCTextInput,
+  CCFileUploader,
+  CCImageUploader,
+} from './Common';
 import React from 'react';
 import * as yup from 'yup';
 import {Formik} from 'formik';
@@ -6,17 +13,15 @@ import {View} from 'react-native';
 import {EDIT_DOCUMENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import {CCModal, CCButton, CCTextInput, CCImageUploader} from './Common';
 
 const EditDocumentValidationSchema = yup.object({
   title: yup.string().required('Please enter document title.'),
   thumbnail: yup.string().matches(/^assets\/tmp\/.*$/gm, {
     excludeEmptyString: true,
   }),
-  url: yup
-    .string()
-    .url('URL is not in the correct format.')
-    .required('Please enter document URL.'),
+  url: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: true,
+  }),
   pages: yup
     .number()
     .min(1, 'Document pages is too short.')
@@ -52,18 +57,23 @@ const EditDocumentModal = ({document, onClose}) => {
         initialValues={{
           title: document?.title,
           thumbnail: '',
-          url: document?.url,
+          url: '',
           pages: document?.pages.toString(),
         }}
         validationSchema={EditDocumentValidationSchema}
         onSubmit={values => {
-          const documentInput = {
-            title: values.title,
-            url: values.url,
-            pages: parseInt(values.pages, 10),
-          };
-          if (values.thumbnail) {
+          const documentInput = {};
+          if (values.title && values.title !== document?.title) {
+            documentInput.title = values.title;
+          }
+          if (values.thumbnail && values.thumbnail !== document?.thumbnail) {
             documentInput.thumbnail = values.thumbnail;
+          }
+          if (values.url && values.url !== document?.url) {
+            documentInput.url = values.url;
+          }
+          if (values.pages && values.pages !== document?.pages) {
+            documentInput.pages = parseInt(values.pages, 10);
           }
           editDocument({variables: {documentId: document._id, documentInput}});
         }}>
@@ -100,18 +110,17 @@ const EditDocumentModal = ({document, onClose}) => {
                 prevImage={document?.thumbnail}
                 imageProps={{width: 300, height: 400, cropping: true}}
               />
-              <CCTextInput
+              <CCFileUploader
                 required
-                label="URL"
+                label="File"
                 error={errors.url}
                 touched={touched.url}
-                info="Example: https://www.africau.edu/images/default/sample.pdf"
-                onChangeText={handleChange('url')}
-                onBlur={handleBlur('url')}
+                onChangeFile={value => {
+                  setFieldValue('url', value);
+                }}
                 value={values.url}
-                editable={!submitting}
-                autoCapitalize="none"
-                inputMode="url"
+                disabled={submitting}
+                prevFile={document?.url}
               />
               <CCTextInput
                 required

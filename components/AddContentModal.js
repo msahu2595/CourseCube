@@ -16,6 +16,12 @@ import {ADD_CONTENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 
+const sizes = {
+  Video: {width: 400, height: 225, cropping: true},
+  Test: {width: 400, height: 400, cropping: true},
+  Document: {width: 300, height: 400, cropping: true},
+};
+
 const AddContentValidationSchema = yup.object({
   subject: yup.string().required('Please enter subject.'),
   image: yup
@@ -178,7 +184,7 @@ const AddContentModal = ({media, onClose}) => {
                 value={values.image}
                 disabled={submitting}
                 copyImage={media?.thumbnail}
-                imageProps={{width: 400, height: 225, cropping: true}}
+                imageProps={sizes[values.type]}
               />
               <CCRadio
                 required
