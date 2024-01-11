@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-background-downloader/android/build.gradle b/node_modules/react-native-background-downloader/android/build.gradle
+index 3018efe..95ebb2b 100644
+--- a/node_modules/react-native-background-downloader/android/build.gradle
++++ b/node_modules/react-native-background-downloader/android/build.gradle
+@@ -22,7 +22,7 @@ dependencies {
+     //noinspection GradleDynamicVersion
+     implementation 'com.facebook.react:react-native:+'
+     if (project.properties['android.useAndroidX'] == 'true' || project.properties['android.useAndroidX'] == true) {
+-        api "androidx.tonyodev.fetch2:xfetch2:3.1.4"
++        api "com.github.tonyofrancis.Fetch:xfetch2:3.1.6"
+     } else {
+         api "com.tonyodev.fetch2:fetch2:3.0.10"
+     }

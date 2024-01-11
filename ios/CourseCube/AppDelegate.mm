@@ -18,7 +18,8 @@
 #import <React/RCTSurfacePresenterBridgeAdapter.h>
 #import <ReactCommon/RCTTurboModuleManager.h>
 
-#import <react/config/ReactNativeConfig.h>
+#import <RNBackgroundDownloader.h> // react-native-background-downloader
+#import <react/config/ReactNativeConfig.h> // react-native-ultimate-config
 
 static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
@@ -139,6 +140,12 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 // react-native-orientation-locker
 - (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
   return [Orientation getOrientation];
+}
+
+// react-native-background-downloader
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler
+{
+  [RNBackgroundDownloader setCompletionHandlerWithIdentifier:identifier completionHandler:completionHandler];
 }
 
 // Deep linking
