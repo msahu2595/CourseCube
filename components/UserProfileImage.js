@@ -203,6 +203,12 @@ const UserProfileImage = memo(({editable = true, size = 108}) => {
                 }
               : imageByGender
           }
+          onError={error => {
+            if (error?.nativeEvent?.error?.includes('code=404')) {
+              setLoading(true);
+              removeProfileImage();
+            }
+          }}
           style={tw`rounded-full border border-gray-400 w-[${size - 1}px] h-[${
             size - 1
           }px]`}
