@@ -118,8 +118,7 @@ export const CCImageUploader = memo(
           <>
             {copyImage ? (
               <View style={tw`mb-1 border border-gray-300 rounded-lg`}>
-                <Text
-                  style={tw`flex-1 text-gray-900 font-avReg text-[12px] pl-1`}>
+                <Text style={tw`text-gray-900 font-avReg text-[12px] pl-1`}>
                   Available image to copy:
                 </Text>
                 <View style={tw`flex-row items-center justify-between`}>
@@ -165,7 +164,7 @@ export const CCImageUploader = memo(
           </>
         ) : (
           <View style={tw`border border-gray-300 rounded-lg`}>
-            <Text style={tw`flex-1 text-gray-900 font-avReg text-[12px] pl-1`}>
+            <Text style={tw`text-gray-900 font-avReg text-[12px] pl-1`}>
               Uploaded image:
             </Text>
             <View style={tw`flex-row items-center justify-between`}>

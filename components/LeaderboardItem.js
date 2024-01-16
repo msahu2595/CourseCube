@@ -1,5 +1,6 @@
 import tw from '@lib/tailwind';
 import {useGenderImage} from 'hooks';
+import config from 'react-native-ultimate-config';
 import React, {useCallback, useMemo} from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {Image, Text, View, Pressable} from 'react-native';
@@ -37,7 +38,15 @@ const LeaderboardItem = ({
       onPress={handleNavigation}
       style={tw`flex-row items-center px-4 py-3`}>
       <Image
-        source={picture ? {uri: picture} : imageByGender}
+        source={
+          picture
+            ? {
+                uri: `${
+                  __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+                }/${picture}`,
+              }
+            : imageByGender
+        }
         resizeMode="contain"
         style={tw.style('rounded-full', {
           width: 40,

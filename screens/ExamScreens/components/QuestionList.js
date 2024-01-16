@@ -12,6 +12,7 @@ import Passage from './Passage';
 import {quesIndexVar} from 'apollo/client';
 import Zoom from 'react-native-zoom-reanimated';
 import {gql, useMutation} from '@apollo/client';
+import config from 'react-native-ultimate-config';
 import {showMessage} from 'react-native-flash-message';
 import React, {forwardRef, memo, useCallback, useMemo, useState} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -144,7 +145,11 @@ const Item = memo(props => {
         <Zoom style={tw.style('mt-2 bg-gray-200')}>
           <Image
             resizeMode="contain"
-            source={{uri: image}}
+            source={{
+              uri: `${
+                __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+              }/${image}`,
+            }}
             style={{width: '100%', aspectRatio: 1}}
           />
         </Zoom>

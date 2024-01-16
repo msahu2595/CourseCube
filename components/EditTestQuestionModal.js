@@ -142,7 +142,7 @@ const EditTestQuestionModal = memo(({question, onClose}) => {
                 value={values.image}
                 disabled={submitting}
                 prevImage={question?.image}
-                imageProps={{freeStyleCropEnabled: true, cropping: true}}
+                imageProps={{cropping: true}}
               />
               <CCTextInput
                 label="Passage"

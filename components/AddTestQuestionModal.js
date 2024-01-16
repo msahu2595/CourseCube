@@ -165,7 +165,7 @@ const AddTestQuestionModal = memo(({testId, data, onClose}) => {
                 }}
                 value={values.image}
                 disabled={submitting}
-                imageProps={{freeStyleCropEnabled: true, cropping: true}}
+                imageProps={{cropping: true}}
               />
               <CCTextInput
                 label="Passage"

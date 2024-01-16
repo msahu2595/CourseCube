@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import formatNumber from 'utils/formatNumber';
+import config from 'react-native-ultimate-config';
 import {showMessage} from 'react-native-flash-message';
 import {useFocusEffect} from '@react-navigation/native';
 import {InfoItem, SafeAreaContainer} from '@components';
@@ -159,7 +160,13 @@ const TestViewScreen = ({route, navigation}) => {
           ) : (
             <>
               <Image
-                source={{uri: data?.image}}
+                source={{
+                  uri: `${
+                    __DEV__
+                      ? config.REACT_APP_DEV_URI
+                      : config.REACT_APP_PROD_URI
+                  }/${data?.image}`,
+                }}
                 resizeMode="cover"
                 style={tw.style('self-center', 'mt-4', {
                   borderRadius: 10,
