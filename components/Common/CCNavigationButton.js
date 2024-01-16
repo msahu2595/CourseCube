@@ -11,6 +11,7 @@ export const CCNavigationButton = memo(
       onPress={onPress}
       style={tw.style(
         'mb-4 p-4 flex-row items-center bg-blue-50 rounded-lg shadow-sm',
+        disabled && 'opacity-50',
         style,
       )}>
       <Feather name={icon} color={tw.color('blue-600')} size={16} />

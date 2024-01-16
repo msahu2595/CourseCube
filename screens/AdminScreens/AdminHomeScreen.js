@@ -51,18 +51,6 @@ const AdminHomeScreen = ({navigation}) => {
           icon="file-text"
           disabled={loading}
         />
-        {/* <CCNavigationButton
-          name="Courses"
-          onPress={() => navigation.navigate('CourseListTopTabNavigator')}
-          icon="file-text"
-          disabled={loading}
-        /> */}
-        <CCNavigationButton
-          name="Contents"
-          onPress={() => navigation.navigate('ContentListTopTabNavigator')}
-          icon="file-text"
-          disabled={loading}
-        />
         <CCNavigationButton
           name="Headlines"
           onPress={() => navigation.navigate('AdminHeadlineListScreen')}
@@ -82,10 +70,28 @@ const AdminHomeScreen = ({navigation}) => {
           disabled={loading}
         />
         <CCNavigationButton
+          name="Courses"
+          onPress={() => navigation.navigate('CourseListTopTabNavigator')}
+          icon="file-text"
+          disabled={true}
+        />
+        <CCNavigationButton
+          name="Contents"
+          onPress={() => navigation.navigate('ContentListTopTabNavigator')}
+          icon="file-text"
+          disabled={loading}
+        />
+        <CCNavigationButton
           name="Media"
           onPress={() => navigation.navigate('MediaListTopTabNavigator')}
           icon="file-text"
           disabled={loading}
+        />
+        <CCNavigationButton
+          name="Users"
+          onPress={() => navigation.navigate('UserListTopTabNavigator')}
+          icon="file-text"
+          disabled={true}
         />
         <CCNavigationButton
           name="Logout"
