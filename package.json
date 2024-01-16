@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.7.1",
+    "@dhairyasharma/react-native-encryption": "^1.0.0",
     "@react-native-community/netinfo": "^9.3.7",
     "@react-native-firebase/app": "^16.4.3",
     "@react-native-firebase/auth": "^16.4.3",
