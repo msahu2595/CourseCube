@@ -31,6 +31,11 @@ export const CCFileUploader = memo(
           type: DocumentPicker.types.pdf,
           ...fileProps,
         });
+        await new Promise(resolve => {
+          setTimeout(() => {
+            resolve();
+          }, 2000);
+        });
         const result = await fileUploader(file.uri, file.type);
         console.log({result});
         onChangeFile(result.path);
