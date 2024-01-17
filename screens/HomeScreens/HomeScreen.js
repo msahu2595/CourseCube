@@ -1,5 +1,6 @@
 import tw from '@lib/tailwind';
 import React, {useCallback} from 'react';
+import {CCText} from 'components/Common';
 import {ScrollView, View, Linking} from 'react-native';
 import {
   SafeAreaContainer,
@@ -81,6 +82,7 @@ const HomeScreen = props => {
         <View style={tw`py-2`}>
           <FollowUs />
         </View>
+        {__DEV__ && <CCText style={tw`items-center`} content="[DEV]" />}
       </ScrollView>
       <Fab
         bgColor={tw.color('emerald-600')}

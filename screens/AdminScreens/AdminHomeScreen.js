@@ -4,8 +4,8 @@ import {Alert} from 'react-native';
 import React, {useCallback} from 'react';
 import {useMutation} from '@apollo/client';
 import {loggedUserVar, storage} from 'apollo/client';
-import {CCNavigationButton} from 'components/Common';
 import {showMessage} from 'react-native-flash-message';
+import {CCNavigationButton, CCText} from 'components/Common';
 import {SafeAreaContainer, LoadingIndicator} from '@components';
 
 const AdminHomeScreen = ({navigation}) => {
@@ -105,6 +105,7 @@ const AdminHomeScreen = ({navigation}) => {
           icon="repeat"
           disabled={loading}
         />
+        {__DEV__ && <CCText style={tw`items-center`} content="[DEV]" />}
       </SafeAreaContainer>
       <LoadingIndicator loading={loading} />
     </>
