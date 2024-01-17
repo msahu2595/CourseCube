@@ -5,11 +5,32 @@ import {Fab, MediaItem} from '@components';
 import {CCSearchInput} from 'components/Common';
 import React, {useCallback, useState} from 'react';
 import AddVideoModal from 'components/AddVideoModal';
-import {useMutation, useQuery} from '@apollo/client';
 import EditVideoModal from 'components/EditVideoModal';
 import {showMessage} from 'react-native-flash-message';
 import AddContentModal from 'components/AddContentModal';
+import {gql, useMutation, useQuery} from '@apollo/client';
 import {View, Alert, FlatList, RefreshControl} from 'react-native';
+
+const REMOVE_VIDEO_THUMBNAIL = gql`
+  mutation removeVideoThumbnail($videoId: ID!) {
+    removeVideoThumbnail(videoId: $videoId) {
+      code
+      success
+      message
+      token
+      payload {
+        _id
+        title
+        thumbnail
+        time
+        link
+        enable
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
 
 const AdminVideoListScreen = () => {
   const [search, setSearch] = useState('');
@@ -24,6 +45,22 @@ const AdminVideoListScreen = () => {
         type: 'danger',
       });
     },
+  });
+
+  const [removeVideoThumbnail] = useMutation(REMOVE_VIDEO_THUMBNAIL, {
+    onCompleted: () => {
+      showMessage({
+        message: 'Video thumbnail is successfully removed.',
+        type: 'success',
+      });
+    },
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+    refetchQueries: ['videos'],
   });
 
   const [deleteVideo] = useMutation(DELETE_VIDEO, {
@@ -42,7 +79,31 @@ const AdminVideoListScreen = () => {
     refetchQueries: ['videos'],
   });
 
-  const deleteHandler = useCallback(
+  const removeThumbnailHandler = useCallback(
+    videoId =>
+      Alert.alert(
+        'Remove Thumbnail',
+        'Are you sure, you want to remove thumbnail of this video?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => {
+              removeVideoThumbnail({
+                variables: {videoId},
+              });
+            },
+            style: 'destructive',
+          },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+      ),
+    [removeVideoThumbnail],
+  );
+
+  const deleteVideoHandler = useCallback(
     videoId =>
       Alert.alert(
         'Delete Video',
@@ -97,17 +158,27 @@ const AdminVideoListScreen = () => {
             label: 'Create content',
             onSelect: () => setAddContentModal(item),
           },
-          {key: 'Edit', label: 'Edit', onSelect: () => setEditVideoModal(item)},
           {
-            key: 'Delete',
+            key: 'Edit video',
+            label: 'Edit video',
+            onSelect: () => setEditVideoModal(item),
+          },
+          {
+            key: 'Remove thumbnail',
+            label: 'Remove thumbnail',
+            disabled: !item.thumbnail,
+            onSelect: () => removeThumbnailHandler(item._id),
+          },
+          {
+            key: 'Delete video',
             danger: true,
-            label: 'Delete',
-            onSelect: () => deleteHandler(item._id),
+            label: 'Delete video',
+            onSelect: () => deleteVideoHandler(item._id),
           },
         ]}
       />
     ),
-    [deleteHandler],
+    [removeThumbnailHandler, deleteVideoHandler],
   );
 
   return (

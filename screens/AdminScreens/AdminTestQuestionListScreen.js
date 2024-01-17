@@ -1,17 +1,17 @@
 import {tw} from '@lib';
-import {gql, useQuery} from '@apollo/client';
 import {CCSearchInput} from 'components/Common';
 import Zoom from 'react-native-zoom-reanimated';
 import config from 'react-native-ultimate-config';
 import {showMessage} from 'react-native-flash-message';
+import {gql, useMutation, useQuery} from '@apollo/client';
 import Passage from 'screens/ExamScreens/components/Passage';
 import React, {memo, useCallback, useMemo, useState} from 'react';
 import AddTestQuestionModal from 'components/AddTestQuestionModal';
 import {Fab, MenuOptionItem, SafeAreaContainer} from '@components';
 import EditTestQuestionModal from 'components/EditTestQuestionModal';
 import {Menu, MenuOptions, MenuTrigger} from 'react-native-popup-menu';
-import {FlatList, Image, RefreshControl, Text, View} from 'react-native';
 import DeleteTestQuestionModal from 'components/DeleteTestQuestionModal';
+import {Alert, FlatList, Image, RefreshControl, Text, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const TEST_QUESTIONS = gql`
@@ -24,6 +24,29 @@ const TEST_QUESTIONS = gql`
       offset
       limit
       testId
+      payload {
+        _id
+        question
+        image
+        passage
+        options
+        answerIndex
+        mark
+        negativeMark
+        invalid
+        enable
+      }
+    }
+  }
+`;
+
+const REMOVE_TEST_QUESTION_IMAGE = gql`
+  mutation removeTestQuestionImage($questionId: ID!) {
+    removeTestQuestionImage(questionId: $questionId) {
+      code
+      success
+      message
+      token
       payload {
         _id
         question
@@ -59,6 +82,46 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
     },
   });
 
+  const [removeTestQuestionImage] = useMutation(REMOVE_TEST_QUESTION_IMAGE, {
+    onCompleted: () => {
+      showMessage({
+        message: 'Test question image is successfully removed.',
+        type: 'success',
+      });
+    },
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+    refetchQueries: ['testQuestions'],
+  });
+
+  const removeImageHandler = useCallback(
+    questionId =>
+      Alert.alert(
+        'Remove Image',
+        'Are you sure, you want to remove image of this question?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => {
+              removeTestQuestionImage({
+                variables: {questionId},
+              });
+            },
+            style: 'destructive',
+          },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+      ),
+    [removeTestQuestionImage],
+  );
+
   const onChangeSearchText = useCallback(
     text => {
       console.log(text);
@@ -83,11 +146,12 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
         index={index}
         onCreate={setAddTestQuestionModal}
         onEdit={setEditTestQuestionModal}
+        onRemoveImage={removeImageHandler}
         onDelete={setDeleteTestQuestionModal}
         {...item}
       />
     ),
-    [],
+    [removeImageHandler],
   );
 
   return (
@@ -151,7 +215,7 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
 
 export default AdminTestQuestionListScreen;
 
-const Item = memo(({onCreate, onEdit, onDelete, ...item}) => {
+const Item = memo(({onCreate, onEdit, onRemoveImage, onDelete, ...item}) => {
   const imageViewer = useMemo(
     () =>
       item?.enable && item?.image ? (
@@ -258,6 +322,13 @@ const Item = memo(({onCreate, onEdit, onDelete, ...item}) => {
                 label="Edit Question"
                 onSelect={() => {
                   onEdit(item);
+                }}
+              />
+              <MenuOptionItem
+                label="Remove Image"
+                disabled={!item?.image}
+                onSelect={() => {
+                  onRemoveImage(item?._id);
                 }}
               />
               <MenuOptionItem

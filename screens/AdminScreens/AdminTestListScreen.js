@@ -6,11 +6,33 @@ import {Fab, MediaItem} from '@components';
 import {CCSearchInput} from 'components/Common';
 import AddTestModal from 'components/AddTestModal';
 import React, {useCallback, useState} from 'react';
-import {useMutation, useQuery} from '@apollo/client';
 import EditTestModal from 'components/EditTestModal';
 import {showMessage} from 'react-native-flash-message';
 import AddContentModal from 'components/AddContentModal';
+import {gql, useMutation, useQuery} from '@apollo/client';
 import {View, Alert, FlatList, RefreshControl} from 'react-native';
+
+const REMOVE_TEST_THUMBNAIL = gql`
+  mutation removeTestThumbnail($testId: ID!) {
+    removeTestThumbnail(testId: $testId) {
+      code
+      success
+      message
+      token
+      payload {
+        _id
+        title
+        thumbnail
+        instructions
+        duration
+        totalMarks
+        enable
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
 
 const AdminTestListScreen = ({navigation}) => {
   const [search, setSearch] = useState('');
@@ -25,6 +47,22 @@ const AdminTestListScreen = ({navigation}) => {
         type: 'danger',
       });
     },
+  });
+
+  const [removeTestThumbnail] = useMutation(REMOVE_TEST_THUMBNAIL, {
+    onCompleted: () => {
+      showMessage({
+        message: 'Test thumbnail is successfully removed.',
+        type: 'success',
+      });
+    },
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+    refetchQueries: ['tests'],
   });
 
   const [deleteTest] = useMutation(DELETE_TEST, {
@@ -43,7 +81,31 @@ const AdminTestListScreen = ({navigation}) => {
     refetchQueries: ['tests'],
   });
 
-  const deleteHandler = useCallback(
+  const removeThumbnailHandler = useCallback(
+    testId =>
+      Alert.alert(
+        'Remove Thumbnail',
+        'Are you sure, you want to remove thumbnail of this test?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => {
+              removeTestThumbnail({
+                variables: {testId},
+              });
+            },
+            style: 'destructive',
+          },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+      ),
+    [removeTestThumbnail],
+  );
+
+  const deleteTestHandler = useCallback(
     testId =>
       Alert.alert(
         'Delete Test',
@@ -106,24 +168,34 @@ const AdminTestListScreen = ({navigation}) => {
             onSelect: () => setAddContentModal(item),
           },
           {
-            key: 'Questions',
-            label: 'Questions',
+            key: 'Test questions',
+            label: 'Test questions',
             onSelect: () =>
               navigation.navigate('AdminTestQuestionListScreen', {
                 testId: item._id,
               }),
           },
-          {key: 'Edit', label: 'Edit', onSelect: () => setEditTestModal(item)},
           {
-            key: 'Delete',
+            key: 'Edit test',
+            label: 'Edit test',
+            onSelect: () => setEditTestModal(item),
+          },
+          {
+            key: 'Remove thumbnail',
+            label: 'Remove thumbnail',
+            disabled: !item.thumbnail,
+            onSelect: () => removeThumbnailHandler(item._id),
+          },
+          {
+            key: 'Delete test',
             danger: true,
-            label: 'Delete',
-            onSelect: () => deleteHandler(item._id),
+            label: 'Delete test',
+            onSelect: () => deleteTestHandler(item._id),
           },
         ]}
       />
     ),
-    [deleteHandler, navigation],
+    [removeThumbnailHandler, deleteTestHandler, navigation],
   );
 
   return (

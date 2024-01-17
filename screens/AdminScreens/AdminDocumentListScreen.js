@@ -4,12 +4,33 @@ import {Fab, MediaItem} from '@components';
 import {DELETE_DOCUMENT} from '@mutations';
 import {CCSearchInput} from 'components/Common';
 import React, {useCallback, useState} from 'react';
-import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import AddContentModal from 'components/AddContentModal';
+import {gql, useMutation, useQuery} from '@apollo/client';
 import AddDocumentModal from 'components/AddDocumentModal';
 import EditDocumentModal from 'components/EditDocumentModal';
 import {View, Alert, FlatList, RefreshControl} from 'react-native';
+
+const REMOVE_DOCUMENT_THUMBNAIL = gql`
+  mutation removeDocumentThumbnail($documentId: ID!) {
+    removeDocumentThumbnail(documentId: $documentId) {
+      code
+      success
+      message
+      token
+      payload {
+        _id
+        title
+        thumbnail
+        url
+        pages
+        enable
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
 
 const AdminDocumentListScreen = () => {
   const [search, setSearch] = useState('');
@@ -24,6 +45,22 @@ const AdminDocumentListScreen = () => {
         type: 'danger',
       });
     },
+  });
+
+  const [removeDocumentThumbnail] = useMutation(REMOVE_DOCUMENT_THUMBNAIL, {
+    onCompleted: () => {
+      showMessage({
+        message: 'Document thumbnail is successfully removed.',
+        type: 'success',
+      });
+    },
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+    refetchQueries: ['documents'],
   });
 
   const [deleteDocument] = useMutation(DELETE_DOCUMENT, {
@@ -42,7 +79,31 @@ const AdminDocumentListScreen = () => {
     refetchQueries: ['documents'],
   });
 
-  const deleteHandler = useCallback(
+  const removeThumbnailHandler = useCallback(
+    documentId =>
+      Alert.alert(
+        'Remove Thumbnail',
+        'Are you sure, you want to remove thumbnail of this document?',
+        [
+          {
+            text: 'Yes',
+            onPress: () => {
+              removeDocumentThumbnail({
+                variables: {documentId},
+              });
+            },
+            style: 'destructive',
+          },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+      ),
+    [removeDocumentThumbnail],
+  );
+
+  const deleteDocumentHandler = useCallback(
     documentId =>
       Alert.alert(
         'Delete Document',
@@ -97,20 +158,26 @@ const AdminDocumentListScreen = () => {
             onSelect: () => setAddContentModal(item),
           },
           {
-            key: 'Edit',
-            label: 'Edit',
+            key: 'Edit document',
+            label: 'Edit document',
             onSelect: () => setEditDocumentModal(item),
           },
           {
-            key: 'Delete',
+            key: 'Remove thumbnail',
+            label: 'Remove thumbnail',
+            disabled: !item.thumbnail,
+            onSelect: () => removeThumbnailHandler(item._id),
+          },
+          {
+            key: 'Delete document',
             danger: true,
-            label: 'Delete',
-            onSelect: () => deleteHandler(item._id),
+            label: 'Delete document',
+            onSelect: () => deleteDocumentHandler(item._id),
           },
         ]}
       />
     ),
-    [deleteHandler],
+    [removeThumbnailHandler, deleteDocumentHandler],
   );
 
   return (
