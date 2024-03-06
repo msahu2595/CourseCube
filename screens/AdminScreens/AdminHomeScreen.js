@@ -73,7 +73,7 @@ const AdminHomeScreen = ({navigation}) => {
           name="Courses"
           onPress={() => navigation.navigate('CourseListTopTabNavigator')}
           icon="file-text"
-          disabled={true}
+          disabled={loading}
         />
         <CCNavigationButton
           name="Contents"

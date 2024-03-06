@@ -16,6 +16,12 @@ import {EDIT_CONTENT} from '@mutations';
 import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 
+const sizes = {
+  Video: {width: 400, height: 225, cropping: true},
+  Test: {width: 400, height: 400, cropping: true},
+  Document: {width: 300, height: 400, cropping: true},
+};
+
 const EditContentValidationSchema = yup.object({
   subject: yup.string().required('Please enter subject.'),
   image: yup.string().matches(/^assets\/tmp\/.*$/gm, {
@@ -42,7 +48,7 @@ const EditContentValidationSchema = yup.object({
 });
 
 const EditContentModal = ({content, onClose}) => {
-  const [editContent, {submitting: submitting}] = useMutation(EDIT_CONTENT, {
+  const [editContent, {loading: submitting}] = useMutation(EDIT_CONTENT, {
     onCompleted: () => {
       onClose();
       showMessage({
@@ -60,8 +66,6 @@ const EditContentModal = ({content, onClose}) => {
       {query: CONTENTS, variables: {filter: {type: content?.type}}},
     ],
   });
-
-  console.log(content);
 
   return (
     <CCModal
@@ -193,7 +197,7 @@ const EditContentModal = ({content, onClose}) => {
                 value={values.image}
                 disabled={submitting}
                 prevImage={content?.image}
-                imageProps={{width: 400, height: 225, cropping: true}}
+                imageProps={sizes[values.type]}
               />
               <CCRadio
                 required

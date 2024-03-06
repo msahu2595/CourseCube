@@ -1,250 +1,316 @@
-import {useMutation} from '@apollo/client';
-import {SafeAreaContainer} from '@components';
+import {
+  CCRadio,
+  CCModal,
+  CCButton,
+  CCCheckBox,
+  CCTextInput,
+  CCImageUploader,
+} from './Common';
 import React from 'react';
-import {showMessage} from 'react-native-flash-message';
 import * as yup from 'yup';
 import {Formik} from 'formik';
-import {CCButton, CCCheckBox, CCModal, CCRadio, CCTextInput} from './Common';
-import {EDIT_BUNDLE} from 'apollo/mutations/EDIT_BUNDLE';
-import {ScrollView, Text, View} from 'react-native';
-import {tw} from '@lib';
+import tw from '@lib/tailwind';
+import {View} from 'react-native';
+import {BUNDLES} from '@queries';
+import {EDIT_BUNDLE} from '@mutations';
+import {useMutation} from '@apollo/client';
+import {showMessage} from 'react-native-flash-message';
 
-const TextComp = () => (
-  <View style={tw`mx-2 flex-1`}>
-    <Text style={tw`flex-1 text-justify`}>
-      If ticked, course is immediately available to users.
-    </Text>
-  </View>
-);
+const sizes = {
+  FULL_COURSE: {width: 400, height: 400, cropping: true},
+  SUBJECT_COURSE: {width: 400, height: 400, cropping: true},
+  PLAYLIST_COURSE: {width: 400, height: 400, cropping: true},
+};
 
-const ValidationSchema = yup.object().shape({
-  description: yup.string(),
-  subject: yup.string().nullable(),
-  image: yup.string().url(),
-  paid: yup.string(),
-  price: yup.number().nullable(),
-  offer: yup.string().nullable(),
-  offerType: yup.string().nullable(),
-  validity: yup.string(),
-  language: yup.string(),
-  type: yup.string(),
-  title: yup.string().required('Required title'),
+const types = {
+  FULL_COURSE: 'Full Course',
+  SUBJECT_COURSE: 'Subject Course',
+  PLAYLIST_COURSE: 'Playlist Course',
+};
+
+const EditBundleValidationSchema = yup.object().shape({
+  subject: yup.string().required('Please enter subject.'),
+  image: yup.string().matches(/^assets\/tmp\/.*$/gm, {
+    excludeEmptyString: true,
+  }),
+  title: yup.string().required('Please enter title.'),
+  type: yup
+    .string()
+    .oneOf(['FULL_COURSE', 'SUBJECT_COURSE', 'PLAYLIST_COURSE'])
+    .required('Please enter course type.'),
+  paid: yup.boolean().required(),
+  price: yup.number().min(1).max(99999).nullable(),
+  offer: yup.number().min(1).max(99999).nullable(),
+  offerType: yup.string().oneOf(['PERCENT', 'AMOUNT']).nullable(),
+  highlight: yup.string().nullable(),
+  language: yup
+    .string()
+    .oneOf(['HI', 'EN'])
+    .required('Please select language.'),
+  index: yup.string().nullable(),
+  description: yup.string().required('Please enter description.'),
+  visible: yup.boolean().required(),
 });
 
-const EditBundleModal = ({bundle, onClose}) => {
-  const [editBundle, {loading}] = useMutation(EDIT_BUNDLE, {
-    onCompleted: data => {
-      console.log(' ==> editBundle', data);
+const EditBundleModal = ({bundle, type, onClose}) => {
+  const [editBundle, {loading: submitting}] = useMutation(EDIT_BUNDLE, {
+    onCompleted: () => {
       onClose();
       showMessage({
-        message: 'Bundle Edited Successfully.',
+        message: `${types?.[type]} is successfully edited.`,
         type: 'success',
       });
     },
-    onError: error => {
+    onError: err => {
       showMessage({
-        message: 'Error on edit',
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
       });
     },
+    refetchQueries: [{query: BUNDLES, variables: {filter: {type}}}],
   });
 
-  console.log('bundleContents', bundle);
-  // console.log(data, loading, error);
-
   return (
-    <SafeAreaContainer>
-      <CCModal title="Edit Courses" visible={!!bundle} onClose={onClose}>
-        <Formik
-          initialValues={{
-            subject: bundle?.subject,
-            image: bundle?.image,
-            paid: bundle?.paid,
-            price: bundle?.price,
-            offer: bundle?.offer,
-            offerType: bundle?.offerType,
-            language: bundle?.language,
-            description: bundle?.description,
-            validity: bundle?.validity,
-            type: bundle?.type,
-            title: bundle?.title,
-            visible: bundle?.visible,
-          }}
-          validationSchema={ValidationSchema}
-          onSubmit={values => {
-            console.log('onsubmit', values);
-            const bundleInput = {
-              subject: values.subject,
-              image: values.image,
-              paid: values.paid === 'true' ? true : false,
-              language: values.language,
-              description: values.description,
-              validity: values.validity,
-              type: values.type,
-              title: values.title,
-              visible: values.visible,
-            };
-            if (values.price) {
-              bundleInput.price = parseInt(values.price, 10);
-            }
-            if (values.offer) {
-              bundleInput.offer = values.offer;
-            }
-            if (values.offerType) {
+    <CCModal
+      title={`Edit ${types?.[type]}`}
+      visible={!!bundle}
+      submitting={submitting}
+      onClose={onClose}>
+      <Formik
+        initialValues={{
+          subject: bundle?.subject,
+          image: '',
+          title: bundle?.title,
+          type: bundle?.type,
+          paid: bundle?.paid,
+          price: bundle?.price?.toString(),
+          offer: bundle?.offer?.toString(),
+          offerType: bundle?.offerType,
+          highlight: bundle?.highlight,
+          language: bundle?.language,
+          index: bundle?.index,
+          description: bundle?.description,
+          visible: bundle?.visible,
+        }}
+        validationSchema={EditBundleValidationSchema}
+        onSubmit={(values, {setFieldError}) => {
+          const bundleInput = {
+            type: values.type,
+          };
+          if (values.subject && values.subject !== bundle?.subject) {
+            bundleInput.subject = values.subject;
+          }
+          if (values.image) {
+            bundleInput.image = values.image;
+          }
+          if (values.title && values.title !== bundle?.title) {
+            bundleInput.title = values.title;
+          }
+          if (values.language && values.language !== bundle?.language) {
+            bundleInput.language = values.language;
+          }
+          if (
+            values.description &&
+            values.description !== bundle?.description
+          ) {
+            bundleInput.description = values.description;
+          }
+          if (values.visible && values.visible !== bundle?.visible) {
+            bundleInput.visible = values.visible;
+          }
+          if (values.paid && values.price && parseInt(values.price, 10)) {
+            bundleInput.paid = true;
+            bundleInput.price = parseInt(values.price, 10);
+            if (values.offer && parseInt(values.offer, 10)) {
+              bundleInput.offer = parseInt(values.offer, 10);
+              if (
+                values.offerType === 'AMOUNT' &&
+                parseInt(values.offer, 10) > parseInt(values.price, 10)
+              ) {
+                setFieldError(
+                  'offer',
+                  `Offer must be less than or equal to ${values.price}.`,
+                );
+                return;
+              }
+              if (
+                (values.offerType === 'PERCENT' &&
+                  parseInt(values.offer, 10) > 100) ||
+                (values.offerType === 'PERCENT' &&
+                  parseInt(values.offer, 10) < 0)
+              ) {
+                setFieldError(
+                  'offer',
+                  'Offer must be less than or equal to 100.',
+                );
+                return;
+              }
               bundleInput.offerType = values.offerType;
             }
-            if (values.subject) {
-              bundleInput.subject = values.subject;
-            }
-            editBundle({
-              variables: {
-                bundleId: bundle._id,
-                bundleInput,
-              },
-            });
-          }}>
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            setFieldValue,
-            values,
-            errors,
-            touched,
-          }) => (
-            <ScrollView>
+          }
+          if (values.highlight && values.highlight !== bundle?.highlight) {
+            bundleInput.highlight = values.highlight;
+          }
+          if (values.index && values.index !== bundle?.index) {
+            bundleInput.index = values.index;
+          }
+          editBundle({variables: {bundleId: bundle?._id, bundleInput}});
+        }}>
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          setFieldValue,
+          values,
+          errors,
+          touched,
+        }) => (
+          <>
+            <View style={tw`py-2`}>
               <CCTextInput
-                label=" Title"
+                required
+                label="Title"
                 error={errors.title}
                 touched={touched.title}
-                placeholder="Enter title"
                 onChangeText={handleChange('title')}
+                onBlur={handleBlur('title')}
                 value={values.title}
-                onBlur={handleBlur(' title')}
+                editable={!submitting}
               />
-
               <CCTextInput
+                required
                 label="Subject"
                 error={errors.subject}
                 touched={touched.subject}
-                placeholder="Enter subject"
                 onChangeText={handleChange('subject')}
                 onBlur={handleBlur('subject')}
                 value={values.subject}
+                editable={!submitting}
               />
-              <CCTextInput
+              <CCImageUploader
+                required
                 label="Image"
                 error={errors.image}
                 touched={touched.image}
-                placeholder="Enter image"
-                onChangeText={handleChange('image')}
-                onBlur={handleBlur('image')}
+                onChangeImage={value => {
+                  setFieldValue('image', value);
+                }}
                 value={values.image}
+                disabled={submitting}
+                prevImage={bundle?.image}
+                imageProps={sizes[values.type]}
               />
               <CCRadio
+                required
                 label="Language"
                 radio_props={[
                   {label: 'Hindi   ', value: 'HI'},
-                  {label: 'English', value: 'EN'},
+                  {label: 'English   ', value: 'EN'},
                 ]}
-                onPress={handleChange('language')}
                 value={values.language}
-              />
-
-              <CCRadio
-                label="Type"
-                radio_props={[
-                  {label: 'Full Syllabus   ', value: 'FULL_COURSE'},
-                  {label: 'Subject  ', value: 'SUBJECT_COURSE'},
-                  {label: 'Playlist', value: 'PLAYLIST_COURSE'},
-                ]}
-                onPress={handleChange('type')}
-                value={values.type}
-                formHorizontal={false}
+                onPress={value => {
+                  setFieldValue('language', value);
+                }}
               />
               <CCTextInput
+                label="Highlight"
+                error={errors.highlight}
+                touched={touched.highlight}
+                onChangeText={handleChange('highlight')}
+                onBlur={handleBlur('highlight')}
+                value={values.highlight}
+                editable={!submitting}
+              />
+              <CCTextInput
+                required
                 label="Description"
                 error={errors.description}
                 touched={touched.description}
-                placeholder="Enter description"
                 onChangeText={handleChange('description')}
                 onBlur={handleBlur('description')}
                 value={values.description}
+                editable={!submitting}
                 multiline={true}
                 numberOfLines={4}
               />
-              <CCRadio
-                label="Paid"
-                value={values.paid}
-                radio_props={[
-                  {label: 'Free   ', value: false},
-                  {label: 'Paid', value: true},
-                ]}
+              <CCTextInput
+                label="Index"
+                error={errors.index}
+                touched={touched.index}
+                onChangeText={handleChange('index')}
+                onBlur={handleBlur('index')}
+                value={values.index}
+                editable={!submitting}
+                multiline={true}
+                numberOfLines={4}
+              />
+              <CCCheckBox
+                label="Tick this, if course is paid."
+                checked={values.paid}
                 onPress={value => {
                   setFieldValue('paid', value);
                 }}
               />
-              {values.paid ? (
+              {values.paid && (
                 <>
                   <CCTextInput
                     label="Price"
                     error={errors.price}
                     touched={touched.price}
-                    placeholder="Enter price"
+                    info="Min: 1, Max: 99999"
                     onChangeText={handleChange('price')}
                     onBlur={handleBlur('price')}
                     value={values.price}
+                    editable={!submitting}
+                    keyboardType="number-pad"
                   />
-                  <CCTextInput
-                    label="Offer"
-                    error={errors.offer}
-                    touched={touched.offer}
-                    placeholder="Enter offer"
-                    onChangeText={handleChange('offer')}
-                    onBlur={handleBlur('offer')}
-                    value={values.offer}
-                  />
-                  <CCTextInput
-                    label="OfferType"
-                    error={errors.offerType}
-                    touched={touched.offerType}
-                    placeholder="Enter offerType"
-                    onChangeText={handleChange('offerType')}
-                    onBlur={handleBlur('offerType')}
-                    value={values.offerType}
-                  />
+                  {!!values.price && (
+                    <>
+                      <CCTextInput
+                        label="Offer"
+                        error={errors.offer}
+                        touched={touched.offer}
+                        onChangeText={handleChange('offer')}
+                        onBlur={handleBlur('offer')}
+                        value={values.offer}
+                        editable={!submitting}
+                        keyboardType="number-pad"
+                      />
+                      {!!values.offer && (
+                        <CCRadio
+                          label="Offer Type"
+                          radio_props={[
+                            {label: 'Percent   ', value: 'PERCENT'},
+                            {label: 'Amount   ', value: 'AMOUNT'},
+                          ]}
+                          value={values.offerType}
+                          onPress={value => {
+                            setFieldValue('offerType', value);
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
                 </>
-              ) : null}
-
-              <CCTextInput
-                label="Validity"
-                error={errors.validity}
-                touched={touched.validity}
-                placeholder="Enter validity"
-                onChangeText={handleChange('validity')}
-                onBlur={handleBlur('validity')}
-                value={values.validity}
-              />
-
+              )}
               <CCCheckBox
+                label="If ticked, course will be immediately visible to users."
+                checked={values.visible}
                 onPress={value => {
                   setFieldValue('visible', value);
                 }}
-                textComponent={<TextComp />}
-                isChecked={values.visible}
               />
-              <CCButton
-                disabled={loading}
-                label="Submit"
-                onPress={() => {
-                  console.log('onPressSSSSSSSSSSSSSSSS', values);
-                  handleSubmit();
-                }}
-              />
-            </ScrollView>
-          )}
-        </Formik>
-      </CCModal>
-    </SafeAreaContainer>
+            </View>
+            <CCButton
+              label="Submit"
+              loading={submitting}
+              disabled={submitting}
+              onPress={handleSubmit}
+            />
+          </>
+        )}
+      </Formik>
+    </CCModal>
   );
 };
 
