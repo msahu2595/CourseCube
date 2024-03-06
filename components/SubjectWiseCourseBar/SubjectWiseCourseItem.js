@@ -1,30 +1,30 @@
 import tw from '@lib/tailwind';
 import React, {memo, useCallback} from 'react';
+import config from 'react-native-ultimate-config';
 import {useNavigation} from '@react-navigation/native';
 import {View, Image, Text, Pressable} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const SubjectWiseCourseItem = memo(props => {
+const SubjectWiseCourseItem = memo(({width = 272, ...rest}) => {
   const navigation = useNavigation();
 
   const handleNavigation = useCallback(() => {
     navigation.navigate('CourseDetailTopTabNavigator', {
-      bundleId: props._id,
+      bundleId: rest._id,
       themeColor: 'orange',
     });
-  }, [navigation, props._id]);
+  }, [navigation, rest._id]);
 
   return (
     <Pressable onPress={handleNavigation}>
       <LinearGradient
         colors={['#FED7AA', '#FFF7ED', '#FFF']}
-        style={tw.style('rounded-lg', 'shadow-sm', 'pt-3', 'pb-4', {
-          width: 272,
-          paddingHorizontal: 12,
-        })}>
+        style={tw`rounded-lg shadow-sm px-3 pt-3 pb-4 w-[${width}px] opacity-${
+          rest?.visible ? 100 : 50
+        }`}>
         <Text style={tw`font-avSemi text-sm text-gray-600`} numberOfLines={2}>
-          {props?.title}
+          {rest?.title}
         </Text>
         <Text
           style={tw`font-avReg text-xs text-orange-600 py-2`}
@@ -35,13 +35,13 @@ const SubjectWiseCourseItem = memo(props => {
           <View style={tw`flex-row pb-2`}>
             <Icon name="lightbulb-on-outline" color="#58585B" size={16} />
             <Text style={tw`font-avReg text-xs text-gray-500 px-2`}>
-              {props?.highlight || 'New Batch'}
+              {rest?.highlight || 'New Batch'}
             </Text>
           </View>
           <View style={tw`flex-row pb-2`}>
             <Icon name="account-check-outline" color="#58585B" size={16} />
             <Text style={tw`font-avReg text-xs text-gray-500 px-2`}>
-              {props?.instructors.reduce(
+              {rest?.instructors.reduce(
                 (prev, cur) => (prev ? `${prev}, ${cur}` : cur),
                 '',
               )}
@@ -49,41 +49,62 @@ const SubjectWiseCourseItem = memo(props => {
           </View>
         </View>
         <Image
-          source={{uri: props?.image}}
+          source={{
+            uri: `${
+              __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+            }/${rest?.image}`,
+          }}
           resizeMode="cover"
-          style={tw.style('rounded-lg', 'my-2', 'self-center', {
-            height: 144,
+          style={tw.style('rounded-lg my-2 self-center', {
+            width: width - 16,
             aspectRatio: 16 / 9,
           })}
         />
         <View style={tw`w-full flex-row justify-between pt-3`}>
           <View style={tw`flex-row items-center justify-between`}>
-            <Text
-              style={tw`font-avSemi rounded px-2 bg-orange-100 text-orange-600 shadow-sm`}>
-              {`₹ ${
-                props?.price -
-                (props?.offerType === 'PERCENT'
-                  ? (props?.price * props?.offer) / 100
-                  : props?.offer)
-              }`}
-            </Text>
-            <Text
-              style={tw.style(
-                'px-2',
-                'font-avReg',
-                'text-xs',
-                'text-gray-500',
-                {
-                  textDecorationLine: 'line-through',
-                  textDecorationStyle: 'solid',
-                },
-              )}>
-              {`₹ ${props?.price}`}
-            </Text>
+            {rest?.paid && !rest?.purchased ? (
+              <>
+                <Text
+                  style={tw`font-avSemi rounded px-2 bg-orange-100 text-orange-600 shadow-sm`}>
+                  {rest?.offer
+                    ? `₹ ${
+                        rest?.price -
+                        (rest?.offerType === 'PERCENT'
+                          ? (rest?.price * rest?.offer) / 100
+                          : rest?.offer)
+                      }`
+                    : `₹ ${rest?.price}`}
+                </Text>
+                {!!rest?.offer && (
+                  <Text
+                    style={tw.style(
+                      'px-2',
+                      'font-avReg',
+                      'text-xs',
+                      'text-gray-500',
+                      {
+                        textDecorationLine: 'line-through',
+                        textDecorationStyle: 'solid',
+                      },
+                    )}>
+                    {`₹ ${rest?.price}`}
+                  </Text>
+                )}
+              </>
+            ) : (
+              <Text
+                style={tw`font-avSemi rounded px-2 py-1 bg-orange-50 text-orange-600 shadow-sm text-[10px]`}>
+                {`${
+                  rest?.purchased ? 'Continue learning ' : 'Available for free '
+                }➔`}
+              </Text>
+            )}
           </View>
-          <Text style={tw`font-avSemi text-xs text-red-500`}>{`${
-            props?.offer
-          } ${props?.offerType === 'PERCENT' ? '%' : '₹'} Off`}</Text>
+          <Text style={tw`font-avSemi text-xs text-red-500`}>
+            {!!rest?.offer
+              ? `${rest?.offer}${rest?.offerType === 'PERCENT' ? '%' : '₹'} Off`
+              : ''}
+          </Text>
         </View>
         <View style={tw`flex-row mt-2 mb-3 justify-between`}>
           <Text
@@ -111,7 +132,7 @@ const SubjectWiseCourseItem = memo(props => {
               'shadow-sm',
               {fontSize: 10, fontWeight: 'bold'},
             )}>
-            {props?.language === 'HI' ? 'हिं' : 'EN'}
+            {rest?.language === 'HI' ? 'हिं' : 'EN'}
           </Text>
         </View>
         <View style={tw`flex-row items-center self-center`}>

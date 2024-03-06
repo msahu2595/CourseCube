@@ -40,9 +40,9 @@ const HomeScreen = props => {
         <View style={tw`pt-1`}>
           <HistoryBar title="Continue Learning" />
         </View>
-        {/* <View style={tw`mt-1`}>
+        <View style={tw`pt-1`}>
           <FullSyllabusCourseBar title="Prepare with Full Syllabus Course" />
-        </View> */}
+        </View>
         <View style={tw`pt-1`}>
           <VideoBar title="Recent Videos" />
           {/* <VideoBar title="Free Classes" filter={{paid: false}} />
@@ -64,9 +64,9 @@ const HomeScreen = props => {
             filter={{paid: true}}
           /> */}
         </View>
-        {/* <View style={tw`pt-1`}>
+        <View style={tw`pt-1`}>
           <SubjectWiseCourseBar title="Subject Wise Courses" />
-        </View> */}
+        </View>
         <View style={tw`pt-1`}>
           <NotificationBar title="Latest Notifications" />
         </View>

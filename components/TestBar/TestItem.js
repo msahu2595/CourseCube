@@ -76,7 +76,7 @@ const TestItem = memo(({width = 184, ...rest}) => {
         <View style={tw`h-[130px] px-2 py-3 justify-between`}>
           <View style={tw`flex-row justify-between`}>
             <Text
-              style={tw`flex-1 font-avSemi text-amber-700 capitalize text-[10px]`}
+              style={tw`flex-1 font-avSemi text-amber-700 text-[10px]`}
               numberOfLines={1}>
               {rest?.subject}
             </Text>
@@ -88,9 +88,7 @@ const TestItem = memo(({width = 184, ...rest}) => {
               </Text>
             )}
           </View>
-          <Text
-            style={tw`font-avSemi text-xs text-gray-600 capitalize`}
-            numberOfLines={2}>
+          <Text style={tw`font-avSemi text-xs text-gray-600`} numberOfLines={2}>
             {rest?.title}
           </Text>
           <Text

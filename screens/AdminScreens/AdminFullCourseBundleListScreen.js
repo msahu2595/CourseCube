@@ -18,11 +18,11 @@ import {showMessage} from 'react-native-flash-message';
 import {Fab, FullSyllabusCourseItem} from '@components';
 import EditBundleModal from 'components/EditBundleModal';
 
-const columns = 2;
+const columns = 1;
 const type = 'FULL_COURSE';
 const width = Dimensions.get('window').width;
 const itemWidth = columns
-  ? width / columns - ((columns + 1) * 4) / columns
+  ? width / columns - ((columns + 1) * 8) / columns
   : null;
 
 function AdminFullCourseBundleListScreen() {
@@ -138,8 +138,7 @@ function AdminFullCourseBundleListScreen() {
         keyExtractor={item => item._id}
         renderItem={_renderItem}
         //
-        contentContainerStyle={tw`px-1`}
-        columnWrapperStyle={tw`justify-between`}
+        contentContainerStyle={tw`px-2`}
         ItemSeparatorComponent={() => <View style={tw`h-1`} />}
         ListFooterComponent={() => (
           <View style={tw`py-4 items-center`}>
