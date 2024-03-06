@@ -9,15 +9,18 @@ import {
 } from 'react-native';
 import tw from '@lib/tailwind';
 import {CONTENTS} from '@queries';
-import {TestItem} from '@components';
 import {DELETE_CONTENT} from '@mutations';
+import {TestItem, Fab} from '@components';
 import {CCSearchInput} from 'components/Common';
 import React, {useCallback, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
+import AddContentModal from 'components/AddContentModal';
 import EditContentModal from 'components/EditContentModal';
+import SelectMediaModal from 'components/SelectMediaModal';
 
 const columns = 2;
+const type = 'Test';
 const width = Dimensions.get('window').width;
 const itemWidth = columns
   ? width / columns - ((columns + 1) * 4) / columns
@@ -25,10 +28,12 @@ const itemWidth = columns
 
 const AdminContentVideoListScreen = () => {
   const [search, setSearch] = useState('');
+  const [addContentModal, setAddContentModal] = useState(null);
   const [editContentModal, setEditContentModal] = useState(null);
+  const [selectMediaModal, setSelectMediaModal] = useState(false);
 
   const {loading, data, refetch, fetchMore} = useQuery(CONTENTS, {
-    variables: {filter: {type: 'Test'}},
+    variables: {filter: {type}},
     onError: err => {
       showMessage({
         message: err?.message || 'Some unknown error occurred. Try again!!',
@@ -50,7 +55,7 @@ const AdminContentVideoListScreen = () => {
         type: 'danger',
       });
     },
-    refetchQueries: [{query: CONTENTS, variables: {filter: {type: 'Test'}}}],
+    refetchQueries: [{query: CONTENTS, variables: {filter: {type}}}],
   });
 
   const deleteHandler = useCallback(
@@ -156,11 +161,34 @@ const AdminContentVideoListScreen = () => {
           });
         }}
       />
+      <AddContentModal
+        media={addContentModal}
+        onClose={() => {
+          setAddContentModal(null);
+        }}
+      />
       <EditContentModal
         content={editContentModal}
         onClose={() => {
           setEditContentModal(null);
         }}
+      />
+      <SelectMediaModal
+        type={type}
+        visible={selectMediaModal}
+        onSelect={item => {
+          setSelectMediaModal(false);
+          setAddContentModal(item);
+        }}
+        onClose={() => {
+          setSelectMediaModal(false);
+        }}
+      />
+      <Fab
+        iconName="plus"
+        disabled={selectMediaModal}
+        bgColor={tw.color('blue-600')}
+        onPress={() => setSelectMediaModal(true)}
       />
     </View>
   );

@@ -18,20 +18,20 @@ import {linking} from '@lib';
 const App = () => {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
-    <GestureHandlerRootView style={{flex: 1}}>
-      <MenuProvider>
-        <SafeAreaProvider>
-          <NavigationContainer ref={navigatorRef} linking={linking}>
-            <ApolloProvider client={client}>
+    <ApolloProvider client={client}>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <MenuProvider>
+          <SafeAreaProvider>
+            <NavigationContainer ref={navigatorRef} linking={linking}>
               <MainNativeStackNavigator />
               <NetworkStatusProvider />
-            </ApolloProvider>
-          </NavigationContainer>
-          <SafeAreaFlashMessage position="top" />
-          <ModalPortal />
-        </SafeAreaProvider>
-      </MenuProvider>
-    </GestureHandlerRootView>
+            </NavigationContainer>
+            <SafeAreaFlashMessage position="top" />
+            <ModalPortal />
+          </SafeAreaProvider>
+        </MenuProvider>
+      </GestureHandlerRootView>
+    </ApolloProvider>
   );
 };
 
