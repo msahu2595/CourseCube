@@ -10,6 +10,7 @@ import CourseTestListScreen from './CourseTestListScreen';
 import CourseDocumentListScreen from './CourseDocumentListScreen';
 import CourseDownloadListScreen from './CourseDownloadListScreen';
 import SubjectWiseCourseListScreen from './SubjectWiseCourseListScreen';
+import PlaylistCourseListScreen from './PlaylistCourseListScreen';
 import NotificationListScreen from './NotificationListScreen';
 import PrepareExamListScreen from './PrepareExamListScreen';
 import CurrentAffairListScreen from './CurrentAffairListScreen';
@@ -30,6 +31,7 @@ export {
   CourseDownloadListScreen,
   NotificationListScreen,
   SubjectWiseCourseListScreen,
+  PlaylistCourseListScreen,
   PrepareExamListScreen,
   CurrentAffairListScreen,
   WebsiteListScreen,

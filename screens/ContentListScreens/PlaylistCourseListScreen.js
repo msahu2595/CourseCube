@@ -4,17 +4,17 @@ import {useQuery} from '@apollo/client';
 import {CCSearchInput} from 'components/Common';
 import React, {useCallback, useState} from 'react';
 import {showMessage} from 'react-native-flash-message';
-import {FullSyllabusCourseItem, SafeAreaContainer} from '@components';
+import {PlaylistCourseItem, SafeAreaContainer} from '@components';
 import {View, Text, FlatList, Dimensions, RefreshControl} from 'react-native';
 
 const columns = 1;
-const type = 'FULL_COURSE';
+const type = 'PLAYLIST_COURSE';
 const width = Dimensions.get('window').width;
 const itemWidth = columns
   ? width / columns - ((columns + 1) * 8) / columns
   : null;
 
-const FullSyllabusCourseListScreen = () => {
+const PlaylistCourseListScreen = () => {
   const [search, setSearch] = useState('');
 
   const {loading, data, refetch, fetchMore} = useQuery(BUNDLES, {
@@ -46,7 +46,7 @@ const FullSyllabusCourseListScreen = () => {
   }, [refetch]);
 
   const _renderItem = useCallback(
-    ({item}) => <FullSyllabusCourseItem {...item} width={itemWidth} />,
+    ({item}) => <PlaylistCourseItem {...item} width={itemWidth} />,
     [],
   );
 
@@ -94,4 +94,4 @@ const FullSyllabusCourseListScreen = () => {
   );
 };
 
-export default FullSyllabusCourseListScreen;
+export default PlaylistCourseListScreen;

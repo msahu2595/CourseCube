@@ -15,14 +15,14 @@ import React, {useCallback, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import AddBundleModal from 'components/AddBundleModal';
 import {showMessage} from 'react-native-flash-message';
-import {Fab, SubjectWiseCourseItem} from '@components';
+import {Fab, PlaylistCourseItem} from '@components';
 import EditBundleModal from 'components/EditBundleModal';
 
-const columns = 2;
+const columns = 1;
 const type = 'PLAYLIST_COURSE';
 const width = Dimensions.get('window').width;
 const itemWidth = columns
-  ? width / columns - ((columns + 1) * 4) / columns
+  ? width / columns - ((columns + 1) * 8) / columns
   : null;
 
 function AdminPlaylistCourseBundleListScreen() {
@@ -98,27 +98,24 @@ function AdminPlaylistCourseBundleListScreen() {
   }, [refetch]);
 
   const _renderItem = useCallback(
-    ({item}) => {
-      console.log(item);
-      return (
-        <View>
-          <SubjectWiseCourseItem {...item} width={itemWidth} />
-          <View style={tw`flex-row mt-[2px]`}>
-            <TouchableOpacity
-              style={tw`flex-1 items-center bg-blue-500 py-2 rounded-md`}
-              onPress={() => setEditBundleModal(item)}>
-              <Text style={tw`text-white text-xs font-avReg`}>Edit</Text>
-            </TouchableOpacity>
-            <View style={tw`w-[2px]`} />
-            <TouchableOpacity
-              style={tw`flex-1 items-center bg-red-500 py-2 rounded-md`}
-              onPress={() => deleteHandler(item._id)}>
-              <Text style={tw`text-white text-xs font-avReg`}>Delete</Text>
-            </TouchableOpacity>
-          </View>
+    ({item}) => (
+      <View>
+        <PlaylistCourseItem {...item} width={itemWidth} />
+        <View style={tw`flex-row mt-[2px]`}>
+          <TouchableOpacity
+            style={tw`flex-1 items-center bg-blue-500 py-2 rounded-md`}
+            onPress={() => setEditBundleModal(item)}>
+            <Text style={tw`text-white text-xs font-avReg`}>Edit</Text>
+          </TouchableOpacity>
+          <View style={tw`w-[2px]`} />
+          <TouchableOpacity
+            style={tw`flex-1 items-center bg-red-500 py-2 rounded-md`}
+            onPress={() => deleteHandler(item._id)}>
+            <Text style={tw`text-white text-xs font-avReg`}>Delete</Text>
+          </TouchableOpacity>
         </View>
-      );
-    },
+      </View>
+    ),
     [deleteHandler],
   );
 
@@ -138,8 +135,7 @@ function AdminPlaylistCourseBundleListScreen() {
         keyExtractor={item => item._id}
         renderItem={_renderItem}
         //
-        contentContainerStyle={tw`px-1`}
-        columnWrapperStyle={tw`justify-between`}
+        contentContainerStyle={tw`px-2`}
         ItemSeparatorComponent={() => <View style={tw`h-1`} />}
         ListFooterComponent={() => (
           <View style={tw`py-4 items-center`}>

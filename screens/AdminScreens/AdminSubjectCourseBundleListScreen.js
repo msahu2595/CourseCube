@@ -98,27 +98,24 @@ function AdminSubjectCourseBundleListScreen() {
   }, [refetch]);
 
   const _renderItem = useCallback(
-    ({item}) => {
-      console.log(item);
-      return (
-        <View>
-          <SubjectWiseCourseItem {...item} width={itemWidth} />
-          <View style={tw`flex-row mt-[2px]`}>
-            <TouchableOpacity
-              style={tw`flex-1 items-center bg-blue-500 py-2 rounded-md`}
-              onPress={() => setEditBundleModal(item)}>
-              <Text style={tw`text-white text-xs font-avReg`}>Edit</Text>
-            </TouchableOpacity>
-            <View style={tw`w-[2px]`} />
-            <TouchableOpacity
-              style={tw`flex-1 items-center bg-red-500 py-2 rounded-md`}
-              onPress={() => deleteHandler(item._id)}>
-              <Text style={tw`text-white text-xs font-avReg`}>Delete</Text>
-            </TouchableOpacity>
-          </View>
+    ({item}) => (
+      <View>
+        <SubjectWiseCourseItem {...item} width={itemWidth} />
+        <View style={tw`flex-row mt-[2px]`}>
+          <TouchableOpacity
+            style={tw`flex-1 items-center bg-blue-500 py-2 rounded-md`}
+            onPress={() => setEditBundleModal(item)}>
+            <Text style={tw`text-white text-xs font-avReg`}>Edit</Text>
+          </TouchableOpacity>
+          <View style={tw`w-[2px]`} />
+          <TouchableOpacity
+            style={tw`flex-1 items-center bg-red-500 py-2 rounded-md`}
+            onPress={() => deleteHandler(item._id)}>
+            <Text style={tw`text-white text-xs font-avReg`}>Delete</Text>
+          </TouchableOpacity>
         </View>
-      );
-    },
+      </View>
+    ),
     [deleteHandler],
   );
 

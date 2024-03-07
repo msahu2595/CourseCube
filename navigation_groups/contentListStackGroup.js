@@ -10,6 +10,7 @@ import {
   DocumentListScreen,
   NotificationListScreen,
   SubjectWiseCourseListScreen,
+  PlaylistCourseListScreen,
   PrepareExamListScreen,
   CurrentAffairListScreen,
   DownloadListScreen,
@@ -63,6 +64,15 @@ const contentListStackGroup = () => {
           headerShown: true,
           headerStyle: tw`bg-green-200`,
           headerTitle: route?.params?.headerTitle || 'Subject Wise Courses',
+        })}
+      />
+      <Stack.Screen
+        name="PlaylistCourseListScreen"
+        component={PlaylistCourseListScreen}
+        options={({route}) => ({
+          headerShown: true,
+          headerStyle: tw`bg-green-200`,
+          headerTitle: route?.params?.headerTitle || 'Playlist Courses',
         })}
       />
       <Stack.Screen

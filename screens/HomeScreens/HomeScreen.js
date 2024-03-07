@@ -9,6 +9,7 @@ import {
   HistoryBar,
   FullSyllabusCourseBar,
   SubjectWiseCourseBar,
+  PlaylistCourseBar,
   VideoBar,
   TestBar,
   DocumentBar,
@@ -49,9 +50,15 @@ const HomeScreen = props => {
           <VideoBar title="Paid Classes" filter={{paid: true}} /> */}
         </View>
         <View style={tw`pt-1`}>
+          <SubjectWiseCourseBar title="Subject Wise Courses" />
+        </View>
+        <View style={tw`pt-1`}>
           <TestBar title="Recent Tests" />
           {/* <TestBar title="Free Tests" filter={{paid: false}} />
           <TestBar title="Paid Tests" filter={{paid: true}} /> */}
+        </View>
+        <View style={tw`pt-1`}>
+          <PlaylistCourseBar title="Playlist Courses" />
         </View>
         <View style={tw`pt-1`}>
           <DocumentBar title="Recent Documents" />
@@ -63,9 +70,6 @@ const HomeScreen = props => {
             title="Paid PDF's (Study Materials)"
             filter={{paid: true}}
           /> */}
-        </View>
-        <View style={tw`pt-1`}>
-          <SubjectWiseCourseBar title="Subject Wise Courses" />
         </View>
         <View style={tw`pt-1`}>
           <NotificationBar title="Latest Notifications" />
