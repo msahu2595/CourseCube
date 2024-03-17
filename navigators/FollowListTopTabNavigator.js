@@ -8,7 +8,6 @@ const Tab = createMaterialTopTabNavigator(); // Create Tap Tab Navigator
 const FollowListTopTabNavigator = ({route}) => (
   <Tab.Navigator
     backBehavior="none"
-    initialRouteName="Info"
     screenOptions={{
       swipeEnabled: true,
       tabBarScrollEnabled: false,

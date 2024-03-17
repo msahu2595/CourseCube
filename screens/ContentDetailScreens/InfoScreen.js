@@ -3,6 +3,7 @@ import tw from '@lib/tailwind';
 import {BUNDLE} from '@queries';
 import {useQuery} from '@apollo/client';
 import {SafeAreaContainer} from '@components';
+import config from 'react-native-ultimate-config';
 import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {View, Text, ScrollView, Image, useWindowDimensions} from 'react-native';
@@ -33,7 +34,11 @@ const InfoScreen = props => {
         style={tw`flex-1`}>
         <ScrollView>
           <Image
-            source={{uri: data?.image}}
+            source={{
+              uri: `${
+                __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+              }/${data?.image}`,
+            }}
             resizeMode="cover"
             style={tw.style('self-center', 'mt-4', {
               height: (width / 16) * 9 - 16,
@@ -143,36 +148,48 @@ const InfoScreen = props => {
             style={tw`p-2`}
           />
           <View style={tw`items-center justify-between`}>
-            <Text
-              style={tw`font-avSemi px-2 text-${
-                props.route.params?.themeColor || 'green'
-              }-600 text-sm`}>
-              {`₹ ${
-                data?.price -
-                (data?.offerType === 'PERCENT'
-                  ? (data?.price * data?.offer) / 100
-                  : data?.offer)
-              }`}
-            </Text>
-            <Text
-              style={tw.style(
-                'font-avReg',
-                'px-2',
-                'text-gray-500',
-                'text-xs',
-                {
-                  textDecorationLine: 'line-through',
-                  textDecorationStyle: 'solid',
-                },
-              )}>
-              {`₹ ${data?.price}`}
-            </Text>
+            {data?.paid && !data?.purchased ? (
+              <>
+                <Text
+                  style={tw`font-avSemi px-2 text-${
+                    props.route.params?.themeColor || 'green'
+                  }-600 text-sm`}>
+                  {data?.offer
+                    ? `₹ ${
+                        data?.price -
+                        (data?.offerType === 'PERCENT'
+                          ? (data?.price * data?.offer) / 100
+                          : data?.offer)
+                      }`
+                    : `₹ ${data?.price}`}
+                </Text>
+                {!!data?.offer && (
+                  <Text
+                    style={tw.style(
+                      'font-avReg',
+                      'px-2',
+                      'text-gray-500',
+                      'text-xs',
+                      {
+                        textDecorationLine: 'line-through',
+                        textDecorationStyle: 'solid',
+                      },
+                    )}>
+                    {`₹ ${data?.price}`}
+                  </Text>
+                )}
+              </>
+            ) : null}
           </View>
           <View style={tw`items-center justify-center`}>
-            <Text style={tw`font-avSemi text-xs text-red-500`}>{`${
-              data?.offer
-            }${data?.offerType === 'PERCENT' ? '%' : '₹'}`}</Text>
-            <Text style={tw`font-avSemi text-xs text-red-500`}>Off</Text>
+            {!!data?.offer && (
+              <>
+                <Text style={tw`font-avSemi text-xs text-red-500`}>
+                  {`${data?.offer}${data?.offerType === 'PERCENT' ? '%' : '₹'}`}
+                </Text>
+                <Text style={tw`font-avSemi text-xs text-red-500`}>Off</Text>
+              </>
+            )}
           </View>
           <View style={tw`flex-row`}>
             <View style={tw`flex-row items-center`}>
@@ -182,7 +199,9 @@ const InfoScreen = props => {
                 }-100 text-sm text-${
                   props.route.params?.themeColor || 'green'
                 }-600 shadow-sm text-right`}>
-                Buy Now
+                {data?.paid && !data?.purchased
+                  ? 'Buy Now'
+                  : 'Start Learning ➔'}
               </Text>
               <AntDesign
                 name="sharealt"

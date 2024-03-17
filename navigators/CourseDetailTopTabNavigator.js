@@ -26,24 +26,27 @@ const CourseDetailTopTabNavigator = props => {
           }-500`,
         }}>
         <Tab.Screen
-          name="Info"
+          name="CourseInfoScreen"
           component={InfoScreen}
+          options={{title: 'Info'}}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             themeColor: props.route.params?.themeColor,
           }}
         />
         <Tab.Screen
-          name="Syllabus"
+          name="CourseSyllabusScreen"
           component={SyllabusScreen}
+          options={{title: 'Syllabus'}}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             themeColor: props.route.params?.themeColor,
           }}
         />
         <Tab.Screen
-          name="FAQ"
+          name="CourseFAQScreen"
           component={FAQScreen}
+          options={{title: 'FAQ'}}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             themeColor: props.route.params?.themeColor,
