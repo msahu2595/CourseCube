@@ -7,6 +7,7 @@ import {
   AdminArticleListScreen,
   AdminWebsiteListScreen,
   AdminTestQuestionListScreen,
+  AdminCourseSyllabusScreen,
 } from '@screens';
 import {
   MediaListTopTabNavigator,
@@ -87,6 +88,13 @@ const adminStackGroup = () => {
         component={AdminTestQuestionListScreen}
         options={{
           headerTitle: 'Test Questions',
+        }}
+      />
+      <Stack.Screen
+        name="AdminCourseSyllabusScreen"
+        component={AdminCourseSyllabusScreen}
+        options={{
+          headerTitle: 'Course Syllabus',
         }}
       />
     </Stack.Group>

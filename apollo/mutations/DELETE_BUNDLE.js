@@ -11,7 +11,6 @@ export const DELETE_BUNDLE = gql`
         subject
         image
         title
-        syllabus
         type
         paid
         price

@@ -1,23 +1,26 @@
 import tw from '@lib/tailwind';
-import {BUNDLE} from '@queries';
-import {useQuery} from '@apollo/client';
-import {SafeAreaContainer} from '@components';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback} from 'react';
+import {gql, useQuery} from '@apollo/client';
 import {useNavigation} from '@react-navigation/native';
-import TreeView from 'react-native-animated-tree-view';
 import LinearGradient from 'react-native-linear-gradient';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import {SafeAreaContainer, SyllabusTree} from '@components';
+
+const BUNDLE_SYLLABUS = gql`
+  query bundleSyllabus($bundleId: ID!) {
+    bundleSyllabus(bundleId: $bundleId) {
+      code
+      success
+      message
+      token
+      payload
+    }
+  }
+`;
 
 const SyllabusScreen = props => {
   const navigation = useNavigation();
-  const [treeIcon, setTreeIcon] = useState();
-  AntDesign.getImageSource(
-    'copy1',
-    32,
-    tw.color(`${props.route.params?.themeColor || 'green'}-700`),
-  ).then(source => setTreeIcon(source));
 
-  const {loading: queryLoading, data: queryData} = useQuery(BUNDLE, {
+  const {loading: queryLoading, data: queryData} = useQuery(BUNDLE_SYLLABUS, {
     variables: {bundleId: props.route.params.bundleId},
   });
 
@@ -30,8 +33,6 @@ const SyllabusScreen = props => {
     },
     [navigation, props.route.params.bundleId],
   );
-
-  const data = queryData?.bundle?.payload;
 
   return (
     <SafeAreaContainer
@@ -47,17 +48,14 @@ const SyllabusScreen = props => {
           tw.color('white'),
         ]}
         style={tw`flex-1`}>
-        {data?.syllabus && (
-          <TreeView
-            data={data?.syllabus}
-            onClick={handleClick}
-            containerStyle={tw`px-4 py-2`}
-            listContainerStyle={tw``}
-            leftImage={treeIcon}
-            leftImageStyle={tw.style({width: 20, height: 20})}
-            textStyle={tw`pl-2 font-avReg text-base text-gray-900`}
-          />
-        )}
+        <SyllabusTree
+          data={queryData?.bundleSyllabus?.payload?.syllabus}
+          iconColor={tw.color('green-700')}
+          onPress={handleClick}
+          onLongPress={option => {
+            console.log('onLongPress', option);
+          }}
+        />
       </LinearGradient>
     </SafeAreaContainer>
   );

@@ -6831,11 +6831,6 @@ react-is@^17.0.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-native-animated-tree-view@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.npmjs.org/react-native-animated-tree-view/-/react-native-animated-tree-view-0.1.4.tgz"
-  integrity sha512-/Lxo4o8MRvK0h9WNgsut0XBu7VTXlDHa737mrDuG+7bXJlNtvHKVuTxW580vN0GQNLM4orbiG6TSiOsvdY6MhQ==
-
 react-native-background-downloader@^2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/react-native-background-downloader/-/react-native-background-downloader-2.3.4.tgz#050a94b044b0a204f1c41b9852d4d53dcefe527c"

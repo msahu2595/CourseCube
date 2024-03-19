@@ -25,7 +25,7 @@ const itemWidth = columns
   ? width / columns - ((columns + 1) * 8) / columns
   : null;
 
-function AdminFullCourseBundleListScreen() {
+function AdminFullCourseBundleListScreen({navigation}) {
   const [search, setSearch] = useState('');
   const [addBundleModal, setAddBundleModal] = useState(false);
   const [editBundleModal, setEditBundleModal] = useState(null);
@@ -97,6 +97,13 @@ function AdminFullCourseBundleListScreen() {
     refetch({search: ''});
   }, [refetch]);
 
+  const navigateSyllabusScreen = useCallback(
+    bundleId => {
+      navigation.navigate('AdminCourseSyllabusScreen', {bundleId});
+    },
+    [navigation],
+  );
+
   const _renderItem = useCallback(
     ({item}) => (
       <View>
@@ -109,6 +116,12 @@ function AdminFullCourseBundleListScreen() {
           </TouchableOpacity>
           <View style={tw`w-[2px]`} />
           <TouchableOpacity
+            style={tw`flex-1 items-center bg-purple-500 py-2 rounded-md`}
+            onPress={() => navigateSyllabusScreen(item._id)}>
+            <Text style={tw`text-white text-xs font-avReg`}>Syllabus</Text>
+          </TouchableOpacity>
+          <View style={tw`w-[2px]`} />
+          <TouchableOpacity
             style={tw`flex-1 items-center bg-red-500 py-2 rounded-md`}
             onPress={() => deleteHandler(item._id)}>
             <Text style={tw`text-white text-xs font-avReg`}>Delete</Text>
@@ -116,7 +129,7 @@ function AdminFullCourseBundleListScreen() {
         </View>
       </View>
     ),
-    [deleteHandler],
+    [navigateSyllabusScreen, deleteHandler],
   );
 
   return (

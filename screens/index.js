@@ -15,6 +15,7 @@ import {
   AdminContentTestListScreen,
   AdminContentDocumentListScreen,
   //
+  AdminCourseSyllabusScreen,
   AdminFullCourseBundleListScreen,
   AdminSubjectCourseBundleListScreen,
   AdminPlaylistCourseBundleListScreen,
@@ -102,6 +103,7 @@ export {
   AdminContentTestListScreen,
   AdminContentDocumentListScreen,
   //
+  AdminCourseSyllabusScreen,
   AdminFullCourseBundleListScreen,
   AdminSubjectCourseBundleListScreen,
   AdminPlaylistCourseBundleListScreen,

@@ -14,6 +14,7 @@ import AdminContentVideoListScreen from './AdminContentVideoListScreen';
 import AdminContentTestListScreen from './AdminContentTestListScreen';
 import AdminContentDocumentListScreen from './AdminContentDocumentListScreen';
 //
+import AdminCourseSyllabusScreen from './AdminCourseSyllabusScreen';
 import AdminFullCourseBundleListScreen from './AdminFullCourseBundleListScreen';
 import AdminSubjectCourseBundleListScreen from './AdminSubjectCourseBundleListScreen';
 import AdminPlaylistCourseBundleListScreen from './AdminPlaylistCourseBundleListScreen';
@@ -35,6 +36,7 @@ export {
   AdminContentTestListScreen,
   AdminContentDocumentListScreen,
   //
+  AdminCourseSyllabusScreen,
   AdminFullCourseBundleListScreen,
   AdminSubjectCourseBundleListScreen,
   AdminPlaylistCourseBundleListScreen,

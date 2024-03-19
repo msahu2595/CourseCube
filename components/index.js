@@ -37,6 +37,7 @@ import {ShareApp, FollowUs, GetCallFromUs, GetSubscription} from './AppAdverts';
 //
 import InfoItem from './InfoItem';
 import MediaItem from './MediaItem';
+import SyllabusTree from './SyllabusTree';
 import MenuOptionItem from './MenuOptionItem';
 import LoadingIndicator from './LoadingIndicator';
 import NetworkStatusProvider from './NetworkStatusProvider';
@@ -93,6 +94,7 @@ export {
   //
   InfoItem,
   MediaItem,
+  SyllabusTree,
   MenuOptionItem,
   LoadingIndicator,
   NetworkStatusProvider,

@@ -16,7 +16,6 @@ export const BUNDLE = gql`
         subject
         image
         title
-        syllabus
         type
         paid
         price
