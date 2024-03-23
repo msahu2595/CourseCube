@@ -13,7 +13,9 @@ export const SyllabusTree = props => {
   const {data, ...rest} = props;
 
   let dNN = 'name';
-  let dNV = 'subjectId';
+  let dNV = 'value';
+  let dNS = 'isSection';
+  let dNI = 'subjectId';
   let cNN = 'syllabus';
 
   const selectAccountFunc = (newSelectedOptions, option) => {
@@ -21,22 +23,27 @@ export const SyllabusTree = props => {
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setSelectedOptions({...newSelectedOptions});
     } else {
-      props.onPress && props.onPress(option);
+      !option[dNS] && props.onPress && props.onPress(option);
     }
   };
 
   let checkType = data ? (data instanceof Array ? data : []) : [];
 
   return (
-    <ScrollView contentContainerStyle={tw`px-2 py-1`}>
+    <ScrollView contentContainerStyle={tw`px-2 py-4`}>
       <OptionsList
         options={checkType}
         selectedOptions={selectedOptions}
-        iconColor={rest?.iconColor}
         onChange={selectAccountFunc}
-        onLongPress={rest?.onLongPress}
+        onPressAdd={rest?.onPressAdd}
+        onPressEdit={rest?.onPressEdit}
+        onPressDelete={rest?.onPressDelete}
+        isAdmin={rest?.isAdmin}
+        iconColor={rest?.iconColor}
+        displayNodeId={dNI}
         displayNodeName={dNN}
         displayNodeValue={dNV}
+        displayNodeSection={dNS}
         childrenNodeName={cNN}
         {...rest}
       />
@@ -48,83 +55,139 @@ export const SyllabusTree = props => {
 const OptionsList = ({
   options,
   selectedOptions,
-  iconColor,
   onChange,
-  onLongPress,
+  onPressAdd,
+  onPressEdit,
+  onPressDelete,
+  isAdmin,
+  iconColor,
   ...rest
 }) => {
-  const {displayNodeName, displayNodeValue, childrenNodeName} = rest;
+  const {
+    displayNodeName,
+    displayNodeId,
+    displayNodeValue,
+    displayNodeSection,
+    childrenNodeName,
+  } = rest;
 
   const handleParentClicked = option => {
-    if (selectedOptions[option[displayNodeValue]]) {
-      delete selectedOptions[option[displayNodeValue]];
+    if (selectedOptions[option[displayNodeId]]) {
+      delete selectedOptions[option[displayNodeId]];
     } else {
-      selectedOptions[option[displayNodeValue]] = {};
+      selectedOptions[option[displayNodeId]] = {};
     }
     onChange(selectedOptions, option);
   };
 
   const handleSubOptionsListChange = (subSelections, option) => {
-    selectedOptions[option[displayNodeValue]] = subSelections;
+    selectedOptions[option[displayNodeId]] = subSelections;
     onChange(selectedOptions, option);
+  };
+
+  const handleAddClicked = option => {
+    onPressAdd(option);
+  };
+
+  const handleEditClicked = option => {
+    onPressEdit(option);
+  };
+
+  const handleDeleteClicked = option => {
+    onPressDelete(option);
   };
 
   return (
     <View>
-      {options.map(option => (
-        <View key={option[displayNodeValue]} style={tw.style({flex: 1})}>
-          <List
-            label={option[displayNodeName]}
-            value={option[displayNodeValue]}
-            items={option[childrenNodeName]}
-            selected={selectedOptions[option[displayNodeValue]]}
-            iconColor={iconColor}
-            onChange={() => {
-              handleParentClicked(option);
-            }}
-            onLongPress={() => {
-              onLongPress(option);
-            }}
-            {...rest}
-          />
-
-          {/* Recursive Case */}
-          {option[childrenNodeName] &&
-            option[childrenNodeName].length > 0 &&
-            selectedOptions[option[displayNodeValue]] && (
-              <View style={tw`ml-4`}>
-                <OptionsList
-                  options={option[childrenNodeName]}
-                  selectedOptions={selectedOptions[option[displayNodeValue]]}
-                  iconColor={iconColor}
-                  onChange={(subSelections, opt) => {
-                    handleSubOptionsListChange(subSelections, opt);
-                  }}
-                  onLongPress={() => {
-                    onLongPress(option[childrenNodeName]);
-                  }}
-                  {...rest}
-                />
-              </View>
-            )}
-        </View>
-      ))}
+      {options.map(option =>
+        !isAdmin &&
+        option[displayNodeSection] &&
+        !option[childrenNodeName].length ? null : (
+          <View key={option[displayNodeId]} style={tw.style({flex: 1})}>
+            <List
+              label={option[displayNodeName]}
+              onChange={() => {
+                handleParentClicked(option);
+              }}
+              onPressAdd={() => {
+                const subjectIds = Array.from(option[displayNodeValue]);
+                handleAddClicked({subjectIds});
+              }}
+              onPressEdit={() => {
+                const subjectIds = Array.from(option[displayNodeValue]);
+                const subjectId = subjectIds.pop();
+                handleEditClicked({
+                  subjectId,
+                  subjectIds,
+                  subjectName: option[displayNodeName],
+                  isSection: option[displayNodeSection],
+                });
+              }}
+              onPressDelete={() => {
+                const subjectIds = Array.from(option[displayNodeValue]);
+                const subjectId = subjectIds.pop();
+                handleDeleteClicked({
+                  subjectId,
+                  subjectIds,
+                });
+              }}
+              isAdmin={isAdmin}
+              isSection={option[displayNodeSection]}
+              subjectCount={option[childrenNodeName]?.length}
+              iconColor={iconColor}
+            />
+            {/* Recursive Case */}
+            {option[childrenNodeName] &&
+              option[childrenNodeName].length > 0 &&
+              selectedOptions[option[displayNodeId]] && (
+                <View style={tw`ml-4`}>
+                  <OptionsList
+                    options={option[childrenNodeName]}
+                    selectedOptions={selectedOptions[option[displayNodeId]]}
+                    onChange={(subSelections, opt) => {
+                      handleSubOptionsListChange(subSelections, opt);
+                    }}
+                    onPressAdd={onPressAdd}
+                    onPressEdit={onPressEdit}
+                    onPressDelete={onPressDelete}
+                    isAdmin={isAdmin}
+                    iconColor={iconColor}
+                    {...rest}
+                  />
+                </View>
+              )}
+          </View>
+        ),
+      )}
     </View>
   );
 };
 
 // Dumb List component, completely controlled by parent
 const List = memo(
-  ({label, iconColor, value, items, selected, onChange, onLongPress}) => {
-    console.log({label, value, items, selected});
+  ({
+    label,
+    onChange,
+    onPressAdd,
+    onPressEdit,
+    onPressDelete,
+    isAdmin,
+    isSection,
+    subjectCount,
+    iconColor,
+  }) => {
     return (
       <View style={tw`flex-1`}>
         <TreeItem
-          text={label}
+          label={label}
+          onPress={onChange}
+          onPressAdd={onPressAdd}
+          onPressEdit={onPressEdit}
+          onPressDelete={onPressDelete}
+          isAdmin={isAdmin}
+          isSection={isSection}
+          subjectCount={subjectCount}
           iconColor={iconColor}
-          rightImage={!!items?.length}
-          onPress={() => onChange(!selected, label, value, items)}
-          onLongPress={() => onLongPress(!selected, label, value, items)}
         />
       </View>
     );
