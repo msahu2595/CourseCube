@@ -1,8 +1,8 @@
 import {tw} from '@lib';
 import {LOGOUT} from '@mutations';
-import {Alert} from 'react-native';
 import React, {useCallback} from 'react';
 import {useMutation} from '@apollo/client';
+import {Alert, ScrollView} from 'react-native';
 import {loggedUserVar, storage} from 'apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import {CCNavigationButton, CCText} from 'components/Common';
@@ -42,70 +42,78 @@ const AdminHomeScreen = ({navigation}) => {
   return (
     <>
       <SafeAreaContainer
-        style={tw`bg-white p-4`}
         statusBarStyle="light-content"
         statusBgColor={tw.color('blue-600')}>
-        <CCNavigationButton
-          name="Advert"
-          onPress={() => navigation.navigate('AdminAdvertListScreen')}
-          icon="file-text"
-          disabled={loading}
-        />
-        <CCNavigationButton
-          name="Headlines"
-          onPress={() => navigation.navigate('AdminHeadlineListScreen')}
-          icon="file-text"
-          disabled={loading}
-        />
-        <CCNavigationButton
-          name="Articles"
-          onPress={() => navigation.navigate('AdminArticleListScreen')}
-          icon="file-text"
-          disabled={loading}
-        />
-        <CCNavigationButton
-          name="Websites"
-          onPress={() => navigation.navigate('AdminWebsiteListScreen')}
-          icon="file-text"
-          disabled={loading}
-        />
-        <CCNavigationButton
-          name="Courses"
-          onPress={() => navigation.navigate('AdminCourseListTopTabNavigator')}
-          icon="file-text"
-          disabled={loading}
-        />
-        <CCNavigationButton
-          name="Contents"
-          onPress={() => navigation.navigate('AdminContentListTopTabNavigator')}
-          icon="file-text"
-          disabled={loading}
-        />
-        <CCNavigationButton
-          name="Media"
-          onPress={() => navigation.navigate('AdminMediaListTopTabNavigator')}
-          icon="file-text"
-          disabled={loading}
-        />
-        <CCNavigationButton
-          name="Users"
-          onPress={() => navigation.navigate('AdminUserListScreen')}
-          icon="file-text"
-          disabled={loading}
-        />
-        <CCNavigationButton
-          name="Logout"
-          onPress={handleLogout}
-          icon="log-out"
-          disabled={loading}
-        />
-        <CCNavigationButton
-          name="Login as a User"
-          onPress={() => navigation.navigate('MainBottomTabNavigator')}
-          icon="repeat"
-          disabled={loading}
-        />
-        {__DEV__ && <CCText style={tw`items-center`} content="[DEV]" />}
+        <ScrollView
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={tw`bg-white p-4`}>
+          <CCNavigationButton
+            name="Advert"
+            onPress={() => navigation.navigate('AdminAdvertListScreen')}
+            icon="file-text"
+            disabled={loading}
+          />
+          <CCNavigationButton
+            name="Headlines"
+            onPress={() => navigation.navigate('AdminHeadlineListScreen')}
+            icon="file-text"
+            disabled={loading}
+          />
+          <CCNavigationButton
+            name="Articles"
+            onPress={() => navigation.navigate('AdminArticleListScreen')}
+            icon="file-text"
+            disabled={loading}
+          />
+          <CCNavigationButton
+            name="Websites"
+            onPress={() => navigation.navigate('AdminWebsiteListScreen')}
+            icon="file-text"
+            disabled={loading}
+          />
+          <CCNavigationButton
+            name="Courses"
+            onPress={() =>
+              navigation.navigate('AdminCourseListTopTabNavigator')
+            }
+            icon="file-text"
+            disabled={loading}
+          />
+          <CCNavigationButton
+            name="Contents"
+            onPress={() =>
+              navigation.navigate('AdminContentListTopTabNavigator')
+            }
+            icon="file-text"
+            disabled={loading}
+          />
+          <CCNavigationButton
+            name="Media"
+            onPress={() => navigation.navigate('AdminMediaListTopTabNavigator')}
+            icon="file-text"
+            disabled={loading}
+          />
+          <CCNavigationButton
+            name="Users"
+            onPress={() => navigation.navigate('AdminUserListScreen')}
+            icon="file-text"
+            disabled={loading}
+          />
+          <CCNavigationButton
+            name="Logout"
+            onPress={handleLogout}
+            icon="log-out"
+            disabled={loading}
+          />
+          <CCNavigationButton
+            name="Login as a User"
+            onPress={() => navigation.navigate('MainBottomTabNavigator')}
+            icon="repeat"
+            disabled={loading}
+          />
+          {__DEV__ && <CCText style={tw`items-center`} content="[DEV]" />}
+        </ScrollView>
       </SafeAreaContainer>
       <LoadingIndicator loading={loading} />
     </>
