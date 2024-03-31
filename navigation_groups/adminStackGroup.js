@@ -6,13 +6,15 @@ import {
   AdminHeadlineListScreen,
   AdminArticleListScreen,
   AdminWebsiteListScreen,
+  AdminUserListScreen,
   AdminTestQuestionListScreen,
   AdminCourseSyllabusScreen,
 } from '@screens';
 import {
-  MediaListTopTabNavigator,
-  CourseListTopTabNavigator,
-  ContentListTopTabNavigator,
+  AdminMediaListTopTabNavigator,
+  AdminCourseListTopTabNavigator,
+  AdminContentListTopTabNavigator,
+  AdminCourseContentListTopTabNavigator,
 } from '@navigators';
 import {TouchableOpacity} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -63,24 +65,31 @@ const adminStackGroup = () => {
         }}
       />
       <Stack.Screen
-        name="CourseListTopTabNavigator"
-        component={CourseListTopTabNavigator}
+        name="AdminCourseListTopTabNavigator"
+        component={AdminCourseListTopTabNavigator}
         options={{
           headerTitle: 'Courses',
         }}
       />
       <Stack.Screen
-        name="ContentListTopTabNavigator"
-        component={ContentListTopTabNavigator}
+        name="AdminContentListTopTabNavigator"
+        component={AdminContentListTopTabNavigator}
         options={{
           headerTitle: 'Contents',
         }}
       />
       <Stack.Screen
-        name="MediaListTopTabNavigator"
-        component={MediaListTopTabNavigator}
+        name="AdminMediaListTopTabNavigator"
+        component={AdminMediaListTopTabNavigator}
         options={{
           headerTitle: 'Media',
+        }}
+      />
+      <Stack.Screen
+        name="AdminUserListScreen"
+        component={AdminUserListScreen}
+        options={{
+          headerTitle: 'Users',
         }}
       />
       <Stack.Screen
@@ -95,6 +104,13 @@ const adminStackGroup = () => {
         component={AdminCourseSyllabusScreen}
         options={{
           headerTitle: 'Course Syllabus',
+        }}
+      />
+      <Stack.Screen
+        name="AdminCourseContentListTopTabNavigator"
+        component={AdminCourseContentListTopTabNavigator}
+        options={{
+          headerTitle: 'Course Contents',
         }}
       />
     </Stack.Group>

@@ -113,7 +113,7 @@ const AdminCourseSyllabusScreen = ({navigation, route: {params}}) => {
 
   const onNavigate = useCallback(
     payload => {
-      navigation.navigate('CourseContentListTopTabNavigator', {
+      navigation.navigate('AdminCourseContentListTopTabNavigator', {
         bundleId: params?.bundleId,
         subjectId: payload?.subjectId,
       });

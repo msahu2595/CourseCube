@@ -71,27 +71,27 @@ const AdminHomeScreen = ({navigation}) => {
         />
         <CCNavigationButton
           name="Courses"
-          onPress={() => navigation.navigate('CourseListTopTabNavigator')}
+          onPress={() => navigation.navigate('AdminCourseListTopTabNavigator')}
           icon="file-text"
           disabled={loading}
         />
         <CCNavigationButton
           name="Contents"
-          onPress={() => navigation.navigate('ContentListTopTabNavigator')}
+          onPress={() => navigation.navigate('AdminContentListTopTabNavigator')}
           icon="file-text"
           disabled={loading}
         />
         <CCNavigationButton
           name="Media"
-          onPress={() => navigation.navigate('MediaListTopTabNavigator')}
+          onPress={() => navigation.navigate('AdminMediaListTopTabNavigator')}
           icon="file-text"
           disabled={loading}
         />
         <CCNavigationButton
           name="Users"
-          onPress={() => navigation.navigate('UserListTopTabNavigator')}
+          onPress={() => navigation.navigate('AdminUserListScreen')}
           icon="file-text"
-          disabled={true}
+          disabled={loading}
         />
         <CCNavigationButton
           name="Logout"

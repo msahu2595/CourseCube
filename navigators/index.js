@@ -1,25 +1,31 @@
 import MainNativeStackNavigator from './MainNativeStackNavigator';
 import MainBottomTabNavigator from './MainBottomTabNavigator';
 //
-import ContentListTopTabNavigator from './ContentListTopTabNavigator';
 import CourseDetailTopTabNavigator from './CourseDetailTopTabNavigator';
 import CourseContentListTopTabNavigator from './CourseContentListTopTabNavigator';
 //
 import BookmarkListTopTabNavigator from './BookmarkListTopTabNavigator';
 import DownloadListTopTabNavigator from './DownloadListTopTabNavigator';
-import CourseListTopTabNavigator from './CourseListTopTabNavigator';
 import FollowListTopTabNavigator from './FollowListTopTabNavigator';
-import MediaListTopTabNavigator from './MediaListTopTabNavigator';
+//
+import AdminMediaListTopTabNavigator from './AdminMediaListTopTabNavigator';
+import AdminCourseListTopTabNavigator from './AdminCourseListTopTabNavigator';
+import AdminContentListTopTabNavigator from './AdminContentListTopTabNavigator';
+import AdminCourseContentListTopTabNavigator from './AdminCourseContentListTopTabNavigator';
 
 export default MainNativeStackNavigator;
 export {
   MainBottomTabNavigator,
-  ContentListTopTabNavigator,
+  //
   CourseDetailTopTabNavigator,
   CourseContentListTopTabNavigator,
+  //
   BookmarkListTopTabNavigator,
   DownloadListTopTabNavigator,
-  CourseListTopTabNavigator,
   FollowListTopTabNavigator,
-  MediaListTopTabNavigator,
+  //
+  AdminMediaListTopTabNavigator,
+  AdminCourseListTopTabNavigator,
+  AdminContentListTopTabNavigator,
+  AdminCourseContentListTopTabNavigator,
 };

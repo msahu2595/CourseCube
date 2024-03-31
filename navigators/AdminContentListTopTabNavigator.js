@@ -1,16 +1,16 @@
+import {tw} from '@lib';
 import React from 'react';
-import tw from '@lib/tailwind';
 import {
-  AdminTestListScreen,
-  AdminVideoListScreen,
-  AdminDocumentListScreen,
+  AdminContentTestListScreen,
+  AdminContentVideoListScreen,
+  AdminContentDocumentListScreen,
 } from '@screens';
 import {SafeAreaContainer} from '@components';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
 
-const MediaListTopTabNavigator = props => {
+const AdminContentListTopTabNavigator = () => {
   return (
     <SafeAreaContainer
       statusBgColor={tw.color('blue-600')}
@@ -26,18 +26,18 @@ const MediaListTopTabNavigator = props => {
           tabBarLabelStyle: tw`font-avSemi text-xs text-white`,
         }}>
         <Tab.Screen
-          name="AdminVideoListScreen"
-          component={AdminVideoListScreen}
+          name="AdminContentVideoListScreen"
+          component={AdminContentVideoListScreen}
           options={{title: 'Videos'}}
         />
         <Tab.Screen
-          name="AdminTestListScreen"
-          component={AdminTestListScreen}
+          name="AdminContentTestListScreen"
+          component={AdminContentTestListScreen}
           options={{title: 'Tests'}}
         />
         <Tab.Screen
-          name="AdminDocumentListScreen"
-          component={AdminDocumentListScreen}
+          name="AdminContentDocumentListScreen"
+          component={AdminContentDocumentListScreen}
           options={{title: 'Documents'}}
         />
       </Tab.Navigator>
@@ -45,4 +45,4 @@ const MediaListTopTabNavigator = props => {
   );
 };
 
-export default MediaListTopTabNavigator;
+export default AdminContentListTopTabNavigator;

@@ -4,6 +4,7 @@ import AdminAdvertListScreen from './AdminAdvertListScreen';
 import AdminHeadlineListScreen from './AdminHeadlineListScreen';
 import AdminArticleListScreen from './AdminArticleListScreen';
 import AdminWebsiteListScreen from './AdminWebsiteListScreen';
+import AdminUserListScreen from './AdminUserListScreen';
 //
 import AdminVideoListScreen from './AdminVideoListScreen';
 import AdminTestListScreen from './AdminTestListScreen';
@@ -14,10 +15,14 @@ import AdminContentVideoListScreen from './AdminContentVideoListScreen';
 import AdminContentTestListScreen from './AdminContentTestListScreen';
 import AdminContentDocumentListScreen from './AdminContentDocumentListScreen';
 //
-import AdminCourseSyllabusScreen from './AdminCourseSyllabusScreen';
 import AdminFullCourseBundleListScreen from './AdminFullCourseBundleListScreen';
 import AdminSubjectCourseBundleListScreen from './AdminSubjectCourseBundleListScreen';
 import AdminPlaylistCourseBundleListScreen from './AdminPlaylistCourseBundleListScreen';
+//
+import AdminCourseSyllabusScreen from './AdminCourseSyllabusScreen';
+import AdminCourseVideoListScreen from './AdminCourseVideoListScreen';
+import AdminCourseTestListScreen from './AdminCourseTestListScreen';
+import AdminCourseDocumentListScreen from './AdminCourseDocumentListScreen';
 
 export {
   AdminHomeScreen,
@@ -26,6 +31,7 @@ export {
   AdminHeadlineListScreen,
   AdminArticleListScreen,
   AdminWebsiteListScreen,
+  AdminUserListScreen,
   //
   AdminVideoListScreen,
   AdminTestListScreen,
@@ -36,8 +42,12 @@ export {
   AdminContentTestListScreen,
   AdminContentDocumentListScreen,
   //
-  AdminCourseSyllabusScreen,
   AdminFullCourseBundleListScreen,
   AdminSubjectCourseBundleListScreen,
   AdminPlaylistCourseBundleListScreen,
+  //
+  AdminCourseSyllabusScreen,
+  AdminCourseVideoListScreen,
+  AdminCourseTestListScreen,
+  AdminCourseDocumentListScreen,
 };

@@ -1,16 +1,16 @@
-import {tw} from '@lib';
 import React from 'react';
+import tw from '@lib/tailwind';
 import {
-  AdminFullCourseBundleListScreen,
-  AdminSubjectCourseBundleListScreen,
-  AdminPlaylistCourseBundleListScreen,
+  AdminTestListScreen,
+  AdminVideoListScreen,
+  AdminDocumentListScreen,
 } from '@screens';
 import {SafeAreaContainer} from '@components';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 const Tab = createMaterialTopTabNavigator();
 
-const CourseListTopTabNavigator = () => {
+const AdminMediaListTopTabNavigator = props => {
   return (
     <SafeAreaContainer
       statusBgColor={tw.color('blue-600')}
@@ -26,23 +26,23 @@ const CourseListTopTabNavigator = () => {
           tabBarLabelStyle: tw`font-avSemi text-xs text-white`,
         }}>
         <Tab.Screen
-          name="AdminFullCourseBundleListScreen"
-          component={AdminFullCourseBundleListScreen}
-          options={{title: 'Full Course'}}
+          name="AdminVideoListScreen"
+          component={AdminVideoListScreen}
+          options={{title: 'Videos'}}
         />
         <Tab.Screen
-          name="AdminSubjectCourseBundleListScreen"
-          component={AdminSubjectCourseBundleListScreen}
-          options={{title: 'Subject Wise'}}
+          name="AdminTestListScreen"
+          component={AdminTestListScreen}
+          options={{title: 'Tests'}}
         />
         <Tab.Screen
-          name="AdminPlaylistCourseBundleListScreen"
-          component={AdminPlaylistCourseBundleListScreen}
-          options={{title: 'Playlist'}}
+          name="AdminDocumentListScreen"
+          component={AdminDocumentListScreen}
+          options={{title: 'Documents'}}
         />
       </Tab.Navigator>
     </SafeAreaContainer>
   );
 };
 
-export default CourseListTopTabNavigator;
+export default AdminMediaListTopTabNavigator;
