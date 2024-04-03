@@ -11,9 +11,9 @@ import * as yup from 'yup';
 import {Formik} from 'formik';
 import tw from '@lib/tailwind';
 import {View} from 'react-native';
-import {CONTENTS} from '@queries';
-import {ADD_CONTENT} from '@mutations';
+import {BUNDLE_CONTENTS} from '@queries';
 import {useMutation} from '@apollo/client';
+import {ADD_BUNDLE_CONTENT} from '@mutations';
 import {showMessage} from 'react-native-flash-message';
 
 const sizes = {
@@ -22,7 +22,7 @@ const sizes = {
   Document: {width: 300, height: 400, cropping: true},
 };
 
-const AddContentValidationSchema = yup.object({
+const AddBundleContentValidationSchema = yup.object({
   subject: yup.string().required('Please enter subject.'),
   image: yup
     .string()
@@ -34,10 +34,6 @@ const AddContentValidationSchema = yup.object({
     .string()
     .oneOf(['Video', 'Test', 'Document'])
     .required('Please enter media type.'),
-  paid: yup.boolean().required(),
-  price: yup.number().min(1).max(99999).nullable(),
-  offer: yup.number().min(1).max(99999).nullable(),
-  offerType: yup.string().oneOf(['PERCENT', 'AMOUNT']).nullable(),
   highlight: yup.string().nullable(),
   language: yup
     .string()
@@ -48,29 +44,41 @@ const AddContentValidationSchema = yup.object({
   visible: yup.boolean().required(),
 });
 
-const AddContentModal = ({media, onClose}) => {
-  const [addContent, {loading: submitting}] = useMutation(ADD_CONTENT, {
-    onCompleted: () => {
-      onClose();
-      showMessage({
-        message: 'Content is successfully added.',
-        type: 'success',
-      });
+const AddBundleContentModal = ({bundleId, subjectId, media, onClose}) => {
+  const [addBundleContent, {loading: submitting}] = useMutation(
+    ADD_BUNDLE_CONTENT,
+    {
+      onCompleted: () => {
+        onClose();
+        showMessage({
+          message: 'Course content is successfully added.',
+          type: 'success',
+        });
+      },
+      onError: err => {
+        showMessage({
+          message: err?.message || 'Some unknown error occurred. Try again!!',
+          type: 'danger',
+        });
+      },
+      refetchQueries: [
+        {
+          query: BUNDLE_CONTENTS,
+          variables: {
+            bundleId,
+            filter: {
+              subjectId,
+              type: media?.__typename,
+            },
+          },
+        },
+      ],
     },
-    onError: err => {
-      showMessage({
-        message: err?.message || 'Some unknown error occurred. Try again!!',
-        type: 'danger',
-      });
-    },
-    refetchQueries: [
-      {query: CONTENTS, variables: {filter: {type: media?.__typename}}},
-    ],
-  });
+  );
 
   return (
     <CCModal
-      title="Add Content"
+      title="Add Course Content"
       visible={!!media}
       submitting={submitting}
       onClose={onClose}>
@@ -81,66 +89,32 @@ const AddContentModal = ({media, onClose}) => {
           title: media?.title,
           media: media?._id,
           type: media?.__typename,
-          paid: false,
-          price: '',
-          offer: '',
-          offerType: 'PERCENT',
           highlight: '',
           language: 'HI',
           index: '',
           description: '',
           visible: true,
         }}
-        validationSchema={AddContentValidationSchema}
-        onSubmit={(values, {setFieldError}) => {
-          const contentInput = {
+        validationSchema={AddBundleContentValidationSchema}
+        onSubmit={values => {
+          const bundleContentInput = {
+            subjectId,
             subject: values.subject,
             image: values.image,
             title: values.title,
             media: values.media,
             type: values.type,
-            paid: false,
             language: values.language,
             description: values.description,
             visible: values.visible,
           };
-          if (values.paid && values.price && parseInt(values.price, 10)) {
-            contentInput.paid = true;
-            contentInput.price = parseInt(values.price, 10);
-            if (values.offer && parseInt(values.offer, 10)) {
-              contentInput.offer = parseInt(values.offer, 10);
-              if (
-                values.offerType === 'AMOUNT' &&
-                parseInt(values.offer, 10) > parseInt(values.price, 10)
-              ) {
-                setFieldError(
-                  'offer',
-                  `Offer must be less than or equal to ${values.price}.`,
-                );
-                return;
-              }
-              if (
-                (values.offerType === 'PERCENT' &&
-                  parseInt(values.offer, 10) > 100) ||
-                (values.offerType === 'PERCENT' &&
-                  parseInt(values.offer, 10) < 0)
-              ) {
-                setFieldError(
-                  'offer',
-                  'Offer must be less than or equal to 100.',
-                );
-                return;
-              }
-              contentInput.offerType = values.offerType;
-            }
-          }
           if (values.highlight) {
-            contentInput.highlight = values.highlight;
+            bundleContentInput.highlight = values.highlight;
           }
           if (values.index) {
-            contentInput.index = values.index;
+            bundleContentInput.index = values.index;
           }
-          addContent({variables: {contentInput}});
+          addBundleContent({variables: {bundleId, bundleContentInput}});
         }}>
         {({
           handleChange,
@@ -231,56 +205,7 @@ const AddContentModal = ({media, onClose}) => {
                 numberOfLines={4}
               />
               <CCCheckBox
-                label="Tick this, if content is paid."
-                checked={values.paid}
-                onPress={value => {
-                  setFieldValue('paid', value);
-                }}
-              />
-              {values.paid && (
-                <>
-                  <CCTextInput
-                    label="Price"
-                    error={errors.price}
-                    touched={touched.price}
-                    info="Min: 1, Max: 99999"
-                    onChangeText={handleChange('price')}
-                    onBlur={handleBlur('price')}
-                    value={values.price}
-                    editable={!submitting}
-                    keyboardType="number-pad"
-                  />
-                  {!!values.price && (
-                    <>
-                      <CCTextInput
-                        label="Offer"
-                        error={errors.offer}
-                        touched={touched.offer}
-                        onChangeText={handleChange('offer')}
-                        onBlur={handleBlur('offer')}
-                        value={values.offer}
-                        editable={!submitting}
-                        keyboardType="number-pad"
-                      />
-                      {!!values.offer && (
-                        <CCRadio
-                          label="Offer Type"
-                          radio_props={[
-                            {label: 'Percent   ', value: 'PERCENT'},
-                            {label: 'Amount   ', value: 'AMOUNT'},
-                          ]}
-                          value={values.offerType}
-                          onPress={value => {
-                            setFieldValue('offerType', value);
-                          }}
-                        />
-                      )}
-                    </>
-                  )}
-                </>
-              )}
-              <CCCheckBox
-                label="If ticked, this content will be immediately visible to users."
+                label="If ticked, this course content will be immediately visible to users."
                 checked={values.visible}
                 onPress={value => {
                   setFieldValue('visible', value);
@@ -300,4 +225,4 @@ const AddContentModal = ({media, onClose}) => {
   );
 };
 
-export default AddContentModal;
+export default AddBundleContentModal;

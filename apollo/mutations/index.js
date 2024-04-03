@@ -15,6 +15,10 @@ export * from './ADD_BUNDLE';
 export * from './EDIT_BUNDLE';
 export * from './DELETE_BUNDLE';
 //
+export * from './ADD_BUNDLE_CONTENT';
+export * from './EDIT_BUNDLE_CONTENT';
+export * from './DELETE_BUNDLE_CONTENT';
+//
 export * from './ADD_CONTENT';
 export * from './EDIT_CONTENT';
 export * from './DELETE_CONTENT';

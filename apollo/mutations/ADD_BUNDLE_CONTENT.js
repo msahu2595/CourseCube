@@ -1,34 +1,19 @@
 import {gql} from '@apollo/client';
 
-export const BUNDLE_CONTENTS = gql`
-  query bundleContents(
-    $offset: Int
-    $limit: Int
+export const ADD_BUNDLE_CONTENT = gql`
+  mutation addBundleContent(
     $bundleId: ID!
-    $filter: BundleContentsFilterInput
+    $bundleContentInput: BundleContentInput!
   ) {
-    bundleContents(
-      offset: $offset
-      limit: $limit
+    addBundleContent(
       bundleId: $bundleId
-      filter: $filter
+      bundleContentInput: $bundleContentInput
     ) {
       code
       success
       message
       token
-      offset
-      limit
-      bundleId
-      filter {
-        subjectId
-        type
-        language
-        visible
-        enable
-      }
       payload {
-        __typename
         _id
         subjectId
         subject

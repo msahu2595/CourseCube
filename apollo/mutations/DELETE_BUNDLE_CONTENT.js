@@ -1,34 +1,13 @@
 import {gql} from '@apollo/client';
 
-export const BUNDLE_CONTENTS = gql`
-  query bundleContents(
-    $offset: Int
-    $limit: Int
-    $bundleId: ID!
-    $filter: BundleContentsFilterInput
-  ) {
-    bundleContents(
-      offset: $offset
-      limit: $limit
-      bundleId: $bundleId
-      filter: $filter
-    ) {
+export const DELETE_BUNDLE_CONTENT = gql`
+  mutation deleteBundleContent($bundleContentId: ID!) {
+    deleteBundleContent(bundleContentId: $bundleContentId) {
       code
       success
       message
       token
-      offset
-      limit
-      bundleId
-      filter {
-        subjectId
-        type
-        language
-        visible
-        enable
-      }
       payload {
-        __typename
         _id
         subjectId
         subject

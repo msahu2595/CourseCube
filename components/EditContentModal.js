@@ -293,7 +293,7 @@ const EditContentModal = ({content, onClose}) => {
                 </>
               )}
               <CCCheckBox
-                label="If ticked, content will be immediately visible to users."
+                label="If ticked, this content will be immediately visible to users."
                 checked={values.visible}
                 onPress={value => {
                   setFieldValue('visible', value);
