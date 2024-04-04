@@ -16,9 +16,8 @@ import {
   AdminContentListTopTabNavigator,
   AdminCourseContentListTopTabNavigator,
 } from '@navigators';
-import {TouchableOpacity} from 'react-native';
+import {AdminHomeHeader} from 'components/Headers';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Stack = createNativeStackNavigator();
 
@@ -119,14 +118,7 @@ const adminStackGroup = () => {
 
 export default adminStackGroup;
 
-const adminHomeScreenOptions = ({navigation}) => ({
+const adminHomeScreenOptions = props => ({
   headerTitle: 'Admin Dashboard',
-  headerRight: () => (
-    <TouchableOpacity
-      style={tw`pr-3`}
-      onPress={() => navigation.navigate('MyNotificationScreen')}
-      hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
-      <MaterialCommunityIcons name="bell" size={28} color={tw.color('white')} />
-    </TouchableOpacity>
-  ),
+  headerRight: () => <AdminHomeHeader {...props} />,
 });

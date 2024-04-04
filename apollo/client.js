@@ -18,6 +18,7 @@ export const typeDefs = gql`
 const user = storage.getString('user');
 export const loggedUserVar = makeVar(user ? JSON.parse(user) : null);
 export const quesIndexVar = makeVar(new Map());
+export const FCMTokenVar = makeVar('');
 
 // Initializes to an empty array
 export const cartItemsVar = makeVar([]);

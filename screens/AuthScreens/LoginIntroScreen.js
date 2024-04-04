@@ -16,9 +16,8 @@ import {
   statusCodes,
   GoogleSignin,
 } from '@react-native-google-signin/google-signin';
-import {loggedUserVar, storage} from 'apollo/client';
 import {showMessage} from 'react-native-flash-message';
-import messaging from '@react-native-firebase/messaging';
+import {loggedUserVar, FCMTokenVar, storage} from 'apollo/client';
 
 GoogleSignin.configure({
   webClientId:
@@ -47,8 +46,7 @@ const LoginIntroScreen = () => {
     try {
       if (await GoogleSignin.hasPlayServices()) {
         const {idToken} = await GoogleSignin.signIn();
-        const FCMToken =
-          Platform.OS === 'ios' ? '' : await messaging().getToken();
+        const FCMToken = Platform.OS === 'ios' ? '' : FCMTokenVar();
         googleLogIn({
           variables: {
             idToken,
