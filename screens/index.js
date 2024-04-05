@@ -31,7 +31,6 @@ import {
   CommunityScreen,
   PostViewScreen,
   CreatePostScreen,
-  CommunityNotificationScreen,
 } from './CommunityScreens';
 import {InfoScreen, SyllabusScreen, FAQScreen} from './ContentDetailScreens';
 import {
@@ -122,7 +121,6 @@ export {
   CreateProfileScreen,
   CommunityScreen,
   CreatePostScreen,
-  CommunityNotificationScreen,
   InfoScreen,
   SyllabusScreen,
   FAQScreen,

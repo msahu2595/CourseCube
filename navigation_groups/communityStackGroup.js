@@ -1,11 +1,7 @@
 import React from 'react';
 import tw from '@lib/tailwind'; //Tailwind Imports
+import {PostViewScreen, CreatePostScreen} from '@screens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {
-  PostViewScreen,
-  CreatePostScreen,
-  CommunityNotificationScreen,
-} from '@screens';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
 
@@ -31,13 +27,6 @@ const communityStackGroup = () => {
         component={CreatePostScreen}
         options={{
           headerTitle: 'Ask Community',
-        }}
-      />
-      <Stack.Screen
-        name="CommunityNotificationScreen"
-        component={CommunityNotificationScreen}
-        options={{
-          headerTitle: 'Notifications',
         }}
       />
     </Stack.Group>
