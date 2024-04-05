@@ -1,44 +1,10 @@
 import {tw} from '@lib';
+import {NOTIFICATIONS} from '@queries';
+import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
-import {useQuery, gql} from '@apollo/client';
-import {SafeAreaContainer} from '@components';
+import {FlatList, RefreshControl} from 'react-native';
 import {showMessage} from 'react-native-flash-message';
-import {FlatList, RefreshControl, Text, View} from 'react-native';
-
-const NOTIFICATIONS = gql`
-  query notifications(
-    $offset: Int
-    $limit: Int
-    $filter: NotificationsFilterInput
-  ) {
-    notifications(offset: $offset, limit: $limit, filter: $filter) {
-      code
-      success
-      message
-      token
-      offset
-      limit
-      filter {
-        type
-        read
-      }
-      payload {
-        _id
-        userId
-        title
-        body
-        icon
-        type
-        alert
-        route
-        params
-        read
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`;
+import {NotificationItem, SafeAreaContainer} from '@components';
 
 const NotificationScreen = ({route}) => {
   const {loading, data, refetch, fetchMore} = useQuery(NOTIFICATIONS, {
@@ -68,9 +34,6 @@ const NotificationScreen = ({route}) => {
         keyExtractor={item => item._id}
         renderItem={_renderItem}
         //
-        contentContainerStyle={tw`py-2`}
-        ItemSeparatorComponent={() => <View style={tw`h-2`} />}
-        //
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={refetch} />
         }
@@ -88,5 +51,3 @@ const NotificationScreen = ({route}) => {
 };
 
 export default NotificationScreen;
-
-const NotificationItem = props => <Text>{props.title}</Text>;

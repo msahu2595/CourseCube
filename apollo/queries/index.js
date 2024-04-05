@@ -15,6 +15,7 @@ export * from './WEBSITES';
 export * from './QUESTIONS';
 export * from './HEADLINES';
 export * from './STATISTICS';
+export * from './NOTIFICATIONS';
 export * from './BUNDLE_CONTENT';
 export * from './BUNDLE_CONTENTS';
 export * from './FETCH_DOWNLOAD_URL';

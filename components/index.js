@@ -40,6 +40,7 @@ import MediaItem from './MediaItem';
 import SyllabusTree from './SyllabusTree';
 import MenuOptionItem from './MenuOptionItem';
 import LoadingIndicator from './LoadingIndicator';
+import NotificationItem from './NotificationItem';
 import NetworkStatusProvider from './NetworkStatusProvider';
 import ExampleListItem, {ExampleItem} from './ExampleListItem';
 
@@ -97,6 +98,7 @@ export {
   SyllabusTree,
   MenuOptionItem,
   LoadingIndicator,
+  NotificationItem,
   NetworkStatusProvider,
   ExampleListItem,
   ExampleItem,
