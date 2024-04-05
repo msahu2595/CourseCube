@@ -59,7 +59,12 @@ const homeScreenOptions = ({navigation}) => ({
         </TouchableOpacity>
         <TouchableOpacity
           style={tw`pr-3`}
-          onPress={() => navigation.navigate('MyNotificationScreen')}
+          onPress={() =>
+            navigation.navigate('NotificationScreen', {
+              themeColor: 'emerald-600',
+              type: 'CONTENT',
+            })
+          }
           hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
           <MaterialCommunityIcons
             name="bell"
@@ -113,7 +118,12 @@ const myProfileScreenOptions = ({navigation}) => ({
         </TouchableOpacity>
         <TouchableOpacity
           style={tw`pr-3`}
-          onPress={() => navigation.navigate('MyNotificationScreen')}
+          onPress={() =>
+            navigation.navigate('NotificationScreen', {
+              themeColor: 'blue-600',
+              type: 'USER',
+            })
+          }
           hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
           <MaterialCommunityIcons
             name="bell"
@@ -181,7 +191,12 @@ const communityScreenOptions = ({navigation}) => ({
         </TouchableOpacity>
         <TouchableOpacity
           style={tw`pr-3`}
-          onPress={() => navigation.navigate('MyNotificationScreen')}
+          onPress={() =>
+            navigation.navigate('NotificationScreen', {
+              themeColor: 'red-600',
+              type: 'COMMUNITY',
+            })
+          }
           hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
           <MaterialCommunityIcons
             name="bell"

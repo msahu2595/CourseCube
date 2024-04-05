@@ -68,7 +68,7 @@ import {HomeScreen, SearchScreen, PrepareExamScreen} from './HomeScreens';
 import {
   MyProfileScreen,
   EditProfileScreen,
-  MyNotificationScreen,
+  NotificationScreen,
   UserProfileScreen,
   LeaderboardScreen,
   UserSearchScreen,
@@ -159,7 +159,7 @@ export {
   PrepareExamScreen,
   MyProfileScreen,
   EditProfileScreen,
-  MyNotificationScreen,
+  NotificationScreen,
   UserProfileScreen,
   LeaderboardScreen,
   UserSearchScreen,

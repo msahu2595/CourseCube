@@ -16,7 +16,7 @@ export const AdminHomeHeader = ({navigation}) => {
   return (
     <TouchableOpacity
       style={tw`pr-3`}
-      onPress={() => navigation.navigate('MyNotificationScreen')}
+      onPress={() => navigation.navigate('NotificationScreen', {type: 'ADMIN'})}
       hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
       <MaterialCommunityIcons name="bell" size={28} color={tw.color('white')} />
     </TouchableOpacity>

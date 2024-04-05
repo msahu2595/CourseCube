@@ -1,6 +1,6 @@
 import MyProfileScreen from './MyProfileScreen';
 import EditProfileScreen from './EditProfileScreen';
-import MyNotificationScreen from './MyNotificationScreen';
+import NotificationScreen from './NotificationScreen';
 import UserProfileScreen from './UserProfileScreen';
 import LeaderboardScreen from './LeaderboardScreen';
 import UserSearchScreen from './UserSearchScreen';
@@ -8,7 +8,7 @@ import UserSearchScreen from './UserSearchScreen';
 export {
   MyProfileScreen,
   EditProfileScreen,
-  MyNotificationScreen,
+  NotificationScreen,
   UserProfileScreen,
   LeaderboardScreen,
   UserSearchScreen,

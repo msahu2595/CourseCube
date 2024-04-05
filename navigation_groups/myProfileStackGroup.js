@@ -1,6 +1,6 @@
 import {
   EditProfileScreen,
-  MyNotificationScreen,
+  NotificationScreen,
   UserProfileScreen,
   LeaderboardScreen,
   UserSearchScreen,
@@ -29,9 +29,12 @@ const myProfileStackGroup = () => {
         options={{headerTitle: 'Edit Profile'}}
       />
       <Stack.Screen
-        name="MyNotificationScreen"
-        component={MyNotificationScreen}
-        options={{headerTitle: 'Notifications'}}
+        name="NotificationScreen"
+        component={NotificationScreen}
+        options={({route}) => ({
+          headerTitle: 'Notifications',
+          headerStyle: tw`bg-${route.params?.themeColor || 'blue-600'}`,
+        })}
       />
       <Stack.Screen
         name="UserProfileScreen"
