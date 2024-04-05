@@ -15,7 +15,7 @@ import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 import EditHeadlineModal from 'components/EditHeadlineModal';
 import CreateHeadlineModal from 'components/CreateHeadlineModal';
-import {Fab, NotificationItem, SafeAreaContainer} from '@components';
+import {Fab, HeadlineItem, SafeAreaContainer} from '@components';
 
 const AdminHeadlineListScreen = () => {
   const [search, setSearch] = useState('');
@@ -93,7 +93,7 @@ const AdminHeadlineListScreen = () => {
     ({item}) => {
       return (
         <>
-          <NotificationItem {...item} />
+          <HeadlineItem {...item} />
           <View style={tw`flex-row px-2 mt-[2px]`}>
             <TouchableOpacity
               style={tw`flex-1 items-center bg-blue-500 py-2 rounded-md`}

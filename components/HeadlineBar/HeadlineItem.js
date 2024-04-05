@@ -10,7 +10,7 @@ import React, {memo} from 'react';
 import openWebURL from 'utils/openWebURL';
 import config from 'react-native-ultimate-config';
 
-const NotificationItem = memo(({image, description, link}) => {
+const HeadlineItem = memo(({image, description, link}) => {
   const width = useWindowDimensions().width;
   return (
     <View style={tw.style('items-center', {width})}>
@@ -56,4 +56,4 @@ const NotificationItem = memo(({image, description, link}) => {
   );
 });
 
-export default NotificationItem;
+export default HeadlineItem;

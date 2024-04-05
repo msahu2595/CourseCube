@@ -2,26 +2,23 @@ import tw from '@lib/tailwind';
 import {HEADLINES} from '@queries';
 import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
-import NotificationItem from './NotificationItem';
+import HeadlineItem from './HeadlineItem';
 import {useNavigation} from '@react-navigation/native';
 import SwiperFlatList from 'react-native-swiper-flatlist';
-import {NotificationItemLoader} from 'components/Loaders';
+import {HeadlineItemLoader} from 'components/Loaders';
 import {View, Text, TouchableOpacity} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const NotificationBar = ({title}) => {
+const HeadlineBar = ({title = 'Headlines'}) => {
   const navigation = useNavigation();
 
   const {loading: queryLoading, data: queryData} = useQuery(HEADLINES);
 
   const handleSeeAll = useCallback(() => {
-    navigation.navigate('NotificationListScreen');
-  }, [navigation]);
+    navigation.navigate('HeadlineListScreen', {headerTitle: title});
+  }, [navigation, title]);
 
-  const renderItem = useCallback(
-    ({item}) => <NotificationItem {...item} />,
-    [],
-  );
+  const renderItem = useCallback(({item}) => <HeadlineItem {...item} />, []);
 
   return (
     <View style={tw`pt-4 pb-2 bg-white`}>
@@ -39,7 +36,7 @@ const NotificationBar = ({title}) => {
         </TouchableOpacity>
       </View>
       {queryLoading ? (
-        <NotificationItemLoader />
+        <HeadlineItemLoader />
       ) : (
         <SwiperFlatList
           index={0}
@@ -56,4 +53,4 @@ const NotificationBar = ({title}) => {
   );
 };
 
-export default NotificationBar;
+export default HeadlineBar;

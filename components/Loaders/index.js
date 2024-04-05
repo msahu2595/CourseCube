@@ -1,4 +1,4 @@
 import AdvertBarLoader from './AdvertBarLoader';
-import NotificationItemLoader from './NotificationItemLoader';
+import HeadlineItemLoader from './HeadlineItemLoader';
 
-export {AdvertBarLoader, NotificationItemLoader};
+export {AdvertBarLoader, HeadlineItemLoader};

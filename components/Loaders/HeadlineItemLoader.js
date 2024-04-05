@@ -2,7 +2,7 @@ import React, {memo} from 'react';
 import {useWindowDimensions} from 'react-native';
 import ContentLoader, {Rect} from 'react-content-loader/native';
 
-const NotificationItemLoader = memo(() => {
+const HeadlineItemLoader = memo(() => {
   const width = useWindowDimensions().width;
 
   return (
@@ -50,4 +50,4 @@ const NotificationItemLoader = memo(() => {
   );
 });
 
-export default NotificationItemLoader;
+export default HeadlineItemLoader;

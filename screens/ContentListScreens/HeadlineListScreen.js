@@ -4,9 +4,9 @@ import {useQuery} from '@apollo/client';
 import React, {useCallback} from 'react';
 import {showMessage} from 'react-native-flash-message';
 import {View, FlatList, RefreshControl} from 'react-native';
-import {NotificationItem, SafeAreaContainer} from '@components';
+import {HeadlineItem, SafeAreaContainer} from '@components';
 
-const NotificationListScreen = () => {
+const HeadlineListScreen = () => {
   const {loading, data, refetch, fetchMore} = useQuery(HEADLINES, {
     onError: err => {
       showMessage({
@@ -17,10 +17,7 @@ const NotificationListScreen = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const _renderItem = useCallback(
-    ({item}) => <NotificationItem {...item} />,
-    [],
-  );
+  const _renderItem = useCallback(({item}) => <HeadlineItem {...item} />, []);
 
   return (
     <SafeAreaContainer>
@@ -50,4 +47,4 @@ const NotificationListScreen = () => {
   );
 };
 
-export default NotificationListScreen;
+export default HeadlineListScreen;

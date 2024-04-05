@@ -30,7 +30,7 @@ import VideoBar, {VideoItem} from './VideoBar';
 import TestBar, {TestItem} from './TestBar';
 import DocumentBar, {DocumentItem} from './DocumentBar';
 import PrepareExamBar, {PrepareExamItem} from './PrepareExamBar';
-import NotificationBar, {NotificationItem} from './NotificationBar';
+import HeadlineBar, {HeadlineItem} from './HeadlineBar';
 import CurrentAffairBar, {CurrentAffairItem} from './CurrentAffairBar';
 // App Advert Imports
 import {ShareApp, FollowUs, GetCallFromUs, GetSubscription} from './AppAdverts';
@@ -82,8 +82,8 @@ export {
   DocumentItem,
   PrepareExamBar,
   PrepareExamItem,
-  NotificationBar,
-  NotificationItem,
+  HeadlineBar,
+  HeadlineItem,
   CurrentAffairBar,
   CurrentAffairItem,
   // App Advert Exports

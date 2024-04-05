@@ -13,7 +13,7 @@ import {
   VideoBar,
   TestBar,
   DocumentBar,
-  NotificationBar,
+  HeadlineBar,
   CurrentAffairBar,
   Fab,
   ShareApp,
@@ -72,7 +72,7 @@ const HomeScreen = props => {
           /> */}
         </View>
         <View style={tw`pt-1`}>
-          <NotificationBar title="Latest Notifications" />
+          <HeadlineBar title="Latest Notifications" />
         </View>
         <View style={tw`py-2`}>
           <GetSubscription />

@@ -8,7 +8,7 @@ import {
   VideoListScreen,
   TestListScreen,
   DocumentListScreen,
-  NotificationListScreen,
+  HeadlineListScreen,
   SubjectWiseCourseListScreen,
   PlaylistCourseListScreen,
   PrepareExamListScreen,
@@ -97,10 +97,10 @@ const contentListStackGroup = () => {
         })}
       />
       <Stack.Screen
-        name="NotificationListScreen"
-        component={NotificationListScreen}
+        name="HeadlineListScreen"
+        component={HeadlineListScreen}
         options={({route}) => ({
-          headerTitle: route?.params?.headerTitle || 'Notifications',
+          headerTitle: route?.params?.headerTitle || 'Headlines',
         })}
       />
       <Stack.Screen
