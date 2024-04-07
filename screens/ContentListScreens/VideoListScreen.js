@@ -5,7 +5,9 @@ import {CCSearchInput} from 'components/Common';
 import React, {useCallback, useState} from 'react';
 import {showMessage} from 'react-native-flash-message';
 import {SafeAreaContainer, VideoItem} from '@components';
-import {View, FlatList, RefreshControl, Dimensions} from 'react-native';
+import {View, RefreshControl, Dimensions} from 'react-native';
+
+import {FlashList} from '@shopify/flash-list';
 
 const columns = 2;
 const width = Dimensions.get('window').width;
@@ -58,7 +60,8 @@ const VideoListScreen = () => {
         onChangeText={onChangeSearchText}
         onClear={clearSearchText}
       />
-      <FlatList
+      <FlashList
+        estimatedItemSize={100}
         bounces={true}
         numColumns={columns}
         //
