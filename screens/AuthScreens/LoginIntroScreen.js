@@ -17,6 +17,7 @@ import {
   GoogleSignin,
 } from '@react-native-google-signin/google-signin';
 import {showMessage} from 'react-native-flash-message';
+import messaging from '@react-native-firebase/messaging';
 import {loggedUserVar, FCMTokenVar, storage} from 'apollo/client';
 
 GoogleSignin.configure({
@@ -31,6 +32,9 @@ const LoginIntroScreen = () => {
       onCompleted: data => {
         storage.set('user', JSON.stringify(data?.googleLogIn?.payload));
         loggedUserVar(data?.googleLogIn?.payload);
+        if (data?.googleLogIn?.payload?.role === 'ADMIN') {
+          messaging().subscribeToTopic('admin');
+        }
       },
       onError: err => {
         showMessage({

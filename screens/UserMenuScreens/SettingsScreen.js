@@ -7,6 +7,7 @@ import {loggedUserVar, storage} from 'apollo/client';
 import {Alert, ScrollView, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {showMessage} from 'react-native-flash-message';
+import messaging from '@react-native-firebase/messaging';
 import {useMutation, useReactiveVar} from '@apollo/client';
 
 const menu = [
@@ -32,8 +33,11 @@ const SettingsScreen = () => {
   const [logout, {loading}] = useMutation(LOGOUT, {
     onCompleted: data => {
       console.log(data?.logout?.message);
-      storage.clearAll();
+      if (loggedUser?.role === 'ADMIN') {
+        messaging().unsubscribeFromTopic('admin');
+      }
       loggedUserVar(null);
+      storage.clearAll();
     },
     onError: err => {
       showMessage({

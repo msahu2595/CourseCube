@@ -1,19 +1,25 @@
 import {tw} from '@lib';
 import {LOGOUT} from '@mutations';
 import React, {useCallback} from 'react';
-import {useMutation} from '@apollo/client';
 import {Alert, ScrollView} from 'react-native';
 import {loggedUserVar, storage} from 'apollo/client';
 import {showMessage} from 'react-native-flash-message';
+import messaging from '@react-native-firebase/messaging';
+import {useMutation, useReactiveVar} from '@apollo/client';
 import {CCNavigationButton, CCText} from 'components/Common';
 import {SafeAreaContainer, LoadingIndicator} from '@components';
 
 const AdminHomeScreen = ({navigation}) => {
+  const loggedUser = useReactiveVar(loggedUserVar);
+
   const [logout, {loading}] = useMutation(LOGOUT, {
     onCompleted: data => {
       console.log(data?.logout?.message);
-      storage.clearAll();
+      if (loggedUser?.role === 'ADMIN') {
+        messaging().unsubscribeFromTopic('admin');
+      }
       loggedUserVar(null);
+      storage.clearAll();
     },
     onError: err => {
       console.log(err);

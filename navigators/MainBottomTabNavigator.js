@@ -1,12 +1,12 @@
 import React from 'react';
 import tw from '@lib/tailwind';
+import {Text, Image} from 'react-native';
 import {loggedUserVar} from 'apollo/client';
 import config from 'react-native-ultimate-config';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {HomeScreen, MyProfileScreen, CommunityScreen} from '@screens';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {HomeHeader, MyProfileHeader, CommunityHeader} from 'components/Headers';
 
 const Tab = createBottomTabNavigator(); // Created Bottom Tab Navigator
 
@@ -39,42 +39,12 @@ const MainBottomTabNavigator = () => {
 
 export default MainBottomTabNavigator;
 
-const homeScreenOptions = ({navigation}) => ({
+const homeScreenOptions = props => ({
   headerTitle: 'Lakshya PSC Academy',
   headerStyle: tw`bg-emerald-600`,
   headerTitleStyle: tw`font-avSemi`,
   headerTintColor: tw.color('white'),
-  headerRight: () => {
-    return (
-      <View style={tw`flex-row`}>
-        <TouchableOpacity
-          style={tw`pr-3`}
-          onPress={() => navigation.navigate('SearchScreen')}
-          hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
-          <MaterialCommunityIcons
-            name="magnify"
-            size={28}
-            color={tw.color('white')}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={tw`pr-3`}
-          onPress={() =>
-            navigation.navigate('NotificationScreen', {
-              themeColor: 'emerald-600',
-              type: 'CONTENT',
-            })
-          }
-          hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
-          <MaterialCommunityIcons
-            name="bell"
-            size={28}
-            color={tw.color('white')}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  },
+  headerRight: () => <HomeHeader {...props} />,
   tabBarLabel: ({focused}) => {
     return (
       <Text
@@ -98,42 +68,12 @@ const homeScreenOptions = ({navigation}) => ({
   },
 });
 
-const myProfileScreenOptions = ({navigation}) => ({
+const myProfileScreenOptions = props => ({
   headerTitle: 'My Profile',
   headerStyle: tw`bg-blue-600`,
   headerTitleStyle: tw`font-avSemi`,
   headerTintColor: tw.color('white'),
-  headerRight: () => {
-    return (
-      <View style={tw`flex-row`}>
-        <TouchableOpacity
-          style={tw`pr-3`}
-          onPress={() => navigation.navigate('UserSearchScreen')}
-          hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
-          <MaterialCommunityIcons
-            name="magnify"
-            size={28}
-            color={tw.color('white')}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={tw`pr-3`}
-          onPress={() =>
-            navigation.navigate('NotificationScreen', {
-              themeColor: 'blue-600',
-              type: 'USER',
-            })
-          }
-          hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
-          <MaterialCommunityIcons
-            name="bell"
-            size={28}
-            color={tw.color('white')}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  },
+  headerRight: () => <MyProfileHeader {...props} />,
   tabBarLabel: ({focused}) => {
     return (
       <Text
@@ -171,42 +111,12 @@ const myProfileScreenOptions = ({navigation}) => ({
   },
 });
 
-const communityScreenOptions = ({navigation}) => ({
+const communityScreenOptions = props => ({
   headerTitle: 'Community',
   headerStyle: tw`bg-red-600`,
   headerTitleStyle: tw`font-avSemi`,
   headerTintColor: tw.color('white'),
-  headerRight: () => {
-    return (
-      <View style={tw`flex-row`}>
-        <TouchableOpacity
-          style={tw`pr-3`}
-          onPress={() => navigation.navigate('UserSearchScreen')}
-          hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
-          <MaterialCommunityIcons
-            name="magnify"
-            size={28}
-            color={tw.color('white')}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={tw`pr-3`}
-          onPress={() =>
-            navigation.navigate('NotificationScreen', {
-              themeColor: 'red-600',
-              type: 'COMMUNITY',
-            })
-          }
-          hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
-          <MaterialCommunityIcons
-            name="bell"
-            size={28}
-            color={tw.color('white')}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  },
+  headerRight: () => <CommunityHeader {...props} />,
   tabBarLabel: ({focused}) => {
     return (
       <Text

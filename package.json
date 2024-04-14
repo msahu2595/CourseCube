@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "studio": "open -a /Applications/'Android Studio.app'",
-    "p4": "emulator -avd Pixel_4",
-    "m31": "npx react-native run-android --deviceId=RZ8N61DYPPX",
+    "m30s": "npx react-native run-android --deviceId=RZ8MA2AX8GB",
+    "px4": "npx react-native run-android --deviceId=emulator-5554",
     "ip12": "npx react-native run-ios --device 'Manish’s iPhone 12'",
     "ip14": "npx react-native run-ios --simulator='iPhone 14'",
     "ipad": "npx react-native run-ios --simulator='iPad (10th generation)'",
@@ -15,6 +15,7 @@
     "android": "npx react-native run-android",
     "ios": "npx react-native run-ios",
     "start": "yarn rnuc .env && watchman watch-del-all && npx react-native start --reset-cache",
+    "start:px4": "emulator -avd Pixel_4",
     "preandroid:build": "npx jetify",
     "android:build": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && ./gradlew assembleDebug",
     "log:android": "npx react-native log-android",

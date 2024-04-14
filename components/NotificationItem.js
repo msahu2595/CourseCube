@@ -18,7 +18,7 @@ import {showMessage} from 'react-native-flash-message';
 dayjs.extend(updateLocale);
 dayjs.updateLocale('en', {
   relativeTime: {
-    future: 'in %s',
+    future: '%s',
     past: '%s',
     s: '1s',
     ss: '%ds',
@@ -79,8 +79,8 @@ const NotificationItem = memo(props => {
 
   const handlePress = useCallback(() => {
     readNotification();
-    if (props?.title === 'New User Registered.') {
-      navigation.navigate('UserProfileScreen', {userId: props?.userId});
+    if (props?.route) {
+      navigation.navigate(props?.route, {...props?.params});
     }
   }, [props, readNotification, navigation]);
 
