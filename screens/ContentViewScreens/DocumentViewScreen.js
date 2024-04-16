@@ -1,3 +1,8 @@
+import {
+  CCLikeButton,
+  CCBookmarkButton,
+  CCDownloadButton,
+} from 'components/Common';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import Pdf from 'react-native-pdf';
@@ -9,8 +14,7 @@ import {showMessage} from 'react-native-flash-message';
 import {gql, useMutation, useQuery} from '@apollo/client';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {CCBookmarkButton, CCLikeButton} from 'components/Common';
-import {View, Alert, ActivityIndicator, Text} from 'react-native';
+import {Text, View, Alert, ActivityIndicator} from 'react-native';
 
 const ADD_VIEW = gql`
   mutation addView($refId: ID!) {
@@ -70,6 +74,16 @@ const DocumentViewScreen = ({navigation, route}) => {
                 />
               )}
             </CCBookmarkButton>
+            <CCDownloadButton content={payload}>
+              {downloaded => (
+                <AntDesign
+                  size={20}
+                  color={tw.color('black')}
+                  name={downloaded ? 'check' : 'download'}
+                  style={tw`py-2 px-3`}
+                />
+              )}
+            </CCDownloadButton>
           </>
         ),
       });

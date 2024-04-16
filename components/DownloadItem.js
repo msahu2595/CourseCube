@@ -4,7 +4,7 @@ import React, {memo} from 'react';
 import config from 'react-native-ultimate-config';
 import {View, ImageBackground, Image, Text, Pressable} from 'react-native';
 
-const ContentItem = memo(props => (
+const DownloadItem = memo(props => (
   <Pressable
     onPress={() =>
       props?.onPress({
@@ -47,7 +47,9 @@ const ContentItem = memo(props => (
           numberOfLines={1}>
           {props?.subject}
         </Text>
-        <Text style={tw`font-avSemi text-xs text-gray-600`} numberOfLines={2}>
+        <Text
+          style={tw`font-avSemi text-xs text-gray-600`}
+          numberOfLines={2}>
           {props?.title}
         </Text>
         <Text
@@ -60,4 +62,4 @@ const ContentItem = memo(props => (
   </Pressable>
 ));
 
-export default ContentItem;
+export default DownloadItem;

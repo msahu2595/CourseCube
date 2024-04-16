@@ -5,7 +5,6 @@ import {
   CourseVideoListScreen,
   CourseTestListScreen,
   CourseDocumentListScreen,
-  CourseDownloadListScreen,
 } from '@screens';
 import {SafeAreaContainer} from '@components';
 
@@ -45,14 +44,6 @@ const CourseContentListTopTabNavigator = props => {
         <Tab.Screen
           name="Test's"
           component={CourseTestListScreen}
-          initialParams={{
-            bundleId: props.route.params?.bundleId,
-            subjectId: props.route.params?.subjectId,
-          }}
-        />
-        <Tab.Screen
-          name="Download's"
-          component={CourseDownloadListScreen}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             subjectId: props.route.params?.subjectId,

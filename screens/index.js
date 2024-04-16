@@ -10,7 +10,10 @@ import {
   AdminVideoListScreen,
   AdminTestListScreen,
   AdminDocumentListScreen,
+  //
+  AdminVideoViewScreen,
   AdminTestQuestionListScreen,
+  AdminDocumentViewScreen,
   //
   AdminContentVideoListScreen,
   AdminContentTestListScreen,
@@ -61,6 +64,8 @@ import {
   CourseTestViewScreen,
   CourseDocumentViewScreen,
   CurrentAffairViewScreen,
+  DownloadVideoViewScreen,
+  DownloadDocumentViewScreen,
 } from './ContentViewScreens';
 import {ExamAttemptScreen, ExamResultScreen} from './ExamScreens';
 import {FollowerListScreen, FollowingListScreen} from './FollowListScreens';
@@ -102,7 +107,10 @@ export {
   AdminVideoListScreen,
   AdminTestListScreen,
   AdminDocumentListScreen,
+  //
+  AdminVideoViewScreen,
   AdminTestQuestionListScreen,
+  AdminDocumentViewScreen,
   //
   AdminContentVideoListScreen,
   AdminContentTestListScreen,
@@ -149,6 +157,8 @@ export {
   CourseTestViewScreen,
   CourseDocumentViewScreen,
   CurrentAffairViewScreen,
+  DownloadVideoViewScreen,
+  DownloadDocumentViewScreen,
   ExamAttemptScreen,
   ExamResultScreen,
   PostViewScreen,

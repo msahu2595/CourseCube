@@ -134,7 +134,7 @@ const ExamAttemptScreen = ({route, navigation}) => {
           />
           <Text
             numberOfLines={1}
-            style={tw`flex-1 px-2 capitalize text-base font-avReg text-gray-600`}>
+            style={tw`flex-1 px-2 text-base font-avReg text-gray-600`}>
             {route?.params?.title}
           </Text>
           <TouchableOpacity

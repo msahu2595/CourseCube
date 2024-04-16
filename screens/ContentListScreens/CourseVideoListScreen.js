@@ -15,8 +15,10 @@ const CourseVideoListScreen = ({navigation, route}) => {
   });
 
   const handlePress = useCallback(
-    bundleContentId => {
-      navigation?.navigate('CourseVideoViewScreen', {bundleContentId});
+    ({contentId}) => {
+      navigation?.navigate('CourseVideoViewScreen', {
+        bundleContentId: contentId,
+      });
     },
     [navigation],
   );
@@ -27,13 +29,11 @@ const CourseVideoListScreen = ({navigation, route}) => {
         index={index}
         color="indigo"
         {...item}
-        handlePress={handlePress}
+        onPress={handlePress}
       />
     ),
     [handlePress],
   );
-
-  console.log(queryLoading, queryData);
 
   return (
     <SafeAreaContainer
@@ -51,9 +51,9 @@ const CourseVideoListScreen = ({navigation, route}) => {
           data={queryData?.bundleContents?.payload || []}
           renderItem={renderItem}
           keyExtractor={item => item._id}
-          // contentContainerStyle={tw`bg-white`}
-          ItemSeparatorComponent={() => <View style={tw`h-3`} />}
-          ListHeaderComponent={() => <View style={tw`h-4`} />}
+          contentContainerStyle={tw`px-2`}
+          ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+          ListHeaderComponent={() => <View style={tw`h-2`} />}
           ListFooterComponent={() => <View style={tw`h-4`} />}
         />
       </LinearGradient>

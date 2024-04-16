@@ -15,10 +15,10 @@ const CourseDocumentListScreen = ({navigation, route}) => {
   });
 
   const handlePress = useCallback(
-    (bundleContentId, title) => {
+    ({contentId, contentTitle}) => {
       navigation?.navigate('CourseDocumentViewScreen', {
-        bundleContentId,
-        title,
+        bundleContentId: contentId,
+        title: contentTitle,
       });
     },
     [navigation],
@@ -28,9 +28,9 @@ const CourseDocumentListScreen = ({navigation, route}) => {
     ({index, item}) => (
       <ContentItem
         index={index}
-        color="teal"
+        color={'teal'}
         {...item}
-        handlePress={handlePress}
+        onPress={handlePress}
       />
     ),
     [handlePress],
@@ -52,9 +52,9 @@ const CourseDocumentListScreen = ({navigation, route}) => {
           data={queryData?.bundleContents?.payload || []}
           renderItem={renderItem}
           keyExtractor={item => item._id}
-          // contentContainerStyle={tw`bg-white`}
-          ItemSeparatorComponent={() => <View style={tw`h-3`} />}
-          ListHeaderComponent={() => <View style={tw`h-4`} />}
+          contentContainerStyle={tw`px-2`}
+          ItemSeparatorComponent={() => <View style={tw`h-2`} />}
+          ListHeaderComponent={() => <View style={tw`h-2`} />}
           ListFooterComponent={() => <View style={tw`h-4`} />}
         />
       </LinearGradient>

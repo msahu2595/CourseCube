@@ -6,6 +6,8 @@ import CourseVideoViewScreen from './CourseVideoViewScreen';
 import CourseTestViewScreen from './CourseTestViewScreen';
 import CourseDocumentViewScreen from './CourseDocumentViewScreen';
 import CurrentAffairViewScreen from './CurrentAffairViewScreen';
+import DownloadVideoViewScreen from './DownloadVideoViewScreen';
+import DownloadDocumentViewScreen from './DownloadDocumentViewScreen';
 
 export {
   VideoViewScreen,
@@ -15,4 +17,6 @@ export {
   CourseTestViewScreen,
   CourseDocumentViewScreen,
   CurrentAffairViewScreen,
+  DownloadVideoViewScreen,
+  DownloadDocumentViewScreen,
 };

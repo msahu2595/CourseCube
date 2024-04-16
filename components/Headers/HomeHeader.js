@@ -26,7 +26,7 @@ export const HomeHeader = memo(({navigation}) => {
 
   return (
     <View style={tw`flex-row`}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={tw`pr-3`}
         onPress={() => navigation.navigate('SearchScreen')}
         hitSlop={{top: 20, right: 20, bottom: 20, left: 20}}>
@@ -35,7 +35,7 @@ export const HomeHeader = memo(({navigation}) => {
           size={28}
           color={tw.color('white')}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity
         style={tw`pr-3`}
         onPress={() =>

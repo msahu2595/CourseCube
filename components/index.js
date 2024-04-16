@@ -1,5 +1,6 @@
 import FocusAwareStatusBar from './FocusAwareStatusBar';
 import SafeAreaContainer from './SafeAreaContainer';
+import YoutubeVideoPlayer from './YoutubeVideoPlayer';
 import VideoPlayer from './VideoPlayer';
 import Fab from './Fab';
 // Profile Component Imports
@@ -38,6 +39,7 @@ import {ShareApp, FollowUs, GetCallFromUs, GetSubscription} from './AppAdverts';
 import InfoItem from './InfoItem';
 import MediaItem from './MediaItem';
 import SyllabusTree from './SyllabusTree';
+import DownloadItem from './DownloadItem';
 import MenuOptionItem from './MenuOptionItem';
 import LoadingIndicator from './LoadingIndicator';
 import NotificationItem from './NotificationItem';
@@ -47,6 +49,7 @@ import ExampleListItem, {ExampleItem} from './ExampleListItem';
 export {
   FocusAwareStatusBar,
   SafeAreaContainer,
+  YoutubeVideoPlayer,
   VideoPlayer,
   Fab,
   // Profile Component Exports
@@ -96,6 +99,7 @@ export {
   InfoItem,
   MediaItem,
   SyllabusTree,
+  DownloadItem,
   MenuOptionItem,
   LoadingIndicator,
   NotificationItem,

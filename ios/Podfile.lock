@@ -347,6 +347,11 @@ PODS:
     - ReactCommon/turbomodule/core
   - react-native-ultimate-config (6.0.1):
     - React-Core
+  - react-native-video (5.2.1):
+    - React-Core
+    - react-native-video/Video (= 5.2.1)
+  - react-native-video/Video (5.2.1):
+    - React-Core
   - react-native-webview (11.25.0):
     - React-Core
   - React-perflogger (0.70.5)
@@ -520,6 +525,7 @@ DEPENDENCIES:
   - react-native-pdf (from `../node_modules/react-native-pdf`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-ultimate-config (from `../node_modules/react-native-ultimate-config`)
+  - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -637,6 +643,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-ultimate-config:
     :path: "../node_modules/react-native-ultimate-config"
+  react-native-video:
+    :path: "../node_modules/react-native-video"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-perflogger:
@@ -743,6 +751,7 @@ SPEC CHECKSUMS:
   react-native-pdf: 33c622cbdf776a649929e8b9d1ce2d313347c4fa
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-ultimate-config: bc816775e31bb2056ccfe18b49e76a5ba2d39b6c
+  react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
   react-native-webview: a71da846ed2e9085440e1d6659c04e285528834b
   React-perflogger: e68d3795cf5d247a0379735cbac7309adf2fb931
   React-RCTActionSheet: 05452c3b281edb27850253db13ecd4c5a65bc247

@@ -176,7 +176,7 @@ const TestViewScreen = ({route, navigation}) => {
               />
               <View style={tw`px-4 py-2`}>
                 <Text
-                  style={tw`font-avSemi text-amber-700 capitalize text-[10px]`}
+                  style={tw`font-avSemi text-amber-700 text-[10px]`}
                   numberOfLines={1}>
                   {data?.subject}
                 </Text>

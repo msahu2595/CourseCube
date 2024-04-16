@@ -10,7 +10,7 @@ const WebsiteItem = memo(props => {
       <Text
         numberOfLines={2}
         ellipsizeMode="tail"
-        style={tw`py-1 text-sm capitalize text-gray-600`}>
+        style={tw`py-1 text-sm text-gray-600`}>
         {props?.name}
       </Text>
       <TouchableOpacity

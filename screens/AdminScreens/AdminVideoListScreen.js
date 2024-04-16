@@ -32,7 +32,7 @@ const REMOVE_VIDEO_THUMBNAIL = gql`
   }
 `;
 
-const AdminVideoListScreen = () => {
+const AdminVideoListScreen = ({navigation}) => {
   const [search, setSearch] = useState('');
   const [addVideoModal, setAddVideoModal] = useState(false);
   const [editVideoModal, setEditVideoModal] = useState(null);
@@ -145,12 +145,22 @@ const AdminVideoListScreen = () => {
     refetch({search: ''});
   }, [refetch]);
 
+  const handleNavigation = useCallback(
+    item => {
+      navigation.navigate('AdminVideoViewScreen', {
+        videoId: item?._id,
+      });
+    },
+    [navigation],
+  );
+
   const _renderItem = useCallback(
     ({item}) => (
       <MediaItem
         label={item.time}
         title={item.title}
         image={item.thumbnail}
+        onPress={() => handleNavigation(item)}
         options={[
           {
             key: 'Create content',
@@ -178,7 +188,7 @@ const AdminVideoListScreen = () => {
         ]}
       />
     ),
-    [removeThumbnailHandler, deleteVideoHandler],
+    [handleNavigation, removeThumbnailHandler, deleteVideoHandler],
   );
 
   return (

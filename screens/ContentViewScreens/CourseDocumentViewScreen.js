@@ -1,62 +1,172 @@
-import React from 'react';
+import {
+  CCLikeButton,
+  CCBookmarkButton,
+  CCDownloadButton,
+} from 'components/Common';
 import tw from '@lib/tailwind';
 import Pdf from 'react-native-pdf';
-import {useQuery} from '@apollo/client';
 import {BUNDLE_CONTENT} from '@queries';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {View, TouchableOpacity, StatusBar} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import openWebURL from 'utils/openWebURL';
+import {SafeAreaContainer} from '@components';
+import config from 'react-native-ultimate-config';
+import React, {useCallback, useEffect} from 'react';
+import {showMessage} from 'react-native-flash-message';
+import {gql, useMutation, useQuery} from '@apollo/client';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {Text, View, Alert, ActivityIndicator} from 'react-native';
 
-const CourseDocumentViewScreen = ({route}) => {
-  const {loading: queryLoading, data: queryData} = useQuery(BUNDLE_CONTENT, {
-    variables: {bundleContentId: route.params.bundleContentId},
+const ADD_VIEW = gql`
+  mutation addView($refId: ID!) {
+    addView(refId: $refId) {
+      code
+      success
+      message
+      token
+    }
+  }
+`;
+
+const CourseDocumentViewScreen = ({navigation, route}) => {
+  const {
+    loading: queryLoading,
+    data: queryData,
+    error: queryError,
+  } = useQuery(BUNDLE_CONTENT, {
+    variables: {bundleContentId: route?.params?.bundleContentId},
   });
 
+  useEffect(() => {
+    const payload = queryData?.bundleContent?.payload;
+    if (payload) {
+      navigation.setOptions({
+        headerRight: () => (
+          <>
+            <CCLikeButton
+              refId={payload?._id}
+              initial={payload?.liked === 1 ? true : false}
+              refetchQueries={[
+                {
+                  query: BUNDLE_CONTENT,
+                  variables: {bundleContentId: payload?._id},
+                },
+              ]}>
+              {liked => (
+                <AntDesign
+                  size={20}
+                  color={tw.color('black')}
+                  name={liked ? 'like1' : 'like2'}
+                  style={tw`py-2 px-3`}
+                />
+              )}
+            </CCLikeButton>
+            <CCBookmarkButton
+              refId={payload?._id}
+              type={payload?.__typename}
+              subType={payload?.media?.__typename}
+              initial={payload?.bookmarked === 1 ? true : false}
+              refetchQueries={[
+                {
+                  query: BUNDLE_CONTENT,
+                  variables: {bundleContentId: payload?._id},
+                },
+              ]}>
+              {bookmarked => (
+                <FontAwesome
+                  size={20}
+                  color={tw.color('black')}
+                  name={bookmarked ? 'bookmark' : 'bookmark-o'}
+                  style={tw`py-2 px-3`}
+                />
+              )}
+            </CCBookmarkButton>
+            <CCDownloadButton content={payload}>
+              {downloaded => (
+                <AntDesign
+                  size={20}
+                  color={tw.color('black')}
+                  name={downloaded ? 'check' : 'download'}
+                  style={tw`py-2 px-3`}
+                />
+              )}
+            </CCDownloadButton>
+          </>
+        ),
+      });
+    }
+  }, [navigation, queryData]);
+
+  const data = queryData?.bundleContent?.payload || {};
+
+  const [addView] = useMutation(ADD_VIEW, {
+    variables: {refId: data?._id},
+    onCompleted: res => {
+      console.log('addView', res);
+    },
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+  });
+
+  const handledLoadComplete = useCallback(
+    (numberOfPages, filePath) => {
+      console.log(`Number of pages: ${numberOfPages}, File path: ${filePath}`);
+      addView();
+    },
+    [addView],
+  );
+
+  const handlePageChanged = useCallback((page, numberOfPages) => {
+    console.log(`Current page: ${page}, Total page: ${numberOfPages}`);
+  }, []);
+
+  const handlePressLink = useCallback(uri => {
+    openWebURL(uri);
+  }, []);
+
+  const handleError = useCallback(error => {
+    console.log('Cannot render PDF', error);
+    Alert.alert('Error', 'The source URL is wrong.');
+  }, []);
+
+  if (queryError) {
+    return (
+      <SafeAreaContainer style={tw`justify-center items-center`}>
+        <Text style={tw`text-black align-center`}>
+          Unexpected error happened, Please try again!
+        </Text>
+      </SafeAreaContainer>
+    );
+  }
+
   return (
-    <SafeAreaView style={tw`flex-1 bg-gray-100`}>
-      <StatusBar
-        backgroundColor={tw.color('teal-200')}
-        barStyle="dark-content"
-      />
-      <View style={tw`flex-1 bg-black`}>
+    <SafeAreaContainer
+      statusBgColor={tw.color('teal-200')}
+      statusBarStyle="dark-content">
+      {queryLoading ? (
+        <View style={tw`flex-1 items-center justify-center`}>
+          <ActivityIndicator size="large" color="#FFF" />
+        </View>
+      ) : (
         <Pdf
+          trustAllCerts={false}
+          style={tw`flex-1 bg-black`}
           source={{
-            uri: queryData?.bundleContent?.payload?.media?.url,
+            uri: `${
+              __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
+            }/${data?.media?.url}`,
             cache: true,
           }}
-          onLoadComplete={(numberOfPages, filePath) => {
-            console.log(`Number of pages: ${numberOfPages}`);
-          }}
-          onError={error => console.log('Cannot render PDF', error)}
-          onPageChanged={(page, numberOfPages) => {
-            console.log(`Current page: ${page}`);
-          }}
-          onPressLink={uri => {
-            console.log(`Link pressed: ${uri}`);
-          }}
-          style={tw`flex-1 bg-black`}
+          onLoadComplete={handledLoadComplete}
+          onPageChanged={handlePageChanged}
+          onPressLink={handlePressLink}
+          onError={handleError}
         />
-      </View>
-      <TouchableOpacity
-        onPressOut={null}
-        style={tw.style(
-          'absolute',
-          'bottom-2',
-          'right-2',
-          'bg-teal-600',
-          'justify-center',
-          'items-center',
-          'rounded-full',
-          'shadow',
-          {width: 56, height: 56},
-        )}>
-        <MaterialCommunityIcons
-          name="file-download-outline"
-          size={28}
-          color={tw.color('white')}
-        />
-      </TouchableOpacity>
-    </SafeAreaView>
+      )}
+    </SafeAreaContainer>
   );
 };
 

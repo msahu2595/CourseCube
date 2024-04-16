@@ -32,7 +32,7 @@ const REMOVE_DOCUMENT_THUMBNAIL = gql`
   }
 `;
 
-const AdminDocumentListScreen = () => {
+const AdminDocumentListScreen = ({navigation}) => {
   const [search, setSearch] = useState('');
   const [addContentModal, setAddContentModal] = useState(null);
   const [addDocumentModal, setAddDocumentModal] = useState(false);
@@ -144,12 +144,23 @@ const AdminDocumentListScreen = () => {
     refetch({search: ''});
   }, [refetch]);
 
+  const handleNavigation = useCallback(
+    item => {
+      navigation.navigate('AdminDocumentViewScreen', {
+        documentId: item?._id,
+        title: item?.title,
+      });
+    },
+    [navigation],
+  );
+
   const _renderItem = useCallback(
     ({item}) => (
       <MediaItem
         title={item.title}
         label={`${item.pages} Pages`}
         image={item.thumbnail}
+        onPress={() => handleNavigation(item)}
         options={[
           {
             key: 'Create content',
@@ -177,7 +188,7 @@ const AdminDocumentListScreen = () => {
         ]}
       />
     ),
-    [removeThumbnailHandler, deleteDocumentHandler],
+    [handleNavigation, removeThumbnailHandler, deleteDocumentHandler],
   );
 
   return (

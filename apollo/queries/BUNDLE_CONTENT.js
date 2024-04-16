@@ -22,10 +22,6 @@ export const BUNDLE_CONTENT = gql`
             thumbnail
             link
             time
-            urls {
-              url
-              format
-            }
             enable
             createdAt
             updatedAt
@@ -36,19 +32,9 @@ export const BUNDLE_CONTENT = gql`
             title
             thumbnail
             instructions
-            questions {
-              _id
-              question
-              image
-              passage
-              options
-              mark
-              answerIndex
-              enable
-            }
             duration
+            questions
             totalMarks
-            negativeMark
             enable
             createdAt
             updatedAt
@@ -66,16 +52,20 @@ export const BUNDLE_CONTENT = gql`
           }
         }
         type
+        highlight
+        instructors
         language
+        index
         description
         visible
         enable
         createdAt
         updatedAt
-        bundle {
-          _id
-        }
+        likes
+        liked
+        views
         purchased
+        bookmarked
       }
     }
   }

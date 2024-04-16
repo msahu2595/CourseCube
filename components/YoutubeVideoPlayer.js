@@ -1,5 +1,5 @@
-import React, {memo, useCallback, useState} from 'react';
-import playerRef from 'playerRef';
+import React, {memo, useCallback, useMemo, useState} from 'react';
+import {youtubePlayerRef} from 'playerRef';
 import {tw} from '@lib';
 import {
   Text,
@@ -10,14 +10,14 @@ import {
   TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
-import Video from 'react-native-video';
-import {useNavigation} from '@react-navigation/native';
+import YoutubePlayer from 'react-native-youtube-iframe';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import MediaControls, {PLAYER_STATES} from 'react-native-media-controls';
 import Orientation, {useLockListener} from 'react-native-orientation-locker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const VideoPlayer = memo(({link}) => {
+const YoutubeVideoPlayer = memo(props => {
   const {width, height} = useWindowDimensions();
   const navigation = useNavigation();
 
@@ -27,9 +27,27 @@ const VideoPlayer = memo(({link}) => {
   const [playerKey, setPlayerKey] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
+  const [playbackRates, setPlaybackRates] = useState([]);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [playerState, setPlayerState] = useState(PLAYER_STATES.PLAYING);
-  const [playbackRates] = useState([0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]);
+
+  const videoId = useMemo(() => {
+    const arr = props?.link?.split('https://youtu.be/');
+    return arr[1];
+  }, [props?.link]);
+
+  useFocusEffect(
+    useCallback(() => {
+      let interval = setInterval(() => {
+        youtubePlayerRef.current?.getCurrentTime().then(gotCurrentTime => {
+          setCurrentTime(gotCurrentTime);
+        });
+      }, 1000);
+      return () => {
+        clearInterval(interval);
+      };
+    }, []),
+  );
 
   useLockListener(orientation => {
     switch (orientation) {
@@ -52,26 +70,62 @@ const VideoPlayer = memo(({link}) => {
     }
   }, [isFullScreen, navigation]);
 
-  // Video player callbacks
+  // Youtube player callbacks
 
   const onError = useCallback(error => {
     console.log('VideoPlayer Error:', error);
   }, []);
 
   const onStateChange = useCallback(state => {
-    console.log('onStateChange state', state);
-    if (state?.isPlaying) {
-      setIsLoading(false);
-      setPlayerState(PLAYER_STATES.PLAYING);
-    } else {
-      setPlayerState(PLAYER_STATES.PAUSED);
+    switch (state) {
+      case 'unstarted':
+        youtubePlayerRef.current?.getDuration().then(getDuration => {
+          setDuration(getDuration);
+        });
+        youtubePlayerRef.current?.getPlaybackRate().then(getPlaybackRate => {
+          setRate(getPlaybackRate);
+        });
+        youtubePlayerRef.current
+          ?.getAvailablePlaybackRates()
+          .then(getAvailablePlaybackRates => {
+            setPlaybackRates(getAvailablePlaybackRates);
+          });
+        break;
+      case 'video cue':
+        break;
+      case 'buffering':
+        break;
+      case 'playing':
+        setIsLoading(false);
+        setPlayerState(PLAYER_STATES.PLAYING);
+        break;
+      case 'paused':
+        setPlayerState(PLAYER_STATES.PAUSED);
+        break;
+      case 'ended':
+        setPlayerState(PLAYER_STATES.ENDED);
+        break;
+      default:
+        break;
     }
   }, []);
 
-  const onPlaybackRateChange = useCallback(({playbackRate}) => {
-    console.log('onPlaybackRateChange', playbackRate);
+  const onFullScreenChange = useCallback(status => {
+    // console.log('onFullScreenChange', status);
+  }, []);
+
+  const onPlaybackRateChange = useCallback(playbackRate => {
     if (Platform.OS === 'android') {
       ToastAndroid.show(`${playbackRate}x`, ToastAndroid.SHORT);
+    }
+  }, []);
+
+  const onPlaybackQualityChange = useCallback(quality => {
+    if (Platform.OS === 'android') {
+      ToastAndroid.show(
+        `Video quality changed: ${quality?.toUpperCase()} `,
+        ToastAndroid.SHORT,
+      );
     }
   }, []);
 
@@ -88,7 +142,7 @@ const VideoPlayer = memo(({link}) => {
 
   const onSeekVideo = useCallback(e => {
     setIsLoading(true);
-    playerRef.current?.seek(e);
+    youtubePlayerRef.current?.seekTo(e);
   }, []);
 
   const onSeekingVideo = useCallback(e => {
@@ -97,12 +151,12 @@ const VideoPlayer = memo(({link}) => {
 
   const onRewindVideo = useCallback(() => {
     setIsLoading(true);
-    playerRef.current?.seek(currentTime - 10);
+    youtubePlayerRef.current?.seekTo(currentTime - 10);
   }, [currentTime]);
 
   const onForwardVideo = useCallback(() => {
     setIsLoading(true);
-    playerRef.current?.seek(currentTime + 10);
+    youtubePlayerRef.current?.seekTo(currentTime + 10);
   }, [currentTime]);
 
   const onToggleMute = useCallback(() => {
@@ -139,49 +193,34 @@ const VideoPlayer = memo(({link}) => {
     [isFullScreen],
   );
 
-  const onLoad = useCallback(data => {
-    setDuration(data.duration);
-    setIsLoading(false);
-  }, []);
-
-  const onProgress = useCallback(data => {
-    setCurrentTime(data.currentTime);
-  }, []);
-
-  const onSeek = useCallback(data => {
-    setCurrentTime(data.currentTime);
-    setIsLoading(false);
-  }, []);
-
-  const onEnd = useCallback(() => {
-    setPlayerState(PLAYER_STATES.ENDED);
-  }, []);
-
   return (
     <View>
       <StatusBar hidden={true} />
       <View style={tw`self-center`} pointerEvents="none">
-        <Video
-          ref={playerRef}
+        <YoutubePlayer
+          ref={youtubePlayerRef}
           key={`Player-${playerKey}`}
-          style={{
-            width: width < height ? width : (height * 16) / 9,
-            height: height < width ? height : (width * 9) / 16,
-          }}
-          source={{uri: link}}
-          rate={rate}
-          muted={mute}
-          paused={playerState === PLAYER_STATES.PAUSED}
+          width={width < height ? width : (height * 16) / 9}
+          height={height < width ? height : (width * 9) / 16}
+          videoId={videoId}
+          mute={mute}
+          playbackRate={rate}
+          forceAndroidAutoplay={true}
+          play={playerState > 0 ? false : true}
           onError={onError}
-          onLoad={onLoad}
-          onPlaybackStateChanged={onStateChange}
+          onReady={props?.onVideoStart}
+          onChangeState={onStateChange}
+          onFullScreenChange={onFullScreenChange}
           onPlaybackRateChange={onPlaybackRateChange}
-          onProgress={onProgress}
-          onSeek={onSeek}
-          onEnd={onEnd}
-          repeat={false}
-          resizeMode="contain"
-          progressUpdateInterval={1000.0}
+          onPlaybackQualityChange={onPlaybackQualityChange}
+          initialPlayerParams={{
+            loop: true,
+            controls: false,
+            preventFullScreen: true,
+            iv_load_policy: 3,
+            modestbranding: true,
+            rel: false,
+          }}
         />
       </View>
       <MediaControls
@@ -257,4 +296,4 @@ const VideoPlayer = memo(({link}) => {
   );
 });
 
-export default VideoPlayer;
+export default YoutubeVideoPlayer;

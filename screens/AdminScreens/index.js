@@ -9,7 +9,10 @@ import AdminUserListScreen from './AdminUserListScreen';
 import AdminVideoListScreen from './AdminVideoListScreen';
 import AdminTestListScreen from './AdminTestListScreen';
 import AdminDocumentListScreen from './AdminDocumentListScreen';
+//
+import AdminVideoViewScreen from './AdminVideoViewScreen';
 import AdminTestQuestionListScreen from './AdminTestQuestionListScreen';
+import AdminDocumentViewScreen from './AdminDocumentViewScreen';
 //
 import AdminContentVideoListScreen from './AdminContentVideoListScreen';
 import AdminContentTestListScreen from './AdminContentTestListScreen';
@@ -36,7 +39,10 @@ export {
   AdminVideoListScreen,
   AdminTestListScreen,
   AdminDocumentListScreen,
+  //
+  AdminVideoViewScreen,
   AdminTestQuestionListScreen,
+  AdminDocumentViewScreen,
   //
   AdminContentVideoListScreen,
   AdminContentTestListScreen,

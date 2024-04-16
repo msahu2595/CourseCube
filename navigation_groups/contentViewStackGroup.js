@@ -9,6 +9,8 @@ import {
   CourseTestViewScreen,
   CourseDocumentViewScreen,
   CurrentAffairViewScreen,
+  DownloadVideoViewScreen,
+  DownloadDocumentViewScreen,
 } from '@screens';
 
 const Stack = createNativeStackNavigator(); // Create Stack Navigator
@@ -55,6 +57,9 @@ const contentViewStackGroup = () => {
         component={CourseVideoViewScreen}
         options={{
           headerShown: false,
+          orientation: 'portrait',
+          navigationBarHidden: true,
+          autoHideHomeIndicator: true,
         }}
       />
       <Stack.Screen
@@ -82,6 +87,25 @@ const contentViewStackGroup = () => {
           headerShown: true,
           headerStyle: tw`bg-white`,
           headerTitle: route.params.title || 'Article',
+        })}
+      />
+      <Stack.Screen
+        name="DownloadVideoViewScreen"
+        component={DownloadVideoViewScreen}
+        options={{
+          headerShown: false,
+          orientation: 'portrait',
+          navigationBarHidden: true,
+          autoHideHomeIndicator: true,
+        }}
+      />
+      <Stack.Screen
+        name="DownloadDocumentViewScreen"
+        component={DownloadDocumentViewScreen}
+        options={({route}) => ({
+          headerShown: true,
+          headerStyle: tw`bg-teal-200`,
+          headerTitle: route.params.title || 'Document',
         })}
       />
     </Stack.Group>

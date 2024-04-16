@@ -202,7 +202,7 @@ const CurrentAffairViewScreen = ({route}) => {
                   <Text
                     style={tw`font-avSemi text-gray-600 text-${
                       size ? (size < 2 ? 'lg' : 'xl') : 'base'
-                    } capitalize`}>
+                    }`}>
                     {`${data?.sources?.length > 1 ? 'Sources' : 'Source'} :`}
                   </Text>
                   {data?.sources?.map((s, i) => (

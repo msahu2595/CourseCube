@@ -7,14 +7,19 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import React from 'react';
+import {
+  CCIcon,
+  CCLikeButton,
+  CCBookmarkButton,
+  CCDownloadButton,
+} from 'components/Common';
 import tw from '@lib/tailwind';
 import {CONTENT} from '@queries';
 import {showMessage} from 'react-native-flash-message';
 import LinearGradient from 'react-native-linear-gradient';
 import {gql, useMutation, useQuery} from '@apollo/client';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {InfoItem, SafeAreaContainer, VideoPlayer} from '@components';
-import {CCIcon, CCLikeButton, CCBookmarkButton} from 'components/Common';
+import {InfoItem, SafeAreaContainer, YoutubeVideoPlayer} from '@components';
 
 const ADD_VIEW = gql`
   mutation addView($refId: ID!) {
@@ -38,7 +43,7 @@ const VideoViewScreen = ({route}) => {
     variables: {contentId: route?.params?.contentId},
   });
 
-  const data = queryData?.content?.payload || {};
+  const data = queryData?.content?.payload || null;
 
   const [addView] = useMutation(ADD_VIEW, {
     variables: {refId: data?._id},
@@ -74,7 +79,7 @@ const VideoViewScreen = ({route}) => {
           <ActivityIndicator size="large" color={tw.color('white')} />
         </View>
       ) : (
-        <VideoPlayer link={data?.media?.link} onVideoStart={addView} />
+        <YoutubeVideoPlayer link={data?.media?.link} onVideoStart={addView} />
       )}
       <LinearGradient
         locations={[0, 0.2, 0.5]}
@@ -92,7 +97,7 @@ const VideoViewScreen = ({route}) => {
           <>
             <View style={tw`px-4 py-2`}>
               <Text
-                style={tw`font-avSemi text-indigo-700 capitalize text-[10px]`}
+                style={tw`font-avSemi text-indigo-700 text-[10px]`}
                 numberOfLines={1}>
                 {data?.subject}
               </Text>
@@ -111,7 +116,7 @@ const VideoViewScreen = ({route}) => {
                   fontSize: 10,
                 })}
                 numberOfLines={1}>
-                {`${data?.media?.time} Mins | ${data?.likes} Likes | 50k Watched`}
+                {`${data?.media?.time} Mins | ${data?.likes} Likes | ${data?.views} Watches`}
               </Text>
             </View>
             <View
@@ -145,9 +150,14 @@ const VideoViewScreen = ({route}) => {
                   />
                 )}
               </CCBookmarkButton>
-              <TouchableOpacity>
-                <CCIcon icon="download" label="Download" />
-              </TouchableOpacity>
+              <CCDownloadButton content={data}>
+                {downloaded => (
+                  <CCIcon
+                    icon={downloaded ? 'check' : 'download'}
+                    label={downloaded ? 'Downloaded' : 'Download'}
+                  />
+                )}
+              </CCDownloadButton>
               <TouchableOpacity>
                 <CCIcon icon="questioncircleo" label="Doubts" />
               </TouchableOpacity>

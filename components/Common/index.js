@@ -14,6 +14,7 @@ import {CCFollowButton} from './CCFollowButton';
 import {CCFileUploader} from './CCFileUploader';
 import {CCImageUploader} from './CCImageUploader';
 import {CCBookmarkButton} from './CCBookmarkButton';
+import {CCDownloadButton} from './CCDownloadButton';
 import {CCNavigationButton} from './CCNavigationButton';
 
 export {
@@ -33,5 +34,6 @@ export {
   CCFileUploader,
   CCImageUploader,
   CCBookmarkButton,
+  CCDownloadButton,
   CCNavigationButton,
 };

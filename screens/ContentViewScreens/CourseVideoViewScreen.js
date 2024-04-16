@@ -1,261 +1,196 @@
 import {
-  View,
   Text,
-  SafeAreaView,
-  FlatList,
-  Image,
-  ImageBackground,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  useWindowDimensions,
 } from 'react-native';
 import React from 'react';
+import {
+  CCIcon,
+  CCLikeButton,
+  CCBookmarkButton,
+  CCDownloadButton,
+} from 'components/Common';
 import tw from '@lib/tailwind';
-import {VideoPlayer} from '@components';
 import {BUNDLE_CONTENT} from '@queries';
-import {useQuery} from '@apollo/client';
+import {showMessage} from 'react-native-flash-message';
 import LinearGradient from 'react-native-linear-gradient';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import {gql, useMutation, useQuery} from '@apollo/client';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {InfoItem, SafeAreaContainer, YoutubeVideoPlayer} from '@components';
+
+const ADD_VIEW = gql`
+  mutation addView($refId: ID!) {
+    addView(refId: $refId) {
+      code
+      success
+      message
+      token
+    }
+  }
+`;
 
 const CourseVideoViewScreen = ({route}) => {
-  const {loading: queryLoading, data: queryData} = useQuery(BUNDLE_CONTENT, {
+  console.log('route?.params', route?.params);
+  const {width, height} = useWindowDimensions();
+
+  const {
+    loading: queryLoading,
+    data: queryData,
+    error: queryError,
+  } = useQuery(BUNDLE_CONTENT, {
     variables: {bundleContentId: route?.params?.bundleContentId},
   });
 
-  const data = queryData?.bundleContent?.payload || {};
+  const data = queryData?.bundleContent?.payload || null;
 
-  console.log({queryLoading, data});
+  const [addView] = useMutation(ADD_VIEW, {
+    variables: {refId: data?._id},
+    onCompleted: res => {
+      console.log('addView', res);
+    },
+    onError: err => {
+      showMessage({
+        message: err?.message || 'Some unknown error occurred. Try again!!',
+        type: 'danger',
+      });
+    },
+  });
+
+  if (queryError) {
+    return (
+      <SafeAreaContainer style={tw`justify-center items-center`}>
+        <Text style={tw`text-black align-center`}>
+          Unexpected error happened, Please try again!
+        </Text>
+      </SafeAreaContainer>
+    );
+  }
 
   return (
-    <SafeAreaView style={tw`flex-1 bg-black`}>
-      <VideoPlayer videoId={queryData?.bundleContent?.payload?.media?._id} />
-      <ContentInfoScreen {...data} />
-    </SafeAreaView>
+    <SafeAreaContainer style={tw`bg-black`}>
+      {queryLoading ? (
+        <View
+          style={tw.style('bg-black justify-center', {
+            width: width < height ? width : (height * 16) / 9,
+            height: height < width ? height : (width * 9) / 16,
+          })}>
+          <ActivityIndicator size="large" color={tw.color('white')} />
+        </View>
+      ) : (
+        <YoutubeVideoPlayer link={data?.media?.link} onVideoStart={addView} />
+      )}
+      <LinearGradient
+        locations={[0, 0.2, 0.5]}
+        colors={[
+          tw.color('indigo-200'),
+          tw.color('indigo-50'),
+          tw.color('white'),
+        ]}
+        style={tw`flex-1`}>
+        {queryLoading ? (
+          <View style={tw`flex-1 justify-center`}>
+            <ActivityIndicator size="large" color={tw.color('indigo-600')} />
+          </View>
+        ) : (
+          <>
+            <View style={tw`px-4 py-2`}>
+              <Text
+                style={tw`font-avSemi text-indigo-700 text-[10px]`}
+                numberOfLines={1}>
+                {data?.subject}
+              </Text>
+              <Text
+                style={tw`py-1 font-avSemi text-base text-gray-600`}
+                numberOfLines={2}>
+                {data?.title}
+              </Text>
+              <Text
+                style={tw`font-avReg text-xs text-amber-600`}
+                numberOfLines={1}>
+                #CGPSE #ACS #SSC #Mains
+              </Text>
+              <Text
+                style={tw.style('font-avReg', 'text-gray-600', 'text-sm', {
+                  fontSize: 10,
+                })}
+                numberOfLines={1}>
+                {`${data?.media?.time} Mins | ${data?.likes} Likes | ${data?.views} Watches`}
+              </Text>
+            </View>
+            <View
+              style={tw`flex-row justify-around border-t border-b border-indigo-200 px-2`}>
+              <CCLikeButton
+                refId={data?._id}
+                initial={data?.liked === 1 ? true : false}
+                refetchQueries={[
+                  {
+                    query: BUNDLE_CONTENT,
+                    variables: {bundleContentId: data?._id},
+                  },
+                ]}>
+                {liked => (
+                  <CCIcon
+                    icon={liked ? 'like1' : 'like2'}
+                    label={liked ? 'Liked' : 'Like'}
+                  />
+                )}
+              </CCLikeButton>
+              <CCBookmarkButton
+                refId={data?._id}
+                type={data?.__typename}
+                subType={data?.media?.__typename}
+                initial={data?.bookmarked === 1 ? true : false}
+                refetchQueries={[
+                  {
+                    query: BUNDLE_CONTENT,
+                    variables: {bundleContentId: data?._id},
+                  },
+                ]}>
+                {bookmarked => (
+                  <CCIcon
+                    icon={bookmarked ? 'bookmark' : 'bookmark-o'}
+                    label={bookmarked ? 'Bookmarked' : 'Bookmark'}
+                    IconComponent={FontAwesome}
+                  />
+                )}
+              </CCBookmarkButton>
+              <CCDownloadButton content={data}>
+                {downloaded => (
+                  <CCIcon
+                    icon={downloaded ? 'check' : 'download'}
+                    label={downloaded ? 'Downloaded' : 'Download'}
+                  />
+                )}
+              </CCDownloadButton>
+              <TouchableOpacity>
+                <CCIcon icon="questioncircleo" label="Doubts" />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <CCIcon icon="sharealt" label="Share" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={tw`flex-1`}>
+              <InfoItem label="Highlight" value={data?.highlight} />
+              <InfoItem
+                inline
+                label="Language"
+                value={data?.language === 'HI' ? 'हिन्दी' : 'English'}
+              />
+              <InfoItem
+                label="Instructors"
+                value={data?.instructors?.join(', ')}
+              />
+              <InfoItem label="Index" value={data?.index} />
+              <InfoItem label="Description" value={data?.description} />
+            </ScrollView>
+          </>
+        )}
+      </LinearGradient>
+    </SafeAreaContainer>
   );
 };
 
 export default CourseVideoViewScreen;
-
-const ContentInfoScreen = props => {
-  const renderItem = ({item}) => <Item {...item} />;
-
-  const ListHeaderComponent = () => {
-    return (
-      <View style={tw`py-2`}>
-        <View style={tw`px-4`}>
-          <Text
-            style={tw`font-avSemi text-base text-gray-600`}
-            numberOfLines={2}>
-            {props?.title}
-          </Text>
-          <Text style={tw`font-avReg text-xs text-amber-600`} numberOfLines={1}>
-            #CGPSE #ACS #SSC #Mains
-          </Text>
-          <Text
-            style={tw.style('font-avReg', 'text-gray-600', 'text-sm', {
-              fontSize: 10,
-            })}
-            numberOfLines={1}>
-            {props?.media?.time} Mins | 50k Watched | 223 Likes
-          </Text>
-        </View>
-        <View
-          style={tw`flex-row justify-around border-t border-b border-gray-100 px-2 my-2`}>
-          <View style={tw.style('items-center', 'py-1', {width: 60})}>
-            <AntDesign name="like1" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', {fontSize: 10})}>
-              Likes
-            </Text>
-          </View>
-          <View style={tw.style('items-center', 'py-1', {width: 60})}>
-            <AntDesign name="sharealt" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', {fontSize: 10})}>
-              Share
-            </Text>
-          </View>
-          <View style={tw.style('items-center', 'py-1', {width: 60})}>
-            <AntDesign
-              name="questioncircleo"
-              size={20}
-              color={tw.color('blue-600')}
-            />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', {fontSize: 10})}>
-              Doubts
-            </Text>
-          </View>
-          <View style={tw.style('items-center', 'py-1', {width: 60})}>
-            <AntDesign name="download" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', {fontSize: 10})}>
-              Download
-            </Text>
-          </View>
-          <View style={tw.style('items-center', 'py-1', {width: 60})}>
-            <AntDesign name="message1" size={20} color={tw.color('blue-600')} />
-            <Text
-              numberOfLines={1}
-              style={tw.style('pt-1', 'font-avReg', {fontSize: 10})}>
-              Live
-            </Text>
-          </View>
-        </View>
-      </View>
-    );
-  };
-
-  return (
-    // <LinearGradient
-    //   locations={[0, 0.2, 0.5]}
-    //   colors={[
-    //     tw.color('indigo-200'),
-    //     tw.color('indigo-50'),
-    //     tw.color('white'),
-    //   ]}
-    //   style={tw`flex-1`}>
-    <FlatList
-      data={DATA}
-      renderItem={renderItem}
-      keyExtractor={item => item.id}
-      contentContainerStyle={tw`bg-white`}
-      ItemSeparatorComponent={() => <View style={tw`h-3`} />}
-      ListHeaderComponent={ListHeaderComponent}
-      ListFooterComponent={() => <View style={tw`h-4`} />}
-    />
-    // </LinearGradient>
-  );
-};
-
-const Item = ({image, title, course, color, info}) => {
-  return (
-    <LinearGradient
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 0}}
-      locations={[0.5, 1]}
-      colors={[tw.color('white'), tw.color(`${color}-200`)]}
-      style={tw.style('flex-row', 'rounded-lg', 'shadow-sm', 'mx-4')}>
-      <ImageBackground
-        source={image}
-        resizeMode="cover"
-        imageStyle={tw.style('rounded-lg', {
-          opacity: 0.5,
-        })}
-        style={tw.style('rounded-lg', 'items-center', 'shadow-sm', 'bg-black', {
-          height: 96,
-        })}>
-        <Image
-          source={image}
-          resizeMode="contain"
-          style={tw.style({borderRadius: 20, height: 96, aspectRatio: 16 / 9})}
-        />
-      </ImageBackground>
-      <View style={tw`flex-1 px-2 py-2 justify-between`}>
-        <Text
-          style={tw.style('font-avSemi', `text-${color}-700`, 'py-1', {
-            fontSize: 10,
-          })}
-          numberOfLines={1}>
-          {course}
-        </Text>
-        <Text
-          style={tw`flex-1 font-avSemi text-xs text-gray-600`}
-          numberOfLines={2}>
-          {title}
-        </Text>
-        <Text
-          style={tw.style('font-avReg', 'text-gray-600', 'py-1', {
-            fontSize: 10,
-          })}
-          numberOfLines={1}>
-          {info}
-        </Text>
-      </View>
-    </LinearGradient>
-  );
-};
-
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    image: require('@images/vd1.jpeg'),
-    title: 'CGPSC Prelims Hindi Medium Mobile Course',
-    course: 'Geography',
-    color: 'indigo',
-    info: '45 Mins | 50k Watched | 223 Likes',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bb',
-    image: require('@images/dc1.jpeg'),
-    title: 'CGPSC Prelims PDF',
-    course: 'Chhattisgarh',
-    color: 'teal',
-    info: '12 Pages | 5.5k Likes',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28bc',
-    image: require('@images/ts1.jpg'),
-    title: 'CGPSC Prelims Mock Test',
-    course: 'History',
-    color: 'amber',
-    info: '12 Ques | 5 Mins | 180 Attempts',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb898bc',
-    image: require('@images/ts2.jpeg'),
-    title: 'CGPSC Prelims Mock Test',
-    course: 'History',
-    color: 'amber',
-    info: '12 Ques | 5 Mins | 180 Attempts',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed6-3ad53abb28bd',
-    image: require('@images/vd4.jpg'),
-    title: 'CGPSC Prelims Hindi Medium Mobile Course',
-    course: 'Geography',
-    color: 'indigo',
-    info: '45 Mins | 50k Watched | 223 Likes',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed7-3ad53abb28ba',
-    image: require('@images/vd5.jpg'),
-    title: 'CGPSC Prelims Hindi Medium Mobile Course',
-    course: 'Geography',
-    color: 'indigo',
-    info: '45 Mins | 50k Watched | 223 Likes',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed8-3ad53abb28bb',
-    image: require('@images/vd6.jpg'),
-    title: 'CGPSC Prelims Hindi Medium Mobile Course',
-    course: 'Geography',
-    color: 'indigo',
-    info: '45 Mins | 50k Watched | 223 Likes',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed9-3ad53abb28bc',
-    image: require('@images/vd7.jpg'),
-    title: 'CGPSC Prelims Hindi Medium Mobile Course',
-    course: 'Geography',
-    color: 'indigo',
-    info: '45 Mins | 50k Watched | 223 Likes',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed10-3ad53abb28bc',
-    image: require('@images/vd8.jpg'),
-    title: 'CGPSC Prelims Hindi Medium Mobile Course',
-    course: 'Geography',
-    color: 'indigo',
-    info: '45 Mins | 50k Watched | 223 Likes',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed11-3ad53abb28bc',
-    image: require('@images/vd9.jpg'),
-    title: 'CGPSC Prelims Hindi Medium Mobile Course',
-    course: 'Geography',
-    color: 'indigo',
-    info: '45 Mins | 50k Watched | 223 Likes',
-  },
-];

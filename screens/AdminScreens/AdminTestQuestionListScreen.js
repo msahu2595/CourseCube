@@ -155,7 +155,9 @@ const AdminTestQuestionListScreen = ({route: {params}}) => {
   );
 
   return (
-    <SafeAreaContainer>
+    <SafeAreaContainer
+      statusBgColor={tw.color('blue-600')}
+      statusBarStyle="dark-content">
       <CCSearchInput
         value={search}
         searching={loading}

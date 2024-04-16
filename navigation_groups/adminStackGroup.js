@@ -7,7 +7,9 @@ import {
   AdminArticleListScreen,
   AdminWebsiteListScreen,
   AdminUserListScreen,
+  AdminVideoViewScreen,
   AdminTestQuestionListScreen,
+  AdminDocumentViewScreen,
   AdminCourseSyllabusScreen,
 } from '@screens';
 import {
@@ -92,11 +94,29 @@ const adminStackGroup = () => {
         }}
       />
       <Stack.Screen
+        name="AdminVideoViewScreen"
+        component={AdminVideoViewScreen}
+        options={{
+          headerShown: false,
+          orientation: 'portrait',
+          navigationBarHidden: true,
+          autoHideHomeIndicator: true,
+        }}
+      />
+      <Stack.Screen
         name="AdminTestQuestionListScreen"
         component={AdminTestQuestionListScreen}
         options={{
           headerTitle: 'Test Questions',
         }}
+      />
+      <Stack.Screen
+        name="AdminDocumentViewScreen"
+        component={AdminDocumentViewScreen}
+        options={({route}) => ({
+          headerShown: true,
+          headerTitle: route.params.title || 'Document',
+        })}
       />
       <Stack.Screen
         name="AdminCourseSyllabusScreen"

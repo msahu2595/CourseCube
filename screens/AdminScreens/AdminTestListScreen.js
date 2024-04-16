@@ -146,6 +146,15 @@ const AdminTestListScreen = ({navigation}) => {
     refetch({search: ''});
   }, [refetch]);
 
+  const handleNavigation = useCallback(
+    item => {
+      navigation.navigate('AdminTestQuestionListScreen', {
+        testId: item?._id,
+      });
+    },
+    [navigation],
+  );
+
   const _renderItem = useCallback(
     ({item}) => (
       <MediaItem
@@ -160,20 +169,13 @@ const AdminTestListScreen = ({navigation}) => {
             : ''
         }`}
         image={item.thumbnail}
+        onPress={() => handleNavigation(item)}
         options={[
           {
             key: 'Create content',
             positive: true,
             label: 'Create content',
             onSelect: () => setAddContentModal(item),
-          },
-          {
-            key: 'Test questions',
-            label: 'Test questions',
-            onSelect: () =>
-              navigation.navigate('AdminTestQuestionListScreen', {
-                testId: item._id,
-              }),
           },
           {
             key: 'Edit test',
@@ -195,7 +197,7 @@ const AdminTestListScreen = ({navigation}) => {
         ]}
       />
     ),
-    [removeThumbnailHandler, deleteTestHandler, navigation],
+    [handleNavigation, removeThumbnailHandler, deleteTestHandler],
   );
 
   return (
