@@ -14,7 +14,7 @@ const CourseDocumentListScreen = ({route}) => {
   const {loading, data, refetch, fetchMore} = useQuery(BUNDLE_CONTENTS, {
     variables: {
       bundleId: route.params?.bundleId,
-      filter: {subjectId: route.params?.subjectId, type: 'Document'},
+      filter: {subjectId: route.params?.subjectId || null, type: 'Document'},
     },
     onError: err => {
       showMessage({

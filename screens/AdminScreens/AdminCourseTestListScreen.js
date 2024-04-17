@@ -3,15 +3,14 @@ import {
   Text,
   Alert,
   FlatList,
-  Dimensions,
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
 import tw from '@lib/tailwind';
 import {BUNDLE_CONTENTS} from '@queries';
-import {TestItem, Fab} from '@components';
-// import {CCSearchInput} from 'components/Common';
+import {CCSearchInput} from 'components/Common';
 import {DELETE_BUNDLE_CONTENT} from '@mutations';
+import {CourseContentItem, Fab} from '@components';
 import React, {useCallback, useState} from 'react';
 import {useMutation, useQuery} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
@@ -19,23 +18,18 @@ import SelectMediaModal from 'components/SelectMediaModal';
 import AddBundleContentModal from 'components/AddBundleContentModal';
 import EditBundleContentModal from 'components/EditBundleContentModal';
 
-const columns = 2;
 const type = 'Test';
-const width = Dimensions.get('window').width;
-const itemWidth = columns
-  ? width / columns - ((columns + 1) * 4) / columns
-  : null;
 
-const AdminCourseTestListScreen = ({route: {params}}) => {
-  // const [search, setSearch] = useState('');
+const AdminCourseTestListScreen = ({route}) => {
+  const [search, setSearch] = useState('');
+  const [selectMediaModal, setSelectMediaModal] = useState(false);
   const [addBundleContentModal, setAddBundleContentModal] = useState(null);
   const [editBundleContentModal, setEditBundleContentModal] = useState(null);
-  const [selectMediaModal, setSelectMediaModal] = useState(false);
 
   const {loading, data, refetch, fetchMore} = useQuery(BUNDLE_CONTENTS, {
     variables: {
-      bundleId: params?.bundleId,
-      filter: {type, subjectId: params?.subjectId || null},
+      bundleId: route.params?.bundleId,
+      filter: {subjectId: route.params?.subjectId || null, type},
     },
     onError: err => {
       showMessage({
@@ -43,6 +37,7 @@ const AdminCourseTestListScreen = ({route: {params}}) => {
         type: 'danger',
       });
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const [deleteBundleContent] = useMutation(DELETE_BUNDLE_CONTENT, {
@@ -62,8 +57,8 @@ const AdminCourseTestListScreen = ({route: {params}}) => {
       {
         query: BUNDLE_CONTENTS,
         variables: {
-          bundleId: params?.bundleId,
-          filter: {type, subjectId: params?.subjectId || null},
+          bundleId: route.params?.bundleId,
+          filter: {subjectId: route.params?.subjectId || null, type},
         },
       },
     ],
@@ -93,28 +88,27 @@ const AdminCourseTestListScreen = ({route: {params}}) => {
     [deleteBundleContent],
   );
 
-  // const onChangeSearchText = useCallback(
-  //   text => {
-  //     console.log(text);
-  //     setSearch(text);
-  //     if (text.length > 2) {
-  //       refetch({search: text});
-  //     } else {
-  //       refetch({search: ''});
-  //     }
-  //   },
-  //   [refetch],
-  // );
+  const onChangeSearchText = useCallback(
+    text => {
+      setSearch(text);
+      if (text.length > 2) {
+        refetch({search: text});
+      } else {
+        refetch({search: ''});
+      }
+    },
+    [refetch],
+  );
 
-  // const clearSearchText = useCallback(() => {
-  //   setSearch('');
-  //   refetch({search: ''});
-  // }, [refetch]);
+  const clearSearchText = useCallback(() => {
+    setSearch('');
+    refetch({search: ''});
+  }, [refetch]);
 
   const _renderItem = useCallback(
     ({item}) => (
       <View>
-        <TestItem {...item} width={itemWidth} />
+        <CourseContentItem {...item} />
         <View style={tw`flex-row mt-[2px]`}>
           <TouchableOpacity
             style={tw`flex-1 items-center bg-blue-500 py-2 rounded-md`}
@@ -135,22 +129,20 @@ const AdminCourseTestListScreen = ({route: {params}}) => {
 
   return (
     <View style={tw`flex-1 bg-white`}>
-      {/* <CCSearchInput
+      <CCSearchInput
         value={search}
         searching={loading}
         onChangeText={onChangeSearchText}
         onClear={clearSearchText}
-      /> */}
+      />
       <FlatList
         bounces={true}
-        numColumns={columns}
         //
         data={data?.bundleContents?.payload}
         keyExtractor={item => item._id}
         renderItem={_renderItem}
         //
         contentContainerStyle={tw`px-1`}
-        columnWrapperStyle={tw`justify-between`}
         ItemSeparatorComponent={() => <View style={tw`h-1`} />}
         ListFooterComponent={() => (
           <View style={tw`py-4 items-center`}>
@@ -172,22 +164,6 @@ const AdminCourseTestListScreen = ({route: {params}}) => {
           });
         }}
       />
-      <AddBundleContentModal
-        bundleId={params?.bundleId}
-        subjectId={params?.subjectId || null}
-        media={addBundleContentModal}
-        onClose={() => {
-          setAddBundleContentModal(null);
-        }}
-      />
-      <EditBundleContentModal
-        bundleId={params?.bundleId}
-        subjectId={params?.subjectId || null}
-        bundleContent={editBundleContentModal}
-        onClose={() => {
-          setEditBundleContentModal(null);
-        }}
-      />
       <SelectMediaModal
         type={type}
         visible={selectMediaModal}
@@ -197,6 +173,22 @@ const AdminCourseTestListScreen = ({route: {params}}) => {
         }}
         onClose={() => {
           setSelectMediaModal(false);
+        }}
+      />
+      <AddBundleContentModal
+        bundleId={route.params?.bundleId}
+        subjectId={route.params?.subjectId || null}
+        media={addBundleContentModal}
+        onClose={() => {
+          setAddBundleContentModal(null);
+        }}
+      />
+      <EditBundleContentModal
+        bundleId={route.params?.bundleId}
+        subjectId={route.params?.subjectId || null}
+        bundleContent={editBundleContentModal}
+        onClose={() => {
+          setEditBundleContentModal(null);
         }}
       />
       <Fab

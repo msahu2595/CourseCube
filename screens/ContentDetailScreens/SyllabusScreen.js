@@ -50,7 +50,7 @@ const SyllabusScreen = props => {
         style={tw`flex-1`}>
         <SyllabusTree
           data={queryData?.bundleSyllabus?.payload?.syllabus}
-          iconColor={tw.color('green-700')}
+          iconColor="green-700"
           onPress={handleClick}
           onLongPress={option => {
             console.log('onLongPress', option);

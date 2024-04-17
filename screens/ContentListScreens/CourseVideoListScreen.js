@@ -14,7 +14,7 @@ const CourseVideoListScreen = ({route}) => {
   const {loading, data, refetch, fetchMore} = useQuery(BUNDLE_CONTENTS, {
     variables: {
       bundleId: route.params?.bundleId,
-      filter: {subjectId: route.params?.subjectId, type: 'Video'},
+      filter: {subjectId: route.params?.subjectId || null, type: 'Video'},
     },
     onError: err => {
       showMessage({
@@ -27,10 +27,8 @@ const CourseVideoListScreen = ({route}) => {
 
   const onChangeSearchText = useCallback(
     text => {
-      console.log(text);
       setSearch(text);
       if (text.length > 2) {
-        console.log({search: text});
         refetch({search: text});
       } else {
         refetch({search: ''});
