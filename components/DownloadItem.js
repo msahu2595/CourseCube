@@ -47,9 +47,7 @@ const DownloadItem = memo(props => (
           numberOfLines={1}>
           {props?.subject}
         </Text>
-        <Text
-          style={tw`font-avSemi text-xs text-gray-600`}
-          numberOfLines={2}>
+        <Text style={tw`font-avSemi text-xs text-gray-600`} numberOfLines={2}>
           {props?.title}
         </Text>
         <Text

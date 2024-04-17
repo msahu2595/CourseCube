@@ -4,12 +4,14 @@ export const BUNDLE_CONTENTS = gql`
   query bundleContents(
     $offset: Int
     $limit: Int
+    $search: String
     $bundleId: ID!
     $filter: BundleContentsFilterInput
   ) {
     bundleContents(
       offset: $offset
       limit: $limit
+      search: $search
       bundleId: $bundleId
       filter: $filter
     ) {

@@ -27,8 +27,8 @@ const SyllabusScreen = props => {
   const handleClick = useCallback(
     payload => {
       navigation.navigate('CourseContentListTopTabNavigator', {
-        bundleId: props.route.params.bundleId,
-        subjectId: payload.value,
+        bundleId: props.route.params?.bundleId,
+        subjectId: payload?.subjectId,
       });
     },
     [navigation, props.route.params.bundleId],

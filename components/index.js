@@ -13,6 +13,7 @@ import UserProfileImage from './UserProfileImage';
 import TagItem from './TagItem';
 import FollowItem from './FollowItem';
 import ContentItem from './ContentItem';
+import CourseContentItem from './CourseContentItem';
 import CommunityPostItem from './CommunityPostItem';
 import LeaderboardItem from './LeaderboardItem';
 // Bar & Item Component Imports
@@ -62,6 +63,7 @@ export {
   TagItem,
   FollowItem,
   ContentItem,
+  CourseContentItem,
   CommunityPostItem,
   LeaderboardItem,
   // Folder Components Exports
