@@ -1,5 +1,6 @@
 import React from 'react';
 import tw from '@lib/tailwind';
+import {View} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {InfoScreen, SyllabusScreen, FAQScreen} from '@screens';
 import {SafeAreaContainer} from '@components';
@@ -34,15 +35,36 @@ const CourseDetailTopTabNavigator = props => {
             themeColor: props.route.params?.themeColor,
           }}
         />
-        <Tab.Screen
-          name="CourseSyllabusScreen"
-          component={SyllabusScreen}
-          options={{title: 'Syllabus'}}
-          initialParams={{
-            bundleId: props.route.params?.bundleId,
-            themeColor: props.route.params?.themeColor,
-          }}
-        />
+        {props.route.params?.bundleType === 'PLAYLIST_COURSE' ? (
+          <Tab.Screen
+            name="CourseSyllabusScreen"
+            component={View}
+            options={{title: 'Contents'}}
+            initialParams={{
+              bundleId: props.route.params?.bundleId,
+              themeColor: props.route.params?.themeColor,
+            }}
+            listeners={({navigation, route}) => ({
+              tabPress: e => {
+                e.preventDefault();
+                navigation.navigate(
+                  'CourseContentListTopTabNavigator',
+                  route.params,
+                );
+              },
+            })}
+          />
+        ) : (
+          <Tab.Screen
+            name="CourseSyllabusScreen"
+            component={SyllabusScreen}
+            options={{title: 'Syllabus'}}
+            initialParams={{
+              bundleId: props.route.params?.bundleId,
+              themeColor: props.route.params?.themeColor,
+            }}
+          />
+        )}
         <Tab.Screen
           name="CourseFAQScreen"
           component={FAQScreen}

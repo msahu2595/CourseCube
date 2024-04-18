@@ -11,15 +11,17 @@ const PlaylistCourseItem = memo(({width = 256, ...rest}) => {
 
   const handleNavigation = useCallback(() => {
     navigation.navigate('CourseDetailTopTabNavigator', {
-      bundleId: rest._id,
-      themeColor: 'rose',
+      bundleId: rest?._id,
+      bundleType: rest?.type,
+      themeColor: 'sky',
     });
-  }, [navigation, rest._id]);
+  }, [navigation, rest?._id, rest?.type]);
 
   return (
     <Pressable onPress={handleNavigation}>
       <LinearGradient
-        colors={['#fecdd3', '#fff1f2', '#FFF']}
+        locations={[0, 0.5, 0.5]}
+        colors={[tw.color('sky-200'), tw.color('sky-50'), tw.color('white')]}
         style={tw`rounded-lg shadow-sm px-3 pt-3 pb-4 w-[${width}px] opacity-${
           rest?.visible ? 100 : 50
         }`}>
@@ -27,7 +29,7 @@ const PlaylistCourseItem = memo(({width = 256, ...rest}) => {
           {rest?.title}
         </Text>
         <Text
-          style={tw`font-avReg text-xs text-rose-600 py-2`}
+          style={tw`font-avReg text-xs text-sky-600 py-2`}
           numberOfLines={1}>
           Videos + PDF's + Tests | 400+ Hours
         </Text>
@@ -89,7 +91,7 @@ const PlaylistCourseItem = memo(({width = 256, ...rest}) => {
             {rest?.paid && !rest?.purchased ? (
               <>
                 <Text
-                  style={tw`font-avSemi rounded px-2 bg-rose-100 text-rose-600 shadow-sm`}>
+                  style={tw`font-avSemi rounded px-2 bg-sky-100 text-sky-600 shadow-sm`}>
                   {rest?.offer
                     ? `₹ ${
                         rest?.price -
@@ -117,7 +119,7 @@ const PlaylistCourseItem = memo(({width = 256, ...rest}) => {
               </>
             ) : (
               <Text
-                style={tw`font-avSemi rounded px-2 py-1 bg-rose-50 text-rose-600 shadow-sm text-[10px]`}>
+                style={tw`font-avSemi rounded px-2 py-1 bg-sky-50 text-sky-600 shadow-sm text-[10px]`}>
                 {`${
                   rest?.purchased ? 'Continue learning ' : 'Available for free '
                 }➔`}
@@ -162,10 +164,10 @@ const PlaylistCourseItem = memo(({width = 256, ...rest}) => {
         <View style={tw`flex-row items-center self-center`}>
           <Icon
             name="play-box-multiple-outline"
-            color={tw.color('rose-600')}
+            color={tw.color('sky-600')}
             size={16}
           />
-          <Text style={tw`px-2 font-avSemi text-xs text-rose-600`}>
+          <Text style={tw`px-2 font-avSemi text-xs text-sky-600`}>
             View Course
           </Text>
         </View>

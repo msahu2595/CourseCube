@@ -24,22 +24,22 @@ const tabStackGroup = () => {
         }}
       />
       <Stack.Screen
-        name="CourseContentListTopTabNavigator"
-        component={CourseContentListTopTabNavigator}
-        options={{
-          headerShadowVisible: false,
-          headerTitle: 'Contents',
-          headerStyle: tw`bg-green-200`,
-          headerTitleStyle: tw`font-avSemi`,
-          headerTintColor: tw.color('black'),
-        }}
-      />
-      <Stack.Screen
         name="CourseDetailTopTabNavigator"
         component={CourseDetailTopTabNavigator}
         options={({route}) => ({
           headerShadowVisible: false,
           headerTitle: 'Details',
+          headerStyle: tw`bg-${route.params?.themeColor || 'green'}-200`,
+          headerTitleStyle: tw`font-avSemi`,
+          headerTintColor: tw.color('black'),
+        })}
+      />
+      <Stack.Screen
+        name="CourseContentListTopTabNavigator"
+        component={CourseContentListTopTabNavigator}
+        options={({route}) => ({
+          headerShadowVisible: false,
+          headerTitle: 'Contents',
           headerStyle: tw`bg-${route.params?.themeColor || 'green'}-200`,
           headerTitleStyle: tw`font-avSemi`,
           headerTintColor: tw.color('black'),

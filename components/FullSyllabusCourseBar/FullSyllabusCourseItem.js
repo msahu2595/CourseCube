@@ -12,13 +12,19 @@ const FullSyllabusCourseItem = memo(({width = 288, ...rest}) => {
   const handleNavigation = useCallback(() => {
     navigation.navigate('CourseDetailTopTabNavigator', {
       bundleId: rest._id,
+      themeColor: 'green',
     });
   }, [navigation, rest._id]);
 
   return (
     <Pressable onPress={handleNavigation}>
       <LinearGradient
-        colors={['#BBF7D0', '#F0FDF4', '#FFF']}
+        locations={[0, 0.5, 0.5]}
+        colors={[
+          tw.color('green-200'),
+          tw.color('green-50'),
+          tw.color('white'),
+        ]}
         style={tw`rounded-lg shadow-sm px-3 pt-3 pb-4 w-[${width}px] opacity-${
           rest?.visible ? 100 : 50
         }`}>

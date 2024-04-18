@@ -26,28 +26,31 @@ const AdminCourseContentListTopTabNavigator = props => {
           tabBarLabelStyle: tw`font-avSemi text-xs text-white`,
         }}>
         <Tab.Screen
-          name="Videos"
+          name="AdminCourseVideoListScreen"
           component={AdminCourseVideoListScreen}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             subjectId: props.route.params?.subjectId,
           }}
+          options={{title: 'Videos'}}
         />
         <Tab.Screen
-          name="Tests"
-          component={AdminCourseTestListScreen}
-          initialParams={{
-            bundleId: props.route.params?.bundleId,
-            subjectId: props.route.params?.subjectId,
-          }}
-        />
-        <Tab.Screen
-          name="Documents"
+          name="AdminCourseDocumentListScreen"
           component={AdminCourseDocumentListScreen}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             subjectId: props.route.params?.subjectId,
           }}
+          options={{title: 'Documents'}}
+        />
+        <Tab.Screen
+          name="AdminCourseTestListScreen"
+          component={AdminCourseTestListScreen}
+          initialParams={{
+            bundleId: props.route.params?.bundleId,
+            subjectId: props.route.params?.subjectId,
+          }}
+          options={{title: 'Tests'}}
         />
       </Tab.Navigator>
     </SafeAreaContainer>

@@ -49,13 +49,13 @@ const CourseTestListScreen = ({route}) => {
 
   return (
     <SafeAreaContainer
-      statusBgColor={tw.color('green-200')}
+      statusBgColor={tw.color(`${route.params?.themeColor || 'green'}-200`)}
       statusBarStyle="dark-content">
       <LinearGradient
         locations={[0, 0.2, 0.5]}
         colors={[
-          tw.color('green-200'),
-          tw.color('green-50'),
+          tw.color(`${route.params?.themeColor || 'green'}-200`),
+          tw.color(`${route.params?.themeColor || 'green'}-50`),
           tw.color('white'),
         ]}
         style={tw`flex-1`}>

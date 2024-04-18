@@ -13,40 +13,50 @@ const Tab = createMaterialTopTabNavigator();
 const CourseContentListTopTabNavigator = props => {
   return (
     <SafeAreaContainer
-      statusBgColor={tw.color('green-200')}
+      statusBgColor={tw.color(
+        `${props.route.params?.themeColor || 'green'}-200`,
+      )}
       statusBarStyle="dark-content">
       <Tab.Navigator
         backBehavior="none"
         screenOptions={{
           swipeEnabled: true,
           tabBarScrollEnabled: false,
-          tabBarStyle: tw`bg-green-200`,
+          tabBarStyle: tw`bg-${props.route.params?.themeColor || 'green'}-200`,
           tabBarItemStyle: tw`px-0`,
           tabBarLabelStyle: tw`font-avSemi text-xs`,
-          tabBarIndicatorStyle: tw`bg-green-500`,
+          tabBarIndicatorStyle: tw`bg-${
+            props.route.params?.themeColor || 'green'
+          }-500`,
         }}>
         <Tab.Screen
-          name="Video's"
+          name="CourseVideoListScreen"
           component={CourseVideoListScreen}
+          options={{title: 'Videos'}}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             subjectId: props.route.params?.subjectId,
+            themeColor: props.route.params?.themeColor,
           }}
         />
         <Tab.Screen
-          name="PDF's"
+          name="CourseDocumentListScreen"
           component={CourseDocumentListScreen}
+          options={{title: 'PDFs'}}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             subjectId: props.route.params?.subjectId,
+            themeColor: props.route.params?.themeColor,
           }}
         />
         <Tab.Screen
-          name="Test's"
+          name="CourseTestListScreen"
           component={CourseTestListScreen}
+          options={{title: 'Tests'}}
           initialParams={{
             bundleId: props.route.params?.bundleId,
             subjectId: props.route.params?.subjectId,
+            themeColor: props.route.params?.themeColor,
           }}
         />
       </Tab.Navigator>

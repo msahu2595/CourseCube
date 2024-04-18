@@ -9,26 +9,24 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {View, Text, ScrollView, Image, useWindowDimensions} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const InfoScreen = props => {
+const InfoScreen = ({route}) => {
   const {width} = useWindowDimensions();
 
   const {loading: queryLoading, data: queryData} = useQuery(BUNDLE, {
-    variables: {bundleId: props.route.params.bundleId},
+    variables: {bundleId: route.params?.bundleId},
   });
 
   const data = queryData?.bundle?.payload || {};
 
   return (
     <SafeAreaContainer
-      statusBgColor={tw.color(
-        `${props.route.params?.themeColor || 'green'}-200`,
-      )}
+      statusBgColor={tw.color(`${route.params?.themeColor || 'green'}-200`)}
       statusBarStyle="dark-content">
       <LinearGradient
         locations={[0, 0.2, 0.5]}
         colors={[
-          tw.color(`${props.route.params?.themeColor || 'green'}-200`),
-          tw.color(`${props.route.params?.themeColor || 'green'}-50`),
+          tw.color(`${route.params?.themeColor || 'green'}-200`),
+          tw.color(`${route.params?.themeColor || 'green'}-50`),
           tw.color('white'),
         ]}
         style={tw`flex-1`}>
@@ -54,7 +52,7 @@ const InfoScreen = props => {
             </Text>
             <Text
               style={tw`font-avReg text-xs text-${
-                props.route.params?.themeColor || 'green'
+                route.params?.themeColor || 'green'
               }-600 py-2`}
               numberOfLines={1}>
               Videos + PDF's + Tests | 400+ Hours
@@ -136,15 +134,15 @@ const InfoScreen = props => {
           start={{x: 0, y: 0}}
           end={{x: 1, y: 0}}
           colors={[
-            tw.color(`${props.route.params?.themeColor || 'green'}-200`),
+            tw.color(`${route.params?.themeColor || 'green'}-200`),
             tw.color('white'),
-            tw.color(`${props.route.params?.themeColor || 'green'}-50`),
+            tw.color(`${route.params?.themeColor || 'green'}-50`),
           ]}
           style={tw`absolute bottom-0 right-0 left-0 m-4 p-2 rounded-lg bg-gray-50 shadow-sm flex-row items-center justify-around`}>
           <AntDesign
             name="heart"
             size={20}
-            color={tw.color(`${props.route.params?.themeColor || 'green'}-600`)}
+            color={tw.color(`${route.params?.themeColor || 'green'}-600`)}
             style={tw`p-2`}
           />
           <View style={tw`items-center justify-between`}>
@@ -152,7 +150,7 @@ const InfoScreen = props => {
               <>
                 <Text
                   style={tw`font-avSemi px-2 text-${
-                    props.route.params?.themeColor || 'green'
+                    route.params?.themeColor || 'green'
                   }-600 text-sm`}>
                   {data?.offer
                     ? `₹ ${
@@ -195,9 +193,9 @@ const InfoScreen = props => {
             <View style={tw`flex-row items-center`}>
               <Text
                 style={tw`font-avSemi rounded mx-2 px-6 py-2 bg-${
-                  props.route.params?.themeColor || 'green'
+                  route.params?.themeColor || 'green'
                 }-100 text-sm text-${
-                  props.route.params?.themeColor || 'green'
+                  route.params?.themeColor || 'green'
                 }-600 shadow-sm text-right`}>
                 {data?.paid && !data?.purchased
                   ? 'Buy Now'
@@ -206,9 +204,7 @@ const InfoScreen = props => {
               <AntDesign
                 name="sharealt"
                 size={20}
-                color={tw.color(
-                  `${props.route.params?.themeColor || 'green'}-600`,
-                )}
+                color={tw.color(`${route.params?.themeColor || 'green'}-600`)}
                 style={tw`p-2`}
               />
             </View>

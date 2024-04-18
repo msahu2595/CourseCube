@@ -25,7 +25,7 @@ const itemWidth = columns
   ? width / columns - ((columns + 1) * 8) / columns
   : null;
 
-function AdminPlaylistCourseBundleListScreen() {
+function AdminPlaylistCourseBundleListScreen({navigation}) {
   const [search, setSearch] = useState('');
   const [addBundleModal, setAddBundleModal] = useState(false);
   const [editBundleModal, setEditBundleModal] = useState(null);
@@ -97,6 +97,13 @@ function AdminPlaylistCourseBundleListScreen() {
     refetch({search: ''});
   }, [refetch]);
 
+  const navigateContentsScreen = useCallback(
+    bundleId => {
+      navigation.navigate('AdminCourseContentListTopTabNavigator', {bundleId});
+    },
+    [navigation],
+  );
+
   const _renderItem = useCallback(
     ({item}) => (
       <View>
@@ -109,6 +116,12 @@ function AdminPlaylistCourseBundleListScreen() {
           </TouchableOpacity>
           <View style={tw`w-[2px]`} />
           <TouchableOpacity
+            style={tw`flex-1 items-center bg-purple-500 py-2 rounded-md`}
+            onPress={() => navigateContentsScreen(item._id)}>
+            <Text style={tw`text-white text-xs font-avReg`}>Contents</Text>
+          </TouchableOpacity>
+          <View style={tw`w-[2px]`} />
+          <TouchableOpacity
             style={tw`flex-1 items-center bg-red-500 py-2 rounded-md`}
             onPress={() => deleteHandler(item._id)}>
             <Text style={tw`text-white text-xs font-avReg`}>Delete</Text>
@@ -116,7 +129,7 @@ function AdminPlaylistCourseBundleListScreen() {
         </View>
       </View>
     ),
-    [deleteHandler],
+    [navigateContentsScreen, deleteHandler],
   );
 
   return (

@@ -19,7 +19,12 @@ const SubjectWiseCourseItem = memo(({width = 272, ...rest}) => {
   return (
     <Pressable onPress={handleNavigation}>
       <LinearGradient
-        colors={['#FED7AA', '#FFF7ED', '#FFF']}
+        locations={[0, 0.5, 0.5]}
+        colors={[
+          tw.color('orange-200'),
+          tw.color('orange-50'),
+          tw.color('white'),
+        ]}
         style={tw`rounded-lg shadow-sm px-3 pt-3 pb-4 w-[${width}px] opacity-${
           rest?.visible ? 100 : 50
         }`}>

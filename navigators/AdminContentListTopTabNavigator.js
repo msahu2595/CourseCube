@@ -31,14 +31,14 @@ const AdminContentListTopTabNavigator = () => {
           options={{title: 'Videos'}}
         />
         <Tab.Screen
-          name="AdminContentTestListScreen"
-          component={AdminContentTestListScreen}
-          options={{title: 'Tests'}}
-        />
-        <Tab.Screen
           name="AdminContentDocumentListScreen"
           component={AdminContentDocumentListScreen}
           options={{title: 'Documents'}}
+        />
+        <Tab.Screen
+          name="AdminContentTestListScreen"
+          component={AdminContentTestListScreen}
+          options={{title: 'Tests'}}
         />
       </Tab.Navigator>
     </SafeAreaContainer>
