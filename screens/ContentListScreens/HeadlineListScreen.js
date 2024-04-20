@@ -1,12 +1,15 @@
 import tw from '@lib/tailwind';
 import {HEADLINES} from '@queries';
 import {useQuery} from '@apollo/client';
-import React, {useCallback} from 'react';
+import {CCSearchInput} from 'components/Common';
+import React, {useState, useCallback} from 'react';
 import {showMessage} from 'react-native-flash-message';
 import {View, FlatList, RefreshControl} from 'react-native';
 import {HeadlineItem, SafeAreaContainer} from '@components';
 
 const HeadlineListScreen = () => {
+  const [search, setSearch] = useState('');
+
   const {loading, data, refetch, fetchMore} = useQuery(HEADLINES, {
     onError: err => {
       showMessage({
@@ -17,10 +20,34 @@ const HeadlineListScreen = () => {
     fetchPolicy: 'cache-and-network',
   });
 
+  const onChangeSearchText = useCallback(
+    text => {
+      console.log(text);
+      setSearch(text);
+      if (text.length > 2) {
+        refetch({search: text});
+      } else {
+        refetch({search: ''});
+      }
+    },
+    [refetch],
+  );
+
+  const clearSearchText = useCallback(() => {
+    setSearch('');
+    refetch({search: ''});
+  }, [refetch]);
+
   const _renderItem = useCallback(({item}) => <HeadlineItem {...item} />, []);
 
   return (
     <SafeAreaContainer>
+      <CCSearchInput
+        value={search}
+        searching={loading}
+        onChangeText={onChangeSearchText}
+        onClear={clearSearchText}
+      />
       <FlatList
         bounces={true}
         //

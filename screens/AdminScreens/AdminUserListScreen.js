@@ -1,6 +1,7 @@
 import tw from '@lib/tailwind';
-import React, {useCallback} from 'react';
 import {gql, useQuery} from '@apollo/client';
+import {CCSearchInput} from 'components/Common';
+import React, {useState, useCallback} from 'react';
 import {showMessage} from 'react-native-flash-message';
 import {FollowItem, SafeAreaContainer} from '@components';
 import {View, FlatList, Text, RefreshControl} from 'react-native';
@@ -38,6 +39,8 @@ const USERS = gql`
 `;
 
 const AdminUserListScreen = () => {
+  const [search, setSearch] = useState('');
+
   const {loading, data, refetch, fetchMore} = useQuery(USERS, {
     variables: {},
     onError: err => {
@@ -49,6 +52,24 @@ const AdminUserListScreen = () => {
     fetchPolicy: 'cache-and-network',
   });
 
+  const onChangeSearchText = useCallback(
+    text => {
+      console.log(text);
+      setSearch(text);
+      if (text.length > 2) {
+        refetch({search: text});
+      } else {
+        refetch({search: ''});
+      }
+    },
+    [refetch],
+  );
+
+  const clearSearchText = useCallback(() => {
+    setSearch('');
+    refetch({search: ''});
+  }, [refetch]);
+
   const _renderItem = useCallback(
     ({item}) => <FollowItem {...item} isAdmin={true} />,
     [],
@@ -58,6 +79,12 @@ const AdminUserListScreen = () => {
     <SafeAreaContainer
       statusBgColor={tw.color('blue-600')}
       statusBarStyle="light-content">
+      <CCSearchInput
+        value={search}
+        searching={loading}
+        onChangeText={onChangeSearchText}
+        onClear={clearSearchText}
+      />
       <FlatList
         bounces={true}
         //
@@ -65,7 +92,7 @@ const AdminUserListScreen = () => {
         keyExtractor={item => item._id}
         renderItem={_renderItem}
         //
-        contentContainerStyle={tw`py-2`}
+        contentContainerStyle={tw`pb-2`}
         ListFooterComponent={() => (
           <View style={tw`py-4 items-center`}>
             <Text style={tw`text-xs text-black font-avSemi`}>
