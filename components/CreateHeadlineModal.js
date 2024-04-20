@@ -77,7 +77,7 @@ const CreateHeadlineModal = ({visible, onClose}) => {
                 }}
                 value={values.image}
                 disabled={submitting}
-                imageProps={{width: 200, height: 200, cropping: true}}
+                imageProps={{width: 400, height: 400, cropping: true}}
               />
               <CCTextInput
                 required

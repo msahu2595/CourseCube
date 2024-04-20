@@ -17,9 +17,9 @@ import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 
 const sizes = {
-  Video: {width: 400, height: 225, cropping: true},
-  Test: {width: 400, height: 400, cropping: true},
-  Document: {width: 300, height: 400, cropping: true},
+  Video: {width: 800, height: 450, cropping: true},
+  Test: {width: 800, height: 800, cropping: true},
+  Document: {width: 600, height: 800, cropping: true},
 };
 
 const AddContentValidationSchema = yup.object({

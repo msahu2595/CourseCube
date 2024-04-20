@@ -17,9 +17,9 @@ import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 
 const sizes = {
-  FULL_COURSE: {width: 400, height: 400, cropping: true},
-  SUBJECT_COURSE: {width: 400, height: 400, cropping: true},
-  PLAYLIST_COURSE: {width: 400, height: 400, cropping: true},
+  FULL_COURSE: {width: 800, height: 450, cropping: true},
+  SUBJECT_COURSE: {width: 800, height: 450, cropping: true},
+  PLAYLIST_COURSE: {width: 800, height: 450, cropping: true},
 };
 
 const types = {

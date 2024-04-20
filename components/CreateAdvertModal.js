@@ -15,10 +15,10 @@ import {useMutation} from '@apollo/client';
 import {showMessage} from 'react-native-flash-message';
 
 const sizes = {
-  TINY: {width: 400, height: 100, cropping: true},
-  SMALL: {width: 400, height: 160, cropping: true},
-  MEDIUM: {width: 400, height: 225, cropping: true},
-  LARGE: {width: 400, height: 400, cropping: true},
+  TINY: {width: 800, height: 200, cropping: true},
+  SMALL: {width: 800, height: 320, cropping: true},
+  MEDIUM: {width: 800, height: 450, cropping: true},
+  LARGE: {width: 800, height: 800, cropping: true},
 };
 
 const CreateAdvertValidationSchema = yup.object().shape({

@@ -108,7 +108,7 @@ const EditDocumentModal = ({document, onClose}) => {
                 value={values.thumbnail}
                 disabled={submitting}
                 prevImage={document?.thumbnail}
-                imageProps={{width: 300, height: 400, cropping: true}}
+                imageProps={{width: 600, height: 800, cropping: true}}
               />
               <CCFileUploader
                 required

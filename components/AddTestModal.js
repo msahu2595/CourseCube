@@ -116,7 +116,7 @@ const AddTestModal = ({visible, onClose}) => {
                 }}
                 value={values.thumbnail}
                 disabled={submitting}
-                imageProps={{width: 400, height: 400, cropping: true}}
+                imageProps={{width: 800, height: 800, cropping: true}}
               />
               <CCTextInput
                 required

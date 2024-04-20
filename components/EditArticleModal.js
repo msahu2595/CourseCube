@@ -127,7 +127,7 @@ const EditArticleModal = ({article, onClose}) => {
                 value={values.image}
                 disabled={submitting}
                 prevImage={article?.image}
-                imageProps={{width: 400, height: 225, cropping: true}}
+                imageProps={{width: 800, height: 450, cropping: true}}
               />
               <CCTextInput
                 required

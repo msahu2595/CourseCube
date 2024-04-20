@@ -83,7 +83,7 @@ const EditVideoModal = ({video, onClose}) => {
                 value={values.thumbnail}
                 disabled={submitting}
                 prevImage={video?.thumbnail}
-                imageProps={{width: 400, height: 225, cropping: true}}
+                imageProps={{width: 800, height: 450, cropping: true}}
               />
             </View>
             <CCButton

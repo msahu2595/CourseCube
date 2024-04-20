@@ -103,7 +103,7 @@ const AddDocumentModal = ({visible, onClose}) => {
                 }}
                 value={values.thumbnail}
                 disabled={submitting}
-                imageProps={{width: 300, height: 400, cropping: true}}
+                imageProps={{width: 600, height: 800, cropping: true}}
               />
               <CCFileUploader
                 required
