@@ -1,5 +1,4 @@
 import {tw} from '@lib';
-import {CONTENT} from '@queries';
 import {useMutation} from '@apollo/client';
 import React, {memo, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
@@ -44,7 +43,7 @@ export const CCBookmarkButton = memo(
         });
         setBookmarked(true);
       },
-      refetchQueries: [{query: CONTENT, variables: {contentId: refId}}],
+      refetchQueries,
     });
 
     const onPress = () => {

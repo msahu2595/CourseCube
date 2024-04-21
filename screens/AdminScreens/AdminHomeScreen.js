@@ -52,8 +52,9 @@ const AdminHomeScreen = ({navigation}) => {
         statusBgColor={tw.color('blue-600')}>
         <ScrollView
           bounces={false}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={tw`bg-white p-4`}>
+          style={tw`bg-white`}
+          contentContainerStyle={tw`p-4`}
+          showsVerticalScrollIndicator={false}>
           <CCNavigationButton
             name="Advert"
             onPress={() => navigation.navigate('AdminAdvertListScreen')}

@@ -44,6 +44,12 @@ const SubjectWiseCourseItem = memo(({width = 272, ...rest}) => {
             </Text>
           </View>
           <View style={tw`flex-row pb-2`}>
+            <Icon name="clipboard-check-outline" color="#58585B" size={16} />
+            <Text style={tw`font-avReg text-xs text-gray-500 px-2`}>
+              {rest?.subject}
+            </Text>
+          </View>
+          <View style={tw`flex-row pb-2`}>
             <Icon name="account-check-outline" color="#58585B" size={16} />
             <Text style={tw`font-avReg text-xs text-gray-500 px-2`}>
               {rest?.instructors.reduce(
@@ -100,14 +106,18 @@ const SubjectWiseCourseItem = memo(({width = 272, ...rest}) => {
               <Text
                 style={tw`font-avSemi rounded px-2 py-1 bg-orange-50 text-orange-600 shadow-sm text-[10px]`}>
                 {`${
-                  rest?.purchased ? 'Continue learning ' : 'Available for free '
-                }➔`}
+                  rest?.purchased ? 'Continue learning' : 'Available for free'
+                }  ➔`}
               </Text>
             )}
           </View>
           <Text style={tw`font-avSemi text-xs text-red-500`}>
-            {!!rest?.offer
-              ? `${rest?.offer}${rest?.offerType === 'PERCENT' ? '%' : '₹'} Off`
+            {!rest?.purchased && rest?.offer
+              ? `${
+                  rest?.offerType === 'PERCENT'
+                    ? `${rest?.offer}%`
+                    : `₹${rest?.offer}`
+                } Off`
               : ''}
           </Text>
         </View>

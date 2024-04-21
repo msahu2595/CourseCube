@@ -119,7 +119,9 @@ const NotificationItem = memo(props => {
           </Text>
         </View>
         <View style={tw`py-2 pr-2`}>
-          <Text>{dayjs(parseInt(props?.createdAt, 10)).fromNow()}</Text>
+          <Text style={tw`font-avReg text-gray-600 text-sm`}>
+            {dayjs(parseInt(props?.createdAt, 10)).fromNow()}
+          </Text>
         </View>
       </Pressable>
     </View>

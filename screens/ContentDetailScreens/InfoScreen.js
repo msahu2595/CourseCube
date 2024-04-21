@@ -1,15 +1,16 @@
-import React from 'react';
 import tw from '@lib/tailwind';
 import {BUNDLE} from '@queries';
 import {useQuery} from '@apollo/client';
+import React, {useCallback} from 'react';
 import {SafeAreaContainer} from '@components';
 import config from 'react-native-ultimate-config';
 import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {View, Text, ScrollView, Image, useWindowDimensions} from 'react-native';
+import {CCLikeButton, CCShareButton, CCPurchaseButton} from 'components/Common';
+import {View, Text, Image, ScrollView, useWindowDimensions} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const InfoScreen = ({route}) => {
+const InfoScreen = ({navigation, route}) => {
   const {width} = useWindowDimensions();
 
   const {loading: queryLoading, data: queryData} = useQuery(BUNDLE, {
@@ -17,6 +18,12 @@ const InfoScreen = ({route}) => {
   });
 
   const data = queryData?.bundle?.payload || {};
+
+  const navigateSyllabusScreen = useCallback(() => {
+    navigation.navigate('CourseSyllabusScreen', {
+      bundleId: route.params?.bundleId,
+    });
+  }, [navigation, route.params]);
 
   return (
     <SafeAreaContainer
@@ -66,6 +73,16 @@ const InfoScreen = ({route}) => {
                 />
                 <Text style={tw`font-avReg text-xs text-gray-500 px-2`}>
                   {data?.highlight || 'New Batch'}
+                </Text>
+              </View>
+              <View style={tw`flex-row pb-2`}>
+                <MaterialCommunityIcons
+                  name="clipboard-check-outline"
+                  color="#58585B"
+                  size={16}
+                />
+                <Text style={tw`font-avReg text-xs text-gray-500 px-2`}>
+                  {data?.subject}
                 </Text>
               </View>
               <View style={tw`flex-row pb-2`}>
@@ -138,16 +155,25 @@ const InfoScreen = ({route}) => {
             tw.color('white'),
             tw.color(`${route.params?.themeColor || 'green'}-50`),
           ]}
-          style={tw`absolute bottom-0 right-0 left-0 m-4 p-2 rounded-lg bg-gray-50 shadow-sm flex-row items-center justify-around`}>
-          <AntDesign
-            name="heart"
-            size={20}
-            color={tw.color(`${route.params?.themeColor || 'green'}-600`)}
-            style={tw`p-2`}
-          />
-          <View style={tw`items-center justify-between`}>
-            {data?.paid && !data?.purchased ? (
-              <>
+          style={tw`absolute bottom-0 right-0 left-0 m-4 py-2 px-3 rounded-lg bg-gray-50 shadow-sm flex-row items-center justify-between`}>
+          <CCLikeButton
+            refId={data?._id}
+            initial={data?.liked === 1 ? true : false}
+            refetchQueries={[
+              {query: BUNDLE, variables: {bundleId: data?._id}},
+            ]}>
+            {liked => (
+              <AntDesign
+                name={liked ? 'heart' : 'hearto'}
+                size={20}
+                color={tw.color(`${route.params?.themeColor || 'green'}-600`)}
+                style={tw`p-2`}
+              />
+            )}
+          </CCLikeButton>
+          {data?.paid && !data?.purchased && (
+            <>
+              <View style={tw`items-center justify-between`}>
                 <Text
                   style={tw`font-avSemi px-2 text-${
                     route.params?.themeColor || 'green'
@@ -176,39 +202,50 @@ const InfoScreen = ({route}) => {
                     {`₹ ${data?.price}`}
                   </Text>
                 )}
-              </>
-            ) : null}
-          </View>
-          <View style={tw`items-center justify-center`}>
-            {!!data?.offer && (
-              <>
-                <Text style={tw`font-avSemi text-xs text-red-500`}>
-                  {`${data?.offer}${data?.offerType === 'PERCENT' ? '%' : '₹'}`}
-                </Text>
-                <Text style={tw`font-avSemi text-xs text-red-500`}>Off</Text>
-              </>
-            )}
-          </View>
-          <View style={tw`flex-row`}>
-            <View style={tw`flex-row items-center`}>
-              <Text
-                style={tw`font-avSemi rounded mx-2 px-6 py-2 bg-${
-                  route.params?.themeColor || 'green'
-                }-100 text-sm text-${
-                  route.params?.themeColor || 'green'
-                }-600 shadow-sm text-right`}>
-                {data?.paid && !data?.purchased
-                  ? 'Buy Now'
-                  : 'Start Learning ➔'}
-              </Text>
-              <AntDesign
-                name="sharealt"
-                size={20}
-                color={tw.color(`${route.params?.themeColor || 'green'}-600`)}
-                style={tw`p-2`}
-              />
-            </View>
-          </View>
+              </View>
+              {!!data?.offer && (
+                <View style={tw`items-center`}>
+                  <Text style={tw`font-avSemi text-xs text-red-500`}>
+                    {`${data?.offer}${
+                      data?.offerType === 'PERCENT' ? '%' : '₹'
+                    }`}
+                  </Text>
+                  <Text style={tw`font-avSemi text-xs text-red-500`}>Off</Text>
+                </View>
+              )}
+            </>
+          )}
+          {!queryLoading && (
+            <CCPurchaseButton
+              item={data}
+              initial={data?.purchased === 1 ? true : false}
+              onPurchased={navigateSyllabusScreen}
+              refetchQueries={[
+                {query: BUNDLE, variables: {bundleId: data?._id}},
+              ]}>
+              {purchased => (
+                <View
+                  style={tw`rounded mx-2 px-6 py-2 shadow-sm bg-${
+                    route.params?.themeColor || 'green'
+                  }-100`}>
+                  <Text
+                    style={tw`font-avSemi text-sm text-${
+                      route.params?.themeColor || 'green'
+                    }-600`}>
+                    {purchased ? 'Continue  ➔' : 'Buy Now'}
+                  </Text>
+                </View>
+              )}
+            </CCPurchaseButton>
+          )}
+          <CCShareButton>
+            <AntDesign
+              name="sharealt"
+              size={20}
+              color={tw.color(`${route.params?.themeColor || 'green'}-600`)}
+              style={tw`p-2`}
+            />
+          </CCShareButton>
         </LinearGradient>
       </LinearGradient>
     </SafeAreaContainer>

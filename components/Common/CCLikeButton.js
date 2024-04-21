@@ -1,5 +1,4 @@
 import {tw} from '@lib';
-import {CONTENT} from '@queries';
 import {LIKE, UNLIKE} from '@mutations';
 import {useMutation} from '@apollo/client';
 import React, {memo, useState} from 'react';
@@ -41,7 +40,7 @@ export const CCLikeButton = memo(
         });
         setLiked(true);
       },
-      refetchQueries: [{query: CONTENT, variables: {contentId: refId}}],
+      refetchQueries,
     });
 
     const onPress = () => {

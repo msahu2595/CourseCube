@@ -32,8 +32,10 @@ export const BUNDLE = gql`
         createdAt
         updatedAt
         likes
+        liked
         purchases
         purchased
+        bookmarked
       }
     }
   }

@@ -10,6 +10,7 @@ import React from 'react';
 import {
   CCIcon,
   CCLikeButton,
+  CCShareButton,
   CCBookmarkButton,
   CCDownloadButton,
 } from 'components/Common';
@@ -161,9 +162,9 @@ const VideoViewScreen = ({route}) => {
               <TouchableOpacity>
                 <CCIcon icon="questioncircleo" label="Doubts" />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <CCShareButton>
                 <CCIcon icon="sharealt" label="Share" />
-              </TouchableOpacity>
+              </CCShareButton>
             </View>
             <ScrollView style={tw`flex-1`}>
               <InfoItem label="Highlight" value={data?.highlight} />
