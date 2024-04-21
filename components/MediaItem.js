@@ -17,7 +17,7 @@ const width = Dimensions.get('window').width;
 const MediaItem = memo(({image, label, title, disabled, onPress, options}) => (
   <TouchableOpacity
     activeOpacity={0.5}
-    onPressOut={onPress}
+    onPress={onPress}
     disabled={disabled || !onPress}>
     <ImageBackground
       source={{

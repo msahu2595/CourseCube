@@ -7,7 +7,7 @@ const Fab = ({onPress, disabled, bgColor, iconName, iconSize = 28, style}) => {
   return (
     <TouchableOpacity
       disabled={disabled}
-      onPressOut={onPress}
+      onPress={onPress}
       style={tw.style(
         `absolute bottom-2 right-2 justify-center items-center rounded-full shadow opacity-${
           disabled ? 50 : 100
