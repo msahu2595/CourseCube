@@ -39,6 +39,7 @@ const AdminVideoListScreen = ({navigation}) => {
   const [addContentModal, setAddContentModal] = useState(null);
 
   const {loading, data, refetch, fetchMore} = useQuery(VIDEOS, {
+    variables: {limit: 20},
     onError: err => {
       showMessage({
         message: err?.message || 'Some unknown error occurred. Try again!!',
@@ -218,7 +219,7 @@ const AdminVideoListScreen = ({navigation}) => {
           fetchMore({
             variables: {
               offset: data?.videos?.payload.length,
-              limit: 10,
+              limit: 20,
             },
           });
         }}

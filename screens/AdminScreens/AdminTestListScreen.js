@@ -41,6 +41,7 @@ const AdminTestListScreen = ({navigation}) => {
   const [addContentModal, setAddContentModal] = useState(null);
 
   const {loading, data, refetch, fetchMore} = useQuery(TESTS, {
+    variables: {limit: 20},
     onError: err => {
       showMessage({
         message: err?.message || 'Some unknown error occurred. Try again!!',
@@ -227,7 +228,7 @@ const AdminTestListScreen = ({navigation}) => {
           fetchMore({
             variables: {
               offset: data?.tests?.payload.length,
-              limit: 10,
+              limit: 20,
             },
           });
         }}

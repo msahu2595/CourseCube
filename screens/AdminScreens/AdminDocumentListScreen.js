@@ -39,6 +39,7 @@ const AdminDocumentListScreen = ({navigation}) => {
   const [editDocumentModal, setEditDocumentModal] = useState(null);
 
   const {loading, data, refetch, fetchMore} = useQuery(DOCUMENTS, {
+    variables: {limit: 20},
     onError: err => {
       showMessage({
         message: err?.message || 'Some unknown error occurred. Try again!!',
@@ -218,7 +219,7 @@ const AdminDocumentListScreen = ({navigation}) => {
           fetchMore({
             variables: {
               offset: data?.documents?.payload.length,
-              limit: 10,
+              limit: 20,
             },
           });
         }}
