@@ -12,11 +12,11 @@ import {
   ModalFooter,
   ModalContent,
 } from 'react-native-modals';
-import {BUNDLE} from '@queries';
 import {CCButton} from './CCButton';
 import {gql, useMutation} from '@apollo/client';
 import config from 'react-native-ultimate-config';
 import {showMessage} from 'react-native-flash-message';
+import reactNativeUpiPayment from 'react-native-upi-payment';
 import React, {memo, useCallback, useMemo, useRef, useState} from 'react';
 
 const INITIATE_TRANSACTION = gql`
@@ -55,8 +55,11 @@ const UPDATE_TRANSACTION = gql`
 `;
 
 const CANCELLED_TRANSACTION = gql`
-  mutation cancelledTransaction($orderId: String!) {
-    cancelledTransaction(orderId: $orderId) {
+  mutation cancelTransaction(
+    $orderId: String!
+    $transactionInput: TransactionCancelInput!
+  ) {
+    cancelTransaction(orderId: $orderId, transactionInput: $transactionInput) {
       code
       success
       message
@@ -103,9 +106,11 @@ const PROCESS_TRANSACTION = gql`
 export const CCPurchaseButton = memo(
   ({item, initial = false, onPurchased, refetchQueries = [], children}) => {
     const bottomModalRef = useRef(null);
+
+    const [purchased, setPurchased] = useState(initial);
+
     const [open, setOpen] = useState(false);
     const [status, setStatus] = useState('NULL');
-    const [purchased, setPurchased] = useState(initial);
     const [paymentDetails, setPaymentDetails] = useState(null);
 
     const priceDetails = useMemo(() => {
@@ -168,12 +173,20 @@ export const CCPurchaseButton = memo(
       },
     );
 
-    const [cancelledTransaction, {loading: cancelling}] = useMutation(
+    const [cancelTransaction, {loading: cancelling}] = useMutation(
       CANCELLED_TRANSACTION,
       {
-        variables: {orderId: paymentDetails?.orderId},
+        variables: {
+          orderId: paymentDetails?.orderId,
+          transactionInput: {
+            txnInfo: {
+              message: 'User cancelled from the app.',
+              status: 'FAILURE',
+            },
+          },
+        },
         onCompleted: data => {
-          console.log('data', data?.cancelledTransaction);
+          console.log('data', data?.cancelTransaction);
           setStatus('CANCELLED');
         },
         onError: err => {
@@ -215,24 +228,61 @@ export const CCPurchaseButton = memo(
 
     const closeModal = useCallback(() => {
       setOpen(false);
+      setStatus('NULL');
       setPaymentDetails(null);
     }, []);
 
     const payWithUPI = useCallback(() => {
-      console.log('Open UPI');
-      // TODO: implement UPI payment functionality.
-      const transactionInput = {
-        paymentApp: 'PAYTM',
-        paymentMode: 'UPI_INTENT',
-        paymentVPA: '9009630808@pz',
+      const payeeData = {
+        vpa: paymentDetails?.payeeVPA,
+        payeeName: paymentDetails?.payeeName,
+        transactionRef: paymentDetails?.orderId,
+        amount: paymentDetails?.txnAmount,
+        transactionNote: paymentDetails?.txnNote,
       };
+      if (paymentDetails?.payeeMerchantCode) {
+        payeeData.merchantCode = paymentDetails?.payeeMerchantCode;
+      }
+      reactNativeUpiPayment.initializePayment(
+        payeeData,
+        successData => {
+          console.log('successData', successData);
+          processTransaction({
+            variables: {
+              orderId: payeeData?.transactionRef,
+              transactionInput: {
+                txnId: successData?.txnId,
+                txnInfo: successData,
+              },
+            },
+          });
+        },
+        failureData => {
+          console.log('failureData', failureData);
+          cancelTransaction({
+            variables: {
+              orderId: payeeData?.transactionRef,
+              transactionInput: {txnInfo: failureData},
+            },
+          });
+        },
+      );
       updateTransaction({
         variables: {
           orderId: paymentDetails?.orderId,
-          transactionInput,
+          transactionInput: {
+            paymentApp: 'UNKNOWN',
+            paymentMode: 'UPI_INTENT',
+            paymentVPA: payeeData?.vpa,
+          },
         },
       });
-    }, [paymentDetails, updateTransaction]);
+    }, [
+      paymentDetails,
+      updateTransaction,
+      cancelTransaction,
+      processTransaction,
+    ]);
 
     const claimForFree = useCallback(() => {
       processTransaction({
@@ -276,7 +326,7 @@ export const CCPurchaseButton = memo(
               style={tw`py-2 px-6`}
               loading={cancelling}
               disabled={cancelling}
-              onPress={cancelledTransaction}
+              onPress={cancelTransaction}
             />
           );
         case 'CANCELLED':
@@ -310,7 +360,7 @@ export const CCPurchaseButton = memo(
       initiateTransaction,
       payWithUPI,
       claimForFree,
-      cancelledTransaction,
+      cancelTransaction,
       closeModal,
     ]);
 

@@ -7036,6 +7036,11 @@ react-native-ultimate-config@^6.0.1:
     js-yaml "^4"
     yargs "^17"
 
+react-native-upi-payment@1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/react-native-upi-payment/-/react-native-upi-payment-1.0.5.tgz#43e479ed3e24cdf27fd8398661d493dcc2e5f00b"
+  integrity sha512-5pouPlgFgucu04nuipi2R8Mc2K5uakmoa/QJJMmsfFCjEX06SJrA8WW7t2IeGKj/qpSjXeMhUlg6GHr76tQ7bg==
+
 react-native-vector-icons@^9.2.0:
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-9.2.0.tgz#3c0c82e95defd274d56363cbe8fead8d53167ebd"
