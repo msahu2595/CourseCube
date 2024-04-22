@@ -241,7 +241,7 @@ export const CCPurchaseButton = memo(
         transactionNote: paymentDetails?.txnNote,
       };
       if (paymentDetails?.payeeMerchantCode) {
-        payeeData.merchantCode = paymentDetails?.payeeMerchantCode;
+        payeeData.merchantCode = `${paymentDetails?.payeeMerchantCode}`;
       }
       reactNativeUpiPayment.initializePayment(
         payeeData,
