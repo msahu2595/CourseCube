@@ -159,19 +159,19 @@ export const errorLink = onError(error => {
 });
 
 console.log('__DEV__', __DEV__);
-console.log('REACT_APP_LOCAL_URI', config.REACT_APP_LOCAL_URI);
+console.log('REACT_APP_DEV_URI', config.REACT_APP_DEV_URI);
 console.log('REACT_APP_PROD_URI', config.REACT_APP_PROD_URI);
 console.log({Authorization: `Bearer ${storage.getString('token')}`});
 console.log({'refresh-token': storage.getString('refresh')});
 console.log({
   uri: `${
-    __DEV__ ? config.REACT_APP_LOCAL_URI : config.REACT_APP_PROD_URI
+    __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
   }/graphql`,
 });
 
 const httpLink = createHttpLink({
   uri: `${
-    __DEV__ ? config.REACT_APP_LOCAL_URI : config.REACT_APP_PROD_URI
+    __DEV__ ? config.REACT_APP_DEV_URI : config.REACT_APP_PROD_URI
   }/graphql`,
 });
 
